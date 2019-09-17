@@ -28,19 +28,15 @@ public class ServoConfigs extends Configs {
 
         ServoConfig config = null;
         switch (bot) {
-            case PRODUCTION: case CODE:
-                switch (servo){
-                    case ARM_TURN:
-                        config = new ServoConfig("ArmTurn", false, .525f, .7f);
-                        break;
+            case ARMSSS:
+                switch(servo) {
                     case FLAG_DROPPER:
                         config = new ServoConfig("FlagDropper", true, 0.3f, .8f);
                         break;
-                    case WHEEL_COLLECTOR:
-                        config = new ServoConfig("WheelCollector", false, 0f, 1f);
                 }
                 break;
         }
+
         return config;
     }
 }

@@ -50,28 +50,16 @@ public class WheelsConfigs extends Configs {
         WheelMotor[] motors;
         WheelsConfig config = null;
         switch (bot) {
-            case PRODUCTION:
+            case ARMSSS:
                 motors = new WheelMotor[4];
                 motors[0] = new WheelMotor("FL", MOTOR_SIDE.LEFT, MOTOR_END.FRONT, false,
-                        M_TICKS_PER_MM); // Gimli::Glaen
+                        M_TICKS_PER_MM);
                 motors[1] = new WheelMotor("BL", MOTOR_SIDE.LEFT, MOTOR_END.BACK, false,
-                        M_TICKS_PER_MM); // Gimli::Glick
+                        M_TICKS_PER_MM);
                 motors[2] = new WheelMotor("FR", MOTOR_SIDE.RIGHT, MOTOR_END.FRONT, true,
-                        M_TICKS_PER_MM); // Gimli::Gloin
+                        M_TICKS_PER_MM);
                 motors[3] = new WheelMotor("BR", MOTOR_SIDE.RIGHT, MOTOR_END.BACK, true,
-                        M_TICKS_PER_MM); //Gimli::Dad
-                config = new WheelsConfig(DRIVE_TYPE.MECANUM, motors, true, DcMotor.RunMode.RUN_USING_ENCODER);
-                break;
-            case CODE:
-                motors = new WheelMotor[4];
-                motors[0] = new WheelMotor("FL_Code", MOTOR_SIDE.LEFT, MOTOR_END.FRONT, false,
-                        M_TICKS_PER_MM); // Gimli::Glaen
-                motors[1] = new WheelMotor("BL", MOTOR_SIDE.LEFT, MOTOR_END.BACK, false,
-                        M_TICKS_PER_MM); // Gimli::Glick
-                motors[2] = new WheelMotor("FR", MOTOR_SIDE.RIGHT, MOTOR_END.FRONT, true,
-                        M_TICKS_PER_MM); // Gimli::Gloin
-                motors[3] = new WheelMotor("BR", MOTOR_SIDE.RIGHT, MOTOR_END.BACK, true,
-                        M_TICKS_PER_MM); //Gimli::Dad
+                        M_TICKS_PER_MM);
                 config = new WheelsConfig(DRIVE_TYPE.MECANUM, motors, true, DcMotor.RunMode.RUN_USING_ENCODER);
                 break;
         }

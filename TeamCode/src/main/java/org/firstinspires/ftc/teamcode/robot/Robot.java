@@ -25,16 +25,9 @@ public class Robot {
 
     public final BOT bot;
     public final Wheels wheels;
-    public final Motor lift;
     public final PIDMotor arm;
-    public final ServoFTC intakeTurn;
     public final ServoFTC flagDropper;
-    public ServoFTC wheelCollector = null;
     public final Switch armSwitch;
-    public final PIDMotor intake;
-    public final Switch intakeSwitch;
-    public final PIDMotor scoop;
-    public final Gyro gyro;
     public final VuforiaFTC vuforia;
 
     public final HardwareMap map;
@@ -63,29 +56,15 @@ public class Robot {
         this.wheels = wheels.init();
         this.wheels.stop();
 
-        lift = motors.init(MOTORS.LIFT);
-        lift.stop();
-
         // Init Arm
         armSwitch = switches.init(SWITCHES.ARM);
         arm = pids.init(MOTORS.ARM);
         arm.stop();
 
-        // Init Intake
-        intakeSwitch = switches.init(SWITCHES.INTAKE);
-        intake = pids.init(MOTORS.INTAKE);
-        intake.init();
-        intake.stop();
-        intakeTurn = servos.init(SERVOS.ARM_TURN);
-
-        scoop = pids.init(MOTORS.SCOOP);
-        scoop.init();
-        scoop.stop();
-
+        // Servos
         flagDropper = servos.init(SERVOS.FLAG_DROPPER);
-        wheelCollector = servos.init(SERVOS.WHEEL_COLLECTOR);
 
-        gyro = gyros.init();
+        // Other
         vuforia = new VuforiaFTC(map, telemetry, bot, "Webcam");
 
         this.common = new Common(this);

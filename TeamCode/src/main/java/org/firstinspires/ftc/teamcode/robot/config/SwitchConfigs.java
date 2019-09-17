@@ -38,13 +38,10 @@ public class SwitchConfigs extends Configs {
 
         SwitchConfig config = null;
         switch (bot) {
-            case PRODUCTION: case CODE:
-                switch (name) {
+            case ARMSSS:
+                switch(name) {
                     case ARM:
-                        config = new SwitchConfig(SWITCH_TYPES.DIGITAL, "ArmSwitch");
-                        break;
-                    case INTAKE:
-                        config = new SwitchConfig(SWITCH_TYPES.DIGITAL, "IntakeSwitch");
+                        config =  new SwitchConfig(SWITCH_TYPES.DIGITAL, "Arm Button");
                         break;
                 }
                 break;

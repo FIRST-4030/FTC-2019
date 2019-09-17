@@ -35,19 +35,10 @@ public class PIDMotorConfigs extends MotorConfigs {
 
             // IMPORTANT: If you need to change the *names* of the motors here, change them in MotorConfigs too
 
-            case PRODUCTION: case CODE:
+            case ARMSSS:
                 switch (motor) {
-                    case SCOOP:
-                        config = new PIDMotorConfig(m, new PIDParams(0.003f, 0.0001f, 0f), -8000, 8000);
-                        break;
-                    case LIFT:
-                        config = new PIDMotorConfig(m, new PIDParams(.003f, 0.00001f, 0f), -8000, 8000);
-                        break;
                     case ARM:
                         config = new PIDMotorConfig(m, new PIDParams(.003f, 0.00001f, 0f), 0, 8000);
-                        break;
-                    case INTAKE:
-                        config = new PIDMotorConfig(m, new PIDParams(.003f, 0.00001f, 0f), -8000, 8000);
                         break;
                 }
                 break;
