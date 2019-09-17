@@ -53,25 +53,25 @@ public class WheelsConfigs extends Configs {
             case PRODUCTION:
                 motors = new WheelMotor[4];
                 motors[0] = new WheelMotor("FL", MOTOR_SIDE.LEFT, MOTOR_END.FRONT, false,
-                        new PIDParams(), M_TICKS_PER_MM, M_MAX_RATE); // Gimli::Glaen
+                        M_TICKS_PER_MM); // Gimli::Glaen
                 motors[1] = new WheelMotor("BL", MOTOR_SIDE.LEFT, MOTOR_END.BACK, false,
-                        new PIDParams(), M_TICKS_PER_MM, M_MAX_RATE); // Gimli::Glick
+                        M_TICKS_PER_MM); // Gimli::Glick
                 motors[2] = new WheelMotor("FR", MOTOR_SIDE.RIGHT, MOTOR_END.FRONT, true,
-                        new PIDParams(), M_TICKS_PER_MM, M_MAX_RATE); // Gimli::Gloin
+                        M_TICKS_PER_MM); // Gimli::Gloin
                 motors[3] = new WheelMotor("BR", MOTOR_SIDE.RIGHT, MOTOR_END.BACK, true,
-                        new PIDParams(), M_TICKS_PER_MM, M_MAX_RATE); //Gimli::Dad
+                        M_TICKS_PER_MM); //Gimli::Dad
                 config = new WheelsConfig(DRIVE_TYPE.MECANUM, motors, true, DcMotor.RunMode.RUN_USING_ENCODER);
                 break;
             case CODE:
                 motors = new WheelMotor[4];
                 motors[0] = new WheelMotor("FL_Code", MOTOR_SIDE.LEFT, MOTOR_END.FRONT, false,
-                        new PIDParams(), M_TICKS_PER_MM, M_MAX_RATE); // Gimli::Glaen
+                        M_TICKS_PER_MM); // Gimli::Glaen
                 motors[1] = new WheelMotor("BL", MOTOR_SIDE.LEFT, MOTOR_END.BACK, false,
-                        new PIDParams(), M_TICKS_PER_MM, M_MAX_RATE); // Gimli::Glick
+                        M_TICKS_PER_MM); // Gimli::Glick
                 motors[2] = new WheelMotor("FR", MOTOR_SIDE.RIGHT, MOTOR_END.FRONT, true,
-                        new PIDParams(), M_TICKS_PER_MM, M_MAX_RATE); // Gimli::Gloin
+                        M_TICKS_PER_MM); // Gimli::Gloin
                 motors[3] = new WheelMotor("BR", MOTOR_SIDE.RIGHT, MOTOR_END.BACK, true,
-                        new PIDParams(), M_TICKS_PER_MM, M_MAX_RATE); //Gimli::Dad
+                        M_TICKS_PER_MM); //Gimli::Dad
                 config = new WheelsConfig(DRIVE_TYPE.MECANUM, motors, true, DcMotor.RunMode.RUN_USING_ENCODER);
                 break;
         }

@@ -34,6 +34,16 @@ public class PIDParams {
                 true);
     }
 
+    public PIDParams(float p, float i, float d,
+                     Float maxAccumulator,
+                     boolean resetAccumulatorOnErrorSignChange,
+                     boolean resetAccumulatorOnTargetSignChange) {
+        this(p, i, d, 0, 0,
+                null,
+                false,
+                true);
+    }
+
     public PIDParams(float p, float i, float d, int min, int max,
                      Float maxAccumulator,
                      boolean resetAccumulatorOnErrorSignChange,
