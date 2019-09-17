@@ -41,9 +41,7 @@ public class GyroConfigs extends Configs {
 
         GyroConfig config = null;
         switch (bot) {
-            case PRODUCTION: case CODE:
-                config = new GyroConfig(GYRO_TYPES.REV, "imu");
-                break;
+            // there are no servos
         }
         return config;
     }
