@@ -24,7 +24,7 @@ public class PIDParams {
     }
 
     public PIDParams(float p, float i, float d) {
-        this(p, i, d, 0, 0);
+        this(p, i, d, 0, 1);
     }
 
     public PIDParams(float p, float i, float d, int min, int max) {

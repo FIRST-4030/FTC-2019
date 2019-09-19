@@ -41,11 +41,11 @@ public class MecanumDrive extends TankDrive {
         // modified code from https://ftcforum.usfirst.org/forum/ftc-technology/android-studio/6361-mecanum-wheels-drive-code-example
         // from dmssargent
         double r = Math.hypot(x, y);
-        double robotAngle = Math.atan2(y, x) - Math.PI / 4;
-        final float v1 = (float) (r * Math.cos(robotAngle)) + rotation;
-        final float v2 = (float) (r * Math.sin(robotAngle)) - rotation;
-        final float v3 = (float) (r * Math.sin(robotAngle)) + rotation;
-        final float v4 = (float) (r * Math.cos(robotAngle)) - rotation;
+        double theta = Math.atan2(y, x);
+        final float v1 = (float) (r * Math.cos(theta - Math.PI / 4)) + rotation;
+        final float v2 = (float) (r * Math.sin(theta - Math.PI / 4)) - rotation;
+        final float v3 = (float) (r * Math.sin(theta - Math.PI / 4)) + rotation;
+        final float v4 = (float) (r * Math.cos(theta - Math.PI / 4)) - rotation;
 
         // except for this, this is mine
         setSpeed(v1, MOTOR_SIDE.LEFT, MOTOR_END.FRONT);
@@ -57,9 +57,9 @@ public class MecanumDrive extends TankDrive {
     @Override
     public void loop(Gamepad pad) {
         // an unconventional implementation, because Lars wanted it so
-        float lStickX = cleanJoystick(-pad.left_stick_x);
-        float lStickY = cleanJoystick(pad.left_stick_y);
-        float rStickX = cleanJoystick(-pad.right_stick_x);
+        float lStickX = cleanJoystick(pad.left_stick_x); // rotation
+        float lStickY = cleanJoystick(pad.left_stick_y); // y
+        float rStickX = cleanJoystick(-pad.right_stick_x); // x
 
         setSpeed(rStickX, lStickY, lStickX);
     }

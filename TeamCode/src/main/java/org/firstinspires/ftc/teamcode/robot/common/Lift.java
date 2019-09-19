@@ -82,6 +82,7 @@ public class Lift implements CommonTask {
 
     public AutoDriver lowerLift(AutoDriver driver) {
 
+        /*
         robot.telemetry.log().add("State: " + lowerState);
 
         switch (lowerState) {
@@ -103,6 +104,7 @@ public class Lift implements CommonTask {
                 driver.done = true;
                 break;
         }
+        */
         return driver;
 
     }
