@@ -31,7 +31,7 @@ public class ServoConfigs extends Configs {
             case ARMSSS:
                 switch(servo) {
                     case FLAG_DROPPER:
-                        config = new ServoConfig("FlagDropper", true, 0.3f, .8f);
+                        config = new ServoConfig("Flag Dropper", true, 0.3f, .8f);
                         break;
                 }
                 break;

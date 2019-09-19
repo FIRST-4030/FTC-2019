@@ -24,10 +24,13 @@ public class Robot {
     public final Common common;
 
     public final BOT bot;
+
     public final Wheels wheels;
     public final PIDMotor arm;
     public final ServoFTC flagDropper;
     public final Switch armSwitch;
+    public final Gyro gyro;
+
     public final VuforiaFTC vuforia;
 
     public final HardwareMap map;
@@ -63,6 +66,9 @@ public class Robot {
 
         // Servos
         flagDropper = servos.init(SERVOS.FLAG_DROPPER);
+
+        // Gyro
+        gyro = gyros.init();
 
         // Other
         vuforia = new VuforiaFTC(map, telemetry, bot, "Webcam");

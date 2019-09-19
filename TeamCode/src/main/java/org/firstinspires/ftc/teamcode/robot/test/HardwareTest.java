@@ -69,14 +69,9 @@ public class HardwareTest extends OpMode {
     public void loop() {
         buttons.update();
 
-        updateMotor("CHARMY", robot.intake);
-        updateServo("CHARMY", robot.intakeTurn);
         updateServo("FLAG_DROPPER", robot.flagDropper);
-        updateSwitch("CHARMY", robot.intakeSwitch);
         updateMotor("SMARMY", robot.arm);
         updateSwitch("SMARMY", robot.armSwitch);
-        updateMotor("DUMPY", robot.scoop);
-        updateMotor("DOC", robot.lift);
 
         telemetry.addData("Gimli::Glick", robot.wheels.getEncoder(MOTOR_SIDE.LEFT, MOTOR_END.BACK));
         telemetry.addData("Gimli::Glaen", robot.wheels.getEncoder(MOTOR_SIDE.LEFT, MOTOR_END.FRONT));
@@ -85,10 +80,7 @@ public class HardwareTest extends OpMode {
         robot.wheels.loop(gamepad1);
 
         if (buttons.get("ENCODER_RESET")) {
-            robot.intake.resetEncoder();
             robot.arm.resetEncoder();
-            robot.scoop.resetEncoder();
-            robot.lift.resetEncoder();
             robot.wheels.resetEncoder(MOTOR_SIDE.LEFT, MOTOR_END.BACK);
             robot.wheels.resetEncoder(MOTOR_SIDE.RIGHT, MOTOR_END.BACK);
             robot.wheels.resetEncoder(MOTOR_SIDE.LEFT, MOTOR_END.FRONT);
