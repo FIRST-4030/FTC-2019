@@ -35,7 +35,7 @@ public class MotorConfigs extends Configs {
             case ARMSSS:
                 switch(motor) {
                     case ARM:
-                        config = new MotorConfig("Arm", false);
+                        config = new MotorConfig("Arm", true);
                         break;
                 }
                 break;

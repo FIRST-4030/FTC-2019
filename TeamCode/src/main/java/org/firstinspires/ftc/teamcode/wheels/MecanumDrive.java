@@ -56,7 +56,7 @@ public class MecanumDrive extends TankDrive {
 
     @Override
     public void loop(Gamepad pad) {
-        // an unconventional implementation, because Lars wanted it so
+        // an conventional implementation, because Lars wanted it wrong
         float lStickX = cleanJoystick(pad.left_stick_x); // rotation
         float lStickY = cleanJoystick(pad.left_stick_y); // y
         float rStickX = cleanJoystick(-pad.right_stick_x); // x
