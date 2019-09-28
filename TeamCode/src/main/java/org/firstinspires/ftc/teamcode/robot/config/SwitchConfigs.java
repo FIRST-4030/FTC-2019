@@ -39,11 +39,6 @@ public class SwitchConfigs extends Configs {
         SwitchConfig config = null;
         switch (bot) {
             case ARMSSS:
-                switch(name) {
-                    case ARM:
-                        config =  new SwitchConfig(SWITCH_TYPES.DIGITAL, "Arm Button");
-                        break;
-                }
                 break;
         }
         return config;

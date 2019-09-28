@@ -33,11 +33,6 @@ public class MotorConfigs extends Configs {
             // IMPORTANT: If you need to change the *names* of the motors here, change them in PIDMotorConfigs too
 
             case ARMSSS:
-                switch(motor) {
-                    case ARM:
-                        config = new MotorConfig("Arm", true);
-                        break;
-                }
                 break;
         }
         return config;

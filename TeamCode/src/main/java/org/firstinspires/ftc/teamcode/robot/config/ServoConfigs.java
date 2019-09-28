@@ -29,11 +29,6 @@ public class ServoConfigs extends Configs {
         ServoConfig config = null;
         switch (bot) {
             case ARMSSS:
-                switch(servo) {
-                    case FLAG_DROPPER:
-                        config = new ServoConfig("Flag Dropper", true, 0.3f, .8f);
-                        break;
-                }
                 break;
         }
 

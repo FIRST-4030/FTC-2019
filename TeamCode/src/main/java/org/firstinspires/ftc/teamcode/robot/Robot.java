@@ -26,9 +26,6 @@ public class Robot {
     public final BOT bot;
 
     public final Wheels wheels;
-    public final PIDMotor arm;
-    public final ServoFTC flagDropper;
-    public final Switch armSwitch;
     public final Gyro gyro;
 
     public final VuforiaFTC vuforia;
@@ -60,12 +57,10 @@ public class Robot {
         this.wheels.stop();
 
         // Init Arm
-        armSwitch = switches.init(SWITCHES.ARM);
-        arm = pids.init(MOTORS.ARM);
-        arm.stop();
+        // amputated
 
         // Servos
-        flagDropper = servos.init(SERVOS.FLAG_DROPPER);
+        // tumbleweeds
 
         // Gyro
         gyro = gyros.init();
