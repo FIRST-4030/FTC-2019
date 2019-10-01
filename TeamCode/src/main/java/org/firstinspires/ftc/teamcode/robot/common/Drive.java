@@ -117,7 +117,7 @@ public class Drive implements CommonTask, DriveToListener {
         float tolerance = TURN_TOLERANCE;
         float diffTolerance = TURN_DIFF_TOLERANCE;
         switch (robot.bot) {
-            case ARMSSS:
+            case ARM:
                 params = TURN_PARAMS;
                 tolerance = TURN_TOLERANCE;
                 diffTolerance = TURN_DIFF_TOLERANCE;

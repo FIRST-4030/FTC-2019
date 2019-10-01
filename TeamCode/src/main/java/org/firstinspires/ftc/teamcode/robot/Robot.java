@@ -22,16 +22,17 @@ import org.firstinspires.ftc.teamcode.wheels.Wheels;
 public class Robot {
     public static Robot robot = null;
     public final Common common;
-
     public final BOT bot;
-
-    public final Wheels wheels;
-    public final Gyro gyro;
-
     public final VuforiaFTC vuforia;
-
     public final HardwareMap map;
     public final Telemetry telemetry;
+
+    public final Wheels wheels;
+    public final ServoFTC rotation;
+    public final ServoFTC claw;
+    public final ServoFTC orange;
+    public final ServoFTC black;
+    public final Gyro gyro;
 
     public Robot(HardwareMap map, Telemetry telemetry) {
         this(map, telemetry, null);
@@ -53,17 +54,18 @@ public class Robot {
         ServoConfigs servos = new ServoConfigs(map, telemetry, bot);
         SwitchConfigs switches = new SwitchConfigs(map, telemetry, bot);
 
+        // ghost wheels
         this.wheels = wheels.init();
         this.wheels.stop();
 
-        // Init Arm
-        // amputated
-
-        // Servos
-        // tumbleweeds
-
-        // Gyro
+        // gyro
         gyro = gyros.init();
+
+        // servos
+        rotation = servos.init(SERVOS.ROTATION);
+        claw = servos.init(SERVOS.CLAW);
+        orange = servos.init(SERVOS.ORANGE);
+        black = servos.init(SERVOS.BLACK);
 
         // Other
         vuforia = new VuforiaFTC(map, telemetry, bot, "Webcam");

@@ -28,7 +28,21 @@ public class ServoConfigs extends Configs {
 
         ServoConfig config = null;
         switch (bot) {
-            case ARMSSS:
+            case ARM:
+                switch(servo) {
+                    case ROTATION:
+                        config = new ServoConfig("Rotation", false, 0.0f, 1.0f);
+                        break;
+                    case CLAW:
+                        config = new ServoConfig("Claw", false, 0.25f, 1.0f);
+                        break;
+                    case ORANGE:
+                        config = new ServoConfig("Orange", false, 0.0f, 0.8f);
+                        break;
+                    case BLACK:
+                        config = new ServoConfig("Black", false, 0.35f, 0.9f);
+                        break;
+                }
                 break;
         }
 

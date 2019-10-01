@@ -7,8 +7,6 @@ import org.firstinspires.ftc.teamcode.actuators.MotorConfig;
 import org.firstinspires.ftc.teamcode.actuators.PIDMotor;
 import org.firstinspires.ftc.teamcode.actuators.PIDMotorConfig;
 import org.firstinspires.ftc.teamcode.config.BOT;
-import org.firstinspires.ftc.teamcode.config.Configs;
-import org.firstinspires.ftc.teamcode.driveto.PIDParams;
 import org.firstinspires.ftc.teamcode.robot.MOTORS;
 
 public class PIDMotorConfigs extends MotorConfigs {
@@ -35,7 +33,7 @@ public class PIDMotorConfigs extends MotorConfigs {
 
             // IMPORTANT: If you need to change the *names* of the motors here, change them in MotorConfigs too
 
-            case ARMSSS:
+            case ARM:
                 break;
         }
         return config;

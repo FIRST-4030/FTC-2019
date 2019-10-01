@@ -10,14 +10,10 @@ import org.firstinspires.ftc.teamcode.robot.Robot;
  */
 public class Common {
 
-    // Jewel arm post-start retracted position
-    public static final float JEWEL_ARM_RETRACT = 0.40f;
-
     // Runtime
-    public final Lift lift;
-    public final Sampling sampling;
-    public final Drive drive;
     private final Robot robot;
+    public final Arm arm;
+    public final Drive drive;
 
     public Common(Robot r) {
         if (r == null) {
@@ -25,8 +21,7 @@ public class Common {
         }
         this.robot = r;
 
-        this.lift = new Lift(robot);
-        this.sampling = new Sampling(robot);
+        this.arm = new Arm(robot);
         this.drive = new Drive(robot);
     }
 }
