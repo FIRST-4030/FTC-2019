@@ -5,24 +5,31 @@ import org.firstinspires.ftc.teamcode.robot.Robot;
 
 public class Arm implements CommonTask {
     private static boolean DEBUG = false;
+    // when true, moveToPos will skip calculating and moving servos to the same position it was just at
+    private static boolean SKIP_SAME_VALUES = true;
 
     private final Robot robot;
     private final ServoFTC lower;
-    private final float LOWER_MIDPOINT = 0.3f;
     private final ServoFTC upper;
+
+    // Servo positions when the servo is at 90 degrees
+    private final float LOWER_MIDPOINT = 0.3f;
     private final float UPPER_MIDPOINT = 0.75f;
 
-    /*
-     * The arm has two segments, measured from joint to joint
-     * The lower segment is from the base to the middle joint
-     * The upper segment is from the base to the claw joint
-     * lengths are measured in inches
-     */
+    // previous arm position
+    private float prevX = 0.0f;
+    private float prevY = 0.0f;
+
+     // The arm has two segments, measured from joint to joint
+     // The lower segment is from the base to the middle joint
+     // The upper segment is from the base to the claw joint
+     // lengths are measured in inches
     private static final double LOWER_LENGTH = 5.5;
     private static final double UPPER_LENGTH = 6.75;
 
     public Arm(Robot robot) {
         this.robot = robot;
+
         // Set which servos control the arm
         this.lower = robot.orange;
         this.upper = robot.black;
@@ -37,31 +44,38 @@ public class Arm implements CommonTask {
      */
     public void moveToPos(float x, float y) throws OutOfRangeException {
         // trig OwO
-        /* finds the angles that will make a valid triangle out of the arms, the
-         * desired position, and the base. if they don't exist, throw the OutOfRangeException.
-         */
 
-        // first, find the hypotenuse
+        // first, find the hypotenuse (from the base to the desired pos)
         double hypot = Math.sqrt(x * x + y * y);
 
-        // check if the triangle is valid (this only checks if the position is possible in theory)
-        if (LOWER_LENGTH + UPPER_LENGTH <= hypot || LOWER_LENGTH + hypot <= UPPER_LENGTH || UPPER_LENGTH + hypot <= LOWER_LENGTH)
+        // check if the triangle is valid (this only checks if the position is possible in theory,
+        // the arm might still not be able to physically reach the position)
+        if (LOWER_LENGTH + UPPER_LENGTH <= hypot ||
+            LOWER_LENGTH + hypot <= UPPER_LENGTH ||
+            UPPER_LENGTH + hypot <= LOWER_LENGTH)
             throw new OutOfRangeException("Arm position is impossible");
 
-        // use the law of cosines to find angles
+        // check previous arm position
+        if (x == prevX && y == prevY && SKIP_SAME_VALUES) {
+            // i don't know if doing all the trig every loop cycle slows things down,
+            // so if the last position is the same as the desired position, we don't do
+            // the math or move the arm
+            return;
+        } else {
+            prevX = x;
+            prevY = y;
+        }
+
+        // use the law of cosines to find the internal angles of the triangle made by the arm
+        // segments and the hypotenuse
         double hypot_lower = Math.acos((LOWER_LENGTH * LOWER_LENGTH + hypot * hypot - UPPER_LENGTH * UPPER_LENGTH) / (2 * LOWER_LENGTH * hypot));
         double lower_upper = Math.acos((UPPER_LENGTH * UPPER_LENGTH + LOWER_LENGTH * LOWER_LENGTH - hypot * hypot) / (2 * UPPER_LENGTH * LOWER_LENGTH));
 
-        // now that we have the angles we want, we can move the appropriate servos to the angles
-
-        /* the lower position is the angle between the hypotenuse and 0 plus the angle between the
-         * lower arm segment and the hypotenuse
-         */
+        // calculate the angles the servos need to be at
+        // the lower servo is the angle between the hypotenuse and the x-axis plus hypot_lower
         float lowerPos = (float) (Math.acos(x / hypot) + hypot_lower);
-
-        /* the upper position is the angle between the lower segment and the upper segment minus
-         * the angle between the lower segment and 90
-         */
+        // the upper servo is the difference between lower_upper and the third angle of the right
+        // triangle made by the x-axis and the lower segment
         float upperPos = (float) (lower_upper - (Math.PI - (Math.PI/2 + lowerPos)));
 
         // Make the angles usable servo positions
@@ -74,6 +88,8 @@ public class Arm implements CommonTask {
             robot.telemetry.addData("lower pos: ", lowerPos);
             robot.telemetry.addData("upper pos: ", upperPos);
         }
+
+        // set servos to those positions
         lower.setPosition(lowerPos);
         upper.setPosition(upperPos);
     }
@@ -83,14 +99,6 @@ public class Arm implements CommonTask {
         public OutOfRangeException(String message) {
             super(message);
         }
-    }
-
-    /**
-     * Rotates the arm at a specified velocity
-     * @param v velocity to turn at
-     */
-    public void rotate(float v) {
-
     }
 
 }

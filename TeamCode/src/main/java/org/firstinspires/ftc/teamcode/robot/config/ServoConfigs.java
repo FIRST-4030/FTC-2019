@@ -40,7 +40,7 @@ public class ServoConfigs extends Configs {
                         config = new ServoConfig("Orange", false, 0.0f, 0.8f);
                         break;
                     case BLACK:
-                        config = new ServoConfig("Black", false, 0.35f, 0.9f);
+                        config = new ServoConfig("Black", true, 0.35f, 0.9f);
                         break;
                 }
                 break;
