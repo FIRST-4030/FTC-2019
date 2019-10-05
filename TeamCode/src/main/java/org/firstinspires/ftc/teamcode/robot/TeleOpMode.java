@@ -14,12 +14,11 @@ public class TeleOpMode extends OpMode {
     private Robot robot = null;
     private ButtonHandler buttons;
 
-
-    private float armX = 6.75f;
+    private float armX = 5.75f;
     private float armY = 5.5f;
     private float armRotation = 0.5f;
-    private final float ARM_MOVEMENT_SCALE = 1/16;
-    private final float ARM_ROTATION_SCALE = 1/32;
+    private final float ARM_MOVEMENT_SCALE = 1.0f/16;
+    private final float ARM_ROTATION_SCALE = 1.0f/128;
     private final float CLAW_CLOSED = 0.25f;
     private final float CLAW_OPEN = 1.0f;
 
@@ -67,8 +66,8 @@ public class TeleOpMode extends OpMode {
 
     private void auxiliary() {
         // arm movement
-        armX += gamepad1.left_stick_y * ARM_MOVEMENT_SCALE;
-        armY += gamepad1.right_stick_y * ARM_MOVEMENT_SCALE;
+        armX += (-gamepad1.left_stick_y) * ARM_MOVEMENT_SCALE;
+        armY += (-gamepad1.right_stick_y) * ARM_MOVEMENT_SCALE;
         armRotation += gamepad1.left_stick_x * ARM_ROTATION_SCALE;
 
         telemetry.addData("arm x: ", armX);
@@ -92,5 +91,4 @@ public class TeleOpMode extends OpMode {
 
     public void stop() {
     }
-
 }
