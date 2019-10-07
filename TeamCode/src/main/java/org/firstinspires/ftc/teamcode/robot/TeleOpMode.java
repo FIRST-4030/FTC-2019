@@ -18,9 +18,11 @@ public class TeleOpMode extends OpMode {
     private float armY = 5.5f;
     private float armRotation = 0.5f;
     private final float ARM_MOVEMENT_SCALE = 1.0f/16;
-    private final float ARM_ROTATION_SCALE = 1.0f/128;
+    private final float ARM_ROTATION_SCALE = 1.0f/256;
     private final float CLAW_CLOSED = 0.25f;
-    private final float CLAW_OPEN = 1.0f;
+    private final float CLAW_OPEN = 0.5f;
+    private final float NORMAL_SPEED = 0.75f;
+    private final float SLOW_MODE = 0.25f;
 
     @Override
     public void init() {
@@ -30,10 +32,11 @@ public class TeleOpMode extends OpMode {
 
         // Init the common tasks elements
         robot = new Robot(hardwareMap, telemetry);
+        robot.wheels.setTeleop(true);
 
         // Register buttons
         buttons = new ButtonHandler(robot);
-        buttons.register("CLAW", gamepad1, PAD_BUTTON.left_bumper, BUTTON_TYPE.TOGGLE);
+        buttons.register("CLAW", gamepad2, PAD_BUTTON.left_bumper, BUTTON_TYPE.TOGGLE);
 
         // Wait for the game to begin
         telemetry.addData(">", "Ready for game start");
@@ -61,14 +64,19 @@ public class TeleOpMode extends OpMode {
     }
 
     private void driveBase() {
-        // wheels are for the weak
+        robot.wheels.setSpeedScale((gamepad1.left_bumper)? SLOW_MODE : NORMAL_SPEED);
+        robot.wheels.loop(gamepad1);
     }
 
     private void auxiliary() {
         // arm movement
-        armX += (-gamepad1.left_stick_y) * ARM_MOVEMENT_SCALE;
-        armY += (-gamepad1.right_stick_y) * ARM_MOVEMENT_SCALE;
-        armRotation += gamepad1.left_stick_x * ARM_ROTATION_SCALE;
+        armX -= gamepad2.left_stick_y * ARM_MOVEMENT_SCALE;
+        armY -= gamepad2.right_stick_y * ARM_MOVEMENT_SCALE;
+        armRotation -= gamepad2.left_stick_x * ARM_ROTATION_SCALE;
+
+        // cap values
+        armRotation = Math.min(1.0f, armRotation);
+        armRotation = Math.max(0.0f, armRotation);
 
         telemetry.addData("arm x: ", armX);
         telemetry.addData("arm y: ", armY);

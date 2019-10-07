@@ -54,7 +54,7 @@ public class Robot {
         ServoConfigs servos = new ServoConfigs(map, telemetry, bot);
         SwitchConfigs switches = new SwitchConfigs(map, telemetry, bot);
 
-        // ghost wheels
+        // wheels
         this.wheels = wheels.init();
         this.wheels.stop();
 

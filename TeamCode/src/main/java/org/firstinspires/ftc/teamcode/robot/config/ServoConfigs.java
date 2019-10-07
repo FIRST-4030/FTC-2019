@@ -34,13 +34,13 @@ public class ServoConfigs extends Configs {
                         config = new ServoConfig("Rotation", false, 0.0f, 1.0f);
                         break;
                     case CLAW:
-                        config = new ServoConfig("Claw", false, 0.25f, 1.0f);
+                        config = new ServoConfig("Claw", false, 0.00f, 1.0f);
                         break;
                     case ORANGE:
-                        config = new ServoConfig("Orange", false, 0.0f, 0.8f);
+                        config = new ServoConfig("Orange", true, 0.0f, 1.0f);
                         break;
                     case BLACK:
-                        config = new ServoConfig("Black", false, 0.35f, 0.9f);
+                        config = new ServoConfig("Black", false, 0.0f, 1.0f);
                         break;
                 }
                 break;

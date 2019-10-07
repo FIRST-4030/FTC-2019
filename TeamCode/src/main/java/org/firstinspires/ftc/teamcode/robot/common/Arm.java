@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.actuators.ServoFTC;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
 public class Arm implements CommonTask {
-    private static boolean DEBUG = true;
+    private static boolean DEBUG = false;
     // when true, moveToPos will skip calculating and moving servos to the same position it was just at
     private static boolean SKIP_SAME_VALUES = false;
 
@@ -13,7 +13,7 @@ public class Arm implements CommonTask {
     private final ServoFTC upper;
 
     // Servo positions when the servo is at 90 degrees
-    private final float LOWER_MIDPOINT = 0.3f;
+    private final float LOWER_MIDPOINT = 0.7f;
     private final float UPPER_MIDPOINT = 0.75f;
 
     // previous arm position
@@ -80,7 +80,7 @@ public class Arm implements CommonTask {
         float S2 = (float) (A - M);
 
         // Make the angles usable servo positions
-        S1 = (float) (1.0f - (S1 / Math.PI) + (LOWER_MIDPOINT - 0.5f)); // TODO: i think this is where i need to invert
+        S1 = (float) (S1 / Math.PI) + (LOWER_MIDPOINT - 0.5f);
         S2 = (float) (S2 / Math.PI) + (UPPER_MIDPOINT - 0.5f);
 
         if (DEBUG) {
