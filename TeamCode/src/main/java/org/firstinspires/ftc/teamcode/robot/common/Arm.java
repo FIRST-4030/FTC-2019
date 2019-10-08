@@ -5,27 +5,25 @@ import org.firstinspires.ftc.teamcode.robot.Robot;
 
 public class Arm implements CommonTask {
     private static boolean DEBUG = false;
-    // when true, moveToPos will skip calculating and moving servos to the same position it was just at
-    private static boolean SKIP_SAME_VALUES = false;
 
     private final Robot robot;
     private final ServoFTC lower;
     private final ServoFTC upper;
 
     // Servo positions when the servo is at 90 degrees
-    private final float LOWER_MIDPOINT = 0.7f;
-    private final float UPPER_MIDPOINT = 0.75f;
+    private static final float LOWER_MIDPOINT = 0.7f;
+    private static final float UPPER_MIDPOINT = 0.75f;
 
-    // previous arm position
-    private float prevX = 0.0f;
-    private float prevY = 0.0f;
+    // The arm has two segments, measured from joint to joint
+    // The lower segment is from the base to the middle joint
+    // The upper segment is from the base to the claw joint
+    // lengths are measured in inches
+    private static final double LOWER_LENGTH = 5.5;
+    private static final double UPPER_LENGTH = 5.75;
 
-     // The arm has two segments, measured from joint to joint
-     // The lower segment is from the base to the middle joint
-     // The upper segment is from the base to the claw joint
-     // lengths are measured in inches
-    private final double LOWER_LENGTH = 5.5;
-    private final double UPPER_LENGTH = 5.75;
+    // current arm position
+    private float armX = 0.0f;
+    private float armY = 0.0f;
 
     public Arm(Robot robot) {
         this.robot = robot;
@@ -40,31 +38,12 @@ public class Arm implements CommonTask {
      * x and y are when looking at the arm from the side on a 2D plane
      * @param x x position in inches (extension)
      * @param y y position in inches (elevation)
-     * @throws OutOfRangeException if the position is theoretically impossible
      */
-    public void moveToPos(float x, float y) throws OutOfRangeException {
+    public void setPosition(float x, float y) {
         // trig OwO
 
         // first, find the hypotenuse (from the base to the desired pos)
         double hypot = Math.sqrt(x * x + y * y);
-
-        // check if the triangle is valid (this only checks if the position is possible in theory,
-        // the arm might still not be able to physically reach the position)
-        if (LOWER_LENGTH + UPPER_LENGTH <= hypot ||
-            LOWER_LENGTH + hypot <= UPPER_LENGTH ||
-            UPPER_LENGTH + hypot <= LOWER_LENGTH)
-            throw new OutOfRangeException("Arm position is impossible");
-
-        // check previous arm position
-        if (x == prevX && y == prevY && SKIP_SAME_VALUES) {
-            // i don't know if doing all the trig every loop cycle slows things down,
-            // so if the last position is the same as the desired position, we don't do
-            // the math or move the arm
-            return;
-        } else {
-            prevX = x;
-            prevY = y;
-        }
 
         // use the law of cosines to find the internal angles of the triangle made by the arm
         // segments and the hypotenuse
@@ -96,15 +75,53 @@ public class Arm implements CommonTask {
         upper.setPosition(S2);
     }
 
+    /**
+     * Changes the current position of the arm by x and y
+     * @param x change in the x position (inches)
+     * @param y change in the y position (inches)
+     */
+    public void setPositionDelta(float x, float y) {
+        // change arm position
+        float newX = armX + x;
+        float newY = armY + y;
+
+        // check new arm position
+        if (!checkPosition(newX, newY)) {
+            return;
+        }
+
+        // set and move arm
+        armX = newX;
+        armY = newY;
+
+        setPosition(armX, armY);
+    }
+
+    /**
+     * Checks if the given arm position (x, y) will fall into the range of motion
+     * of the arm. This will need to be updated if the arm changes
+     * @param x proposed X position of the arm (in inches)
+     * @param y proposed Y position of the arm (in inches)
+     * @return true if the arm position is valid, false otherwise
+     */
+    private boolean checkPosition(float x, float y) {
+        // Check if the triangle that's gonna be made is possible
+        double hypot = Math.sqrt(x*x + y*y);
+        // no side should be longer than the other two added together
+        if (hypot >= UPPER_LENGTH + LOWER_LENGTH ||
+            UPPER_LENGTH >= hypot + LOWER_LENGTH ||
+            LOWER_LENGTH >= UPPER_LENGTH + hypot)
+            return false;
+
+        // TODO: check if (x, y) is a valid physical position for the arm
+        return true;
+    }
+
     private double lawOfCosines(double a, double b, double c) {
         return Math.acos((a*a + b*b - c*c) / (2*a*b));
     }
 
-    // In case the arm can't reach the desired position
-    public class OutOfRangeException extends Exception {
-        public OutOfRangeException(String message) {
-            super(message);
-        }
-    }
-
+    // Getters for current arm pos
+    public float getArmX() {return armX;}
+    public float getArmY() {return armY;}
 }
