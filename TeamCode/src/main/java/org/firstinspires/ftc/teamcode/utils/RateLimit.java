@@ -8,7 +8,7 @@ public class RateLimit {
     private double last;
     public double maxRate;
 
-    public void RateLimit(OpMode opMode, double maxRate) {
+    public RateLimit(OpMode opMode, double maxRate) {
         if (opMode == null) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() + ": Null opmode");
         }
