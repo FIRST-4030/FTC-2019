@@ -40,6 +40,16 @@ public class Arm implements CommonTask {
      * @param y y position in inches (elevation)
      */
     public void setPosition(float x, float y) {
+        // check position// check new arm position
+        if (!checkPosition(x, y)) {
+            return;
+        }
+
+        // update arm pos
+        armX = x;
+        armY = y;
+
+
         // trig OwO
 
         // first, find the hypotenuse (from the base to the desired pos)
@@ -63,11 +73,10 @@ public class Arm implements CommonTask {
         S2 = (float) (S2 / Math.PI) + (UPPER_MIDPOINT - 0.5f);
 
         if (DEBUG) {
-            robot.telemetry.addData("aaaaaa", B);
-            robot.telemetry.addData("lower raw: ", ((Math.asin(y / hypot) + B)));
-            robot.telemetry.addData("upper raw: ", (A - (Math.PI - (Math.PI/2 + S1))));
-            robot.telemetry.addData("lower pos: ", S1);
-            robot.telemetry.addData("upper pos: ", S2);
+            robot.telemetry.addData("lower raw", ((Math.asin(y / hypot) + B)));
+            robot.telemetry.addData("upper raw", (A - (Math.PI - (Math.PI/2 + S1))));
+            robot.telemetry.addData("lower pos", S1);
+            robot.telemetry.addData("upper pos", S2);
         }
 
         // set servos to those positions
@@ -85,16 +94,8 @@ public class Arm implements CommonTask {
         float newX = armX + x;
         float newY = armY + y;
 
-        // check new arm position
-        if (!checkPosition(newX, newY)) {
-            return;
-        }
-
-        // set and move arm
-        armX = newX;
-        armY = newY;
-
-        setPosition(armX, armY);
+        // move arm
+        setPosition(newX, newY);
     }
 
     /**
@@ -104,7 +105,7 @@ public class Arm implements CommonTask {
      * @param y proposed Y position of the arm (in inches)
      * @return true if the arm position is valid, false otherwise
      */
-    private boolean checkPosition(float x, float y) {
+    public boolean checkPosition(float x, float y) {
         // Check if the triangle that's gonna be made is possible
         double hypot = Math.sqrt(x*x + y*y);
         // no side should be longer than the other two added together
