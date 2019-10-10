@@ -55,6 +55,7 @@ public class TeleOpMode extends OpMode {
         buttons.register("CLAW", gamepad2, PAD_BUTTON.left_bumper, BUTTON_TYPE.TOGGLE);
         buttons.register("HOME_ARM", gamepad2, PAD_BUTTON.b, BUTTON_TYPE.SINGLE_PRESS);
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.left_bumper, BUTTON_TYPE.TOGGLE);
+        buttons.register("oh god oh fuck", gamepad1, PAD_BUTTON.start, BUTTON_TYPE.TOGGLE);
 
         // Init rate limits for the arm
         rateX = new RateLimit(this, MAX_ARM_RATE_X);
@@ -87,8 +88,8 @@ public class TeleOpMode extends OpMode {
         auxiliary();
 
         // hurts
-        if (getRuntime() >= lastCountTime + 1) {
-            lastCountTime = (int) getRuntime();
+        if (time >= lastCountTime + 1) {
+            lastCountTime = (int) time;
             lastLoops = loops;
             loops = 0;
         }
@@ -98,11 +99,14 @@ public class TeleOpMode extends OpMode {
     }
 
     private void driveBase() {
-        if (buttons.get("SLOW_MODE")) {
+        if (buttons.get("oh god oh fuck")) {
+            robot.wheels.setSpeedScale((float) Math.sin(time / 100));
+        } else if (buttons.get("SLOW_MODE")) {
             robot.wheels.setSpeedScale(SLOW_MODE);
         } else {
             robot.wheels.setSpeedScale(NORMAL_SPEED);
         }
+
         robot.wheels.loop(gamepad1);
     }
 
