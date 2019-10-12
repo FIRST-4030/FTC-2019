@@ -19,6 +19,8 @@ import org.firstinspires.ftc.teamcode.sensors.switches.Switch;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 import org.firstinspires.ftc.teamcode.wheels.Wheels;
 
+import static org.firstinspires.ftc.teamcode.config.BOT.ARM;
+
 public class Robot {
     public static Robot robot = null;
     public final Common common;
@@ -61,11 +63,18 @@ public class Robot {
         // gyro
         gyro = gyros.init();
 
-        // servos
-        rotation = servos.init(SERVOS.ROTATION);
-        claw = servos.init(SERVOS.CLAW);
-        orange = servos.init(SERVOS.ORANGE);
-        black = servos.init(SERVOS.BLACK);
+        if (bot == ARM) {
+            // servos
+            rotation = servos.init(SERVOS.ROTATION);
+            claw = servos.init(SERVOS.CLAW);
+            orange = servos.init(SERVOS.ORANGE);
+            black = servos.init(SERVOS.BLACK);
+        } else {
+            rotation = null;
+            claw = null;
+            orange = null;
+            black = null;
+        }
 
         // Other
         vuforia = new VuforiaFTC(map, telemetry, bot, "Webcam");

@@ -19,8 +19,16 @@ public class TeleOpMode extends OpMode {
     private static final float ARM_ROTATION_SCALE = 1.0f/256;
     private static final float CLAW_CLOSED = 0.25f;
     private static final float CLAW_OPEN = 0.5f;
-    private static final float ARM_HOME_X = 2.0f;
-    private static final float ARM_HOME_Y = 2.0f;
+    private static final float ARM_HOME_X = 5.0f;
+    private static final float ARM_HOME_Y = 5.0f;
+
+    // Arm rate limiting
+    private RateLimit rateX;
+    private RateLimit rateY;
+    private RateLimit rateR;
+    private static final double MAX_ARM_RATE_X = 1.0d; // In inches per second
+    private static final double MAX_ARM_RATE_Y = 1.0d; // In inches per second
+    private static final double MAX_ARM_RATE_R = 0.25d; // In servo position per second
 
     // other consts
     private static final float NORMAL_SPEED = 0.75f;
@@ -31,14 +39,6 @@ public class TeleOpMode extends OpMode {
     private int loops = 0;
     private int lastLoops = 0;
     private float armRotation = 0.5f;
-
-    // Arm rate limiting
-    private RateLimit rateX;
-    private RateLimit rateY;
-    private RateLimit rateR;
-    private static final double MAX_ARM_RATE_X = 1.0d; // In arm-displacement-units (inches) per second
-    private static final double MAX_ARM_RATE_Y = 1.0d; // In arm-displacement-units (inches) per second
-    private static final double MAX_ARM_RATE_R = 0.25d; // In servo position per second
 
     @Override
     public void init() {
@@ -53,14 +53,18 @@ public class TeleOpMode extends OpMode {
         // Register buttons
         buttons = new ButtonHandler(robot);
         buttons.register("CLAW", gamepad2, PAD_BUTTON.left_bumper, BUTTON_TYPE.TOGGLE);
-        buttons.register("HOME_ARM", gamepad2, PAD_BUTTON.b, BUTTON_TYPE.SINGLE_PRESS);
+        buttons.register("HOME_ARM", gamepad2, PAD_BUTTON.y, BUTTON_TYPE.SINGLE_PRESS);
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.left_bumper, BUTTON_TYPE.TOGGLE);
-        buttons.register("oh god oh fuck", gamepad1, PAD_BUTTON.start, BUTTON_TYPE.TOGGLE);
+        buttons.register("oh god oh fuck", gamepad1, PAD_BUTTON.back, BUTTON_TYPE.TOGGLE);
 
         // Init rate limits for the arm
         rateX = new RateLimit(this, MAX_ARM_RATE_X);
         rateY = new RateLimit(this, MAX_ARM_RATE_Y);
         rateR = new RateLimit(this, MAX_ARM_RATE_R);
+
+        // Move arm to home
+        robot.common.arm.setPosition(ARM_HOME_X, ARM_HOME_Y);
+        robot.rotation.setPosition(0.5f);
 
         // Wait for the game to begin
         telemetry.addData(">", "Ready for game start");
@@ -99,12 +103,15 @@ public class TeleOpMode extends OpMode {
     }
 
     private void driveBase() {
-        if (buttons.get("oh god oh fuck")) {
-            robot.wheels.setSpeedScale((float) Math.sin(time / 100));
+        if (!buttons.get("oh god oh fuck")) {
+            robot.wheels.setSpeedScale((float) Math.sin(time * 10));
+            telemetry.addLine("uh oh");
         } else if (buttons.get("SLOW_MODE")) {
             robot.wheels.setSpeedScale(SLOW_MODE);
+            telemetry.addLine("slow mode");
         } else {
             robot.wheels.setSpeedScale(NORMAL_SPEED);
+            telemetry.addLine("normal mode");
         }
 
         robot.wheels.loop(gamepad1);

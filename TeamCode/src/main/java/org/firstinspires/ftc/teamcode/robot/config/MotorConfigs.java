@@ -34,6 +34,8 @@ public class MotorConfigs extends Configs {
 
             case ARM:
                 break;
+            case MECANUM:
+                break;
         }
         return config;
     }

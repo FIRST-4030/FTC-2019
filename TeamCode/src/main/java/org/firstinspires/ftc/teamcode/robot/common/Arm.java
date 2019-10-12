@@ -115,6 +115,12 @@ public class Arm implements CommonTask {
             return false;
 
         // TODO: check if (x, y) is a valid physical position for the arm
+        // simple rectangular limits
+        if (x <= 0 || x >= 10.5 ||
+            y <= -4 || y >= 8) {
+            return false;
+        }
+
         return true;
     }
 

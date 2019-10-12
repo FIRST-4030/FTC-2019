@@ -39,6 +39,8 @@ public class SwitchConfigs extends Configs {
         switch (bot) {
             case ARM:
                 break;
+            case MECANUM:
+                break;
         }
         return config;
     }

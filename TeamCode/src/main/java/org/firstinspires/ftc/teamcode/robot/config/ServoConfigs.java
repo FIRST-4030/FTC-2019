@@ -44,6 +44,8 @@ public class ServoConfigs extends Configs {
                         break;
                 }
                 break;
+            case MECANUM:
+                break;
         }
 
         return config;

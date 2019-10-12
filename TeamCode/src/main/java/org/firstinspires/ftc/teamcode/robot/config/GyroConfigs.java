@@ -44,6 +44,9 @@ public class GyroConfigs extends Configs {
             case ARM:
                 config = new GyroConfig(GYRO_TYPES.REV, "imu");
                 break;
+            case MECANUM:
+                config = new GyroConfig(GYRO_TYPES.REV, "imu");
+                break;
         }
         return config;
     }

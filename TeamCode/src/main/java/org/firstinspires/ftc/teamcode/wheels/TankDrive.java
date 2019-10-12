@@ -103,7 +103,7 @@ public class TankDrive implements Wheels {
         }
         for (WheelMotor motor : config.motors) {
             if (side == null || motor.side == side) {
-                motor.motor.setPower(limit(speed));
+                motor.motor.setPower(limit(speed * speedScale));
             }
         }
     }

@@ -35,6 +35,8 @@ public class PIDMotorConfigs extends MotorConfigs {
 
             case ARM:
                 break;
+            case MECANUM:
+                break;
         }
         return config;
     }
