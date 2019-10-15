@@ -21,6 +21,11 @@ public class Arm implements CommonTask {
     private static final double LOWER_LENGTH = 5.5;
     private static final double UPPER_LENGTH = 5.75;
 
+    // Circle for arm limit checking
+    private static final double CENTER_X = 4.77;
+    private static final double CENTER_Y = 2.16;
+    private static final double RADIUS = 7.22;
+
     // current arm position
     private float armX = 0.0f;
     private float armY = 0.0f;
@@ -114,12 +119,17 @@ public class Arm implements CommonTask {
             LOWER_LENGTH >= UPPER_LENGTH + hypot)
             return false;
 
-        // TODO: check if (x, y) is a valid physical position for the arm
-        // simple rectangular limits
-        if (x <= 0 || x >= 10.5 ||
-            y <= -4 || y >= 8) {
+        // Big circle limit (magic internet math)
+        if(((x-CENTER_X)*(x-CENTER_X) + (y-CENTER_Y)*(y-CENTER_Y) > RADIUS*RADIUS))
             return false;
-        }
+
+        // Check the little slice of the circle
+        if (y < ((-5.0/3.0) * x + 6.0))
+            return false;
+
+        // keep x positive
+        if (x <= 0)
+            return false;
 
         return true;
     }

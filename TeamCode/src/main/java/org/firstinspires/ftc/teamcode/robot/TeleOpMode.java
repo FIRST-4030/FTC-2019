@@ -16,7 +16,7 @@ public class TeleOpMode extends OpMode {
 
     // arm consts
     private static final float ARM_MOVEMENT_SCALE = 1.0f/16;
-    private static final float ARM_ROTATION_SCALE = 1.0f/256;
+    private static final float ARM_ROTATION_SCALE = 1.0f/512;
     private static final float CLAW_CLOSED = 0.25f;
     private static final float CLAW_OPEN = 0.5f;
     private static final float ARM_HOME_X = 5.0f;
@@ -103,7 +103,7 @@ public class TeleOpMode extends OpMode {
     }
 
     private void driveBase() {
-        if (!buttons.get("oh god oh fuck")) {
+        if (buttons.get("oh god oh fuck")) {
             robot.wheels.setSpeedScale((float) Math.sin(time * 10));
             telemetry.addLine("uh oh");
         } else if (buttons.get("SLOW_MODE")) {
@@ -121,7 +121,7 @@ public class TeleOpMode extends OpMode {
         // arm movement
         float dx = (float) rateX.update(-gamepad2.left_stick_y * ARM_MOVEMENT_SCALE);
         float dy = (float) rateY.update(-gamepad2.right_stick_y * ARM_MOVEMENT_SCALE);
-        armRotation += (float) rateR.update(gamepad2.left_stick_x * ARM_ROTATION_SCALE);
+        armRotation -= (float) rateR.update(Math.pow(gamepad2.left_stick_x, 2) * ARM_ROTATION_SCALE);
 
         // cap values
         armRotation = Math.min(1.0f, armRotation);
