@@ -121,7 +121,7 @@ public class TeleOpMode extends OpMode {
         // arm movement
         float dx = (float) rateX.update(-gamepad2.left_stick_y * ARM_MOVEMENT_SCALE);
         float dy = (float) rateY.update(-gamepad2.right_stick_y * ARM_MOVEMENT_SCALE);
-        armRotation -= (float) rateR.update(Math.pow(gamepad2.left_stick_x, 2) * ARM_ROTATION_SCALE);
+        armRotation -= (float) rateR.update(Math.pow(gamepad2.left_stick_x, 3) * ARM_ROTATION_SCALE);
 
         // cap values
         armRotation = Math.min(1.0f, armRotation);
