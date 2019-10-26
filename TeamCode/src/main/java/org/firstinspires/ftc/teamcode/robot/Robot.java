@@ -77,7 +77,7 @@ public class Robot {
         }
 
         // Other
-        vuforia = new VuforiaFTC(map, telemetry, bot, "Webcam");
+        vuforia = new VuforiaFTC(map, telemetry, bot);
 
         this.common = new Common(this);
     }

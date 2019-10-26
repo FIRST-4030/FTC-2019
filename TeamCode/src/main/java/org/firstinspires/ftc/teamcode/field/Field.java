@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.field;
 
 public class Field {
     public static final float MM_PER_INCH = 25.4f;
-    private static final int FIELD_WIDTH_INCHES = (12 * 12) - 3; // Fields are 11' 9"
+    private static final int FIELD_WIDTH_INCHES = (12 * 12) - 3; // Fields are 11' 9" inside the walls
     public static final int FIELD_WIDTH = (int) (FIELD_WIDTH_INCHES * MM_PER_INCH);
     public static final int HALF_FIELD_WIDTH = (int) ((FIELD_WIDTH_INCHES * MM_PER_INCH) / 2.0f);
     public static final float TARGET_HEIGHT = (6) * MM_PER_INCH;

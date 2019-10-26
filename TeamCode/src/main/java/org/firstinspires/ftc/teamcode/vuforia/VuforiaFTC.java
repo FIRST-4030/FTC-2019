@@ -35,16 +35,12 @@ package org.firstinspires.ftc.teamcode.vuforia;
 import android.graphics.Bitmap;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.RobotLog;
 import com.qualcomm.robotcore.util.ThreadPool;
 import com.vuforia.Frame;
-import com.vuforia.HINT;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -55,7 +51,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.config.BOT;
-import org.firstinspires.ftc.teamcode.field.VuforiaConfigs;
+import org.firstinspires.ftc.teamcode.robot.config.VuforiaFTCConfig;
 import org.firstinspires.ftc.teamcode.utils.Heading;
 
 import java.util.ArrayList;
@@ -65,13 +61,6 @@ import java.util.List;
 public class VuforiaFTC {
     private static final boolean DEBUG = true;
 
-    /**
-     * TODO: If you downloaded this file from another team you need to get your own Vuforia key
-     * See https://library.vuforia.com/articles/Solution/How-To-Create-an-App-License for instructions
-     */
-    // Team-specific Vuforia key
-    private static final String VUFORIA_KEY = "AV9rwXT/////AAABma+8TAirNkVYosxu9qv0Uz051FVEjKU+nkH+MaIvGuHMijrdgoZYBZwCW2aG8P3+eZecZZPq9UKsZiTHAg73h09NT48122Ui10c8DsPe0Tx5Af6VaBklR898w8xCTdOUa7AlBEOa4KfWX6zDngegeZT5hBLfJKE1tiDmYhJezVDlITIh7SHBv0xBvoQuXhemlzL/OmjrnLuWoKVVW0kLanImI7yra+L8eOCLLp1BBD/Iaq2irZCdvgziZPnMLeTUEO9XUbuW8txq9i51anvlwY8yvMXLvIenNC1xg4KFhMmFzZ8xnpx4nWZZtyRBxaDU99aXm7cQgkVP0VD/eBIDYN4AcB0/Pa7V376m6tRJ5UZh";
-
     // Short names for external constants
     private static final AxesReference AXES_REFERENCE = AxesReference.EXTRINSIC;
     private static final AngleUnit ANGLE_UNIT = AngleUnit.DEGREES;
@@ -79,15 +68,11 @@ public class VuforiaFTC {
     // Cartesian heading constants
     private static final int HEADING_OFFSET = -Heading.FULL_CIRCLE / 4;
 
-    // Tracking config
-    private final VuforiaTarget[] CONFIG_TARGETS;
-    private final VuforiaTarget CONFIG_PHONE;
-
     // Dynamic things we need to remember
-    private boolean ready = false;
+    private boolean running = false;
     private boolean capture = false;
     private final Telemetry telemetry;
-    private final VuforiaLocalizer.Parameters parameters;
+    private VuforiaFTCConfig config;
     public VuforiaLocalizer vuforia = null;
     private int trackingTimeout = 100;
     private VuforiaTrackables targetsRaw;
@@ -102,103 +87,37 @@ public class VuforiaFTC {
     private final HashMap<String, Integer> targetIndex = new HashMap<>();
     private ImageFTC image = null;
 
-    private VuforiaFTC(HardwareMap map, Telemetry telemetry, BOT bot, String name, VuforiaLocalizer.CameraDirection direction) {
-        CONFIG_TARGETS = VuforiaConfigs.Field();
-        CONFIG_PHONE = VuforiaConfigs.Bot(bot);
-        this.telemetry = telemetry;
-
-        // Optionally display the live monitor
-        if (DEBUG) {
-            int cameraMonitorViewId = map.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", map.appContext.getPackageName());
-            parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        } else {
-            parameters = new VuforiaLocalizer.Parameters();
-        }
-
-        // License
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-
-        // Choose a camera
-        if (map != null && name != null) {
-            try {
-                parameters.cameraName = map.get(WebcamName.class, name);
-            } catch (Exception e) {
-                telemetry.log().add(this.getClass().getSimpleName() + "No such camera: " + name + ". Using default camera.");
-                parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-            }
-        } else if (direction != null) {
-            parameters.cameraDirection = direction;
-        } else {
-            parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        }
-        ready = true;
-    }
-
-    public VuforiaFTC(HardwareMap map, Telemetry telemetry, BOT bot, String name) {
-        this(map, telemetry, bot, name, null);
-    }
-
-    public VuforiaFTC(HardwareMap map, Telemetry telemetry, BOT bot, VuforiaLocalizer.CameraDirection direction) {
-        this(map, telemetry, bot, null, direction);
-    }
-
     public VuforiaFTC(HardwareMap map, Telemetry telemetry, BOT bot) {
-        this(map, telemetry, bot, null, null);
-    }
-
-    public void start() {
-        if (isRunning() || !ready) {
-            return;
-        }
-
-        // Init Vuforia
-        try {
-            vuforia = ClassFactory.getInstance().createVuforia(parameters);
-        } catch (Exception e) {
-            telemetry.log().add("Unable to start Vuforia: " + e.toString());
-            stop();
-            ready = false;
-            return;
-        }
-
-        /*
-         * Pre-processed target images from the Vuforia target manager:
-         * https://developer.vuforia.com/target-manager.
-         */
-        targetsRaw = vuforia.loadTrackablesFromAsset(VuforiaConfigs.AssetName);
-        com.vuforia.Vuforia.setHint(HINT.HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, VuforiaConfigs.TargetCount);
+        this.telemetry = telemetry;
+        config = new VuforiaFTCConfig();
+        targetsRaw = config.init(map);
         targets.addAll(targetsRaw);
 
-        // Configure target names, locations, rotations and hashmaps
-        for (int i = 0; i < VuforiaConfigs.TargetCount; i++) {
-            initTrackable(targetsRaw, i);
+        // Per-target hashmaps, by name
+        for (VuforiaTrackable t : targets) {
+            targetIndex.put(t.getName(), targets.indexOf(t));
+            targetVisible.put(t.getName(), false);
+            targetAngle.put(t.getName(), 0);
         }
 
-        // Location and rotation of the image sensor plane relative to the robot
-        OpenGLMatrix phoneLocation = positionRotationMatrix(CONFIG_PHONE.location, CONFIG_PHONE.rotation, CONFIG_PHONE.axesOrder);
-        for (VuforiaTrackable trackable : targets) {
-            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(phoneLocation, parameters.cameraDirection);
-        }
-
-        // Start tracking
-        targetsRaw.activate();
+        // Expose the vuforia object for external use
+        vuforia = config.vuforia;
     }
 
-    // This doesn't completely disable tracking, but it's a start
+    // Start tracking
+    public void start() {
+        targetsRaw.activate();
+        running = true;
+    }
+
+    // This doesn't completely disable Vuforia, but it stops most tracking tasks
     public void stop() {
-        if (!isRunning()) {
-            return;
-        }
-        if (targetsRaw != null) {
-            targetsRaw.deactivate();
-            targetsRaw = null;
-        }
-        targets.clear();
-        vuforia = null;
+        targetsRaw.deactivate();
+        running = false;
     }
 
     public boolean isRunning() {
-        return (vuforia != null);
+        return running;
     }
 
     public void track() {
@@ -386,7 +305,7 @@ public class VuforiaFTC {
     }
 
     /**
-     * @param index CONFIG_TARGETS index.
+     * @param index Targets index.
      * @return Live VuforiaTrackable for the indexed target.
      */
     public VuforiaTrackable getTrackable(int index) {
@@ -394,7 +313,7 @@ public class VuforiaFTC {
     }
 
     /**
-     * @param name CONFIG_TARGETS name.
+     * @param name Targets name.
      * @return Live VuforiaTrackable for the named target.
      */
     public VuforiaTrackable getTrackable(String name) {
@@ -483,14 +402,15 @@ public class VuforiaFTC {
     }
 
     /**
-     * @param index CONFIG_TARGETS index. Syntax helper for {@link #bearing(float, float)} bearing(int, int)}
+     * @param index Target index. Syntax helper for {@link #bearing(float, float)} bearing(int, int)}
      * @return Bearing from the current location to {x,y} with respect to field north
      * <p>
      * This value may be out-of-date. Most uses should include an evaluation of validity based on
      * {@link #isStale() isStale()} or {@link #getTimestamp() getTimestamp()}
      */
     public int bearing(int index) {
-        return bearing(CONFIG_TARGETS[index].location[0], CONFIG_TARGETS[index].location[1]);
+        float[] target = targetsRaw.get(index).getFtcFieldFromTarget().getData();
+        return bearing(target[0], target[1]);
     }
 
     /**
@@ -506,17 +426,6 @@ public class VuforiaFTC {
     }
 
     /**
-     * @param index CONFIG_TARGETS index. Syntax helper for {@link #distance(float, float)} distance(int, int)}
-     * @return Distance from the current location to {x,y} with respect to field units (millimeters)
-     * <p>
-     * This value may be out-of-date. Most uses should include an evaluation of validity based on
-     * {@link #isStale() isStale()} or {@link #getTimestamp() getTimestamp()}
-     */
-    public int distance(int index) {
-        return distance(CONFIG_TARGETS[index].location[0], CONFIG_TARGETS[index].location[1]);
-    }
-
-    /**
      * @param dest X,Y array of destination in the field plane
      * @return Distance from the current location to {x,y} with respect to field units (millimeters)
      * <p>
@@ -525,6 +434,18 @@ public class VuforiaFTC {
      */
     public int distance(int[] dest) {
         return distance(dest[0], dest[1]);
+    }
+
+    /**
+     * @param index Target index. Syntax helper for {@link #distance(float, float)} distance(int, int)}
+     * @return Distance from the current location to {x,y} with respect to field units (millimeters)
+     * <p>
+     * This value may be out-of-date. Most uses should include an evaluation of validity based on
+     * {@link #isStale() isStale()} or {@link #getTimestamp() getTimestamp()}
+     */
+    public int distance(int index) {
+        float[] target = targetsRaw.get(index).getFtcFieldFromTarget().getData();
+        return distance(target[0], target[1]);
     }
 
     public void setTrackingTimeout(int timeout) {
@@ -550,35 +471,6 @@ public class VuforiaFTC {
     // Distance from x1,y1 to x2,y2 in field location units (millimeters)
     private int distance(int[] src, int[] dest) {
         return (int) Math.hypot((dest[1] - src[1]), (dest[0] - src[0]));
-    }
-
-    // It's like a macro, but for Java
-    private OpenGLMatrix positionRotationMatrix(float[] position, float[] rotation, AxesOrder order) {
-        return OpenGLMatrix
-                .translation(position[0], position[1], position[2])
-                .multiplied(Orientation.getRotationMatrix(
-                        AXES_REFERENCE, order, ANGLE_UNIT,
-                        rotation[0], rotation[1], rotation[2]));
-    }
-
-    // More Java blasphemy
-    private void initTrackable(VuforiaTrackables trackables, int index) {
-        if (index >= trackables.size() || index < 0) {
-            RobotLog.a("Invalid VuforiaFTC trackable index: %d", index);
-            return;
-        }
-
-        // Per-target hashmaps, by name
-        targetIndex.put(CONFIG_TARGETS[index].name, index);
-        targetVisible.put(CONFIG_TARGETS[index].name, false);
-        targetAngle.put(CONFIG_TARGETS[index].name, 0);
-
-        // Location model parameters
-        VuforiaTrackable trackable = trackables.get(index);
-        trackable.setName(CONFIG_TARGETS[index].name);
-        OpenGLMatrix location = positionRotationMatrix(CONFIG_TARGETS[index].location,
-                CONFIG_TARGETS[index].rotation, CONFIG_TARGETS[index].axesOrder);
-        trackable.setLocation(location);
     }
 
     private int cartesianToCardinal(int heading) {
