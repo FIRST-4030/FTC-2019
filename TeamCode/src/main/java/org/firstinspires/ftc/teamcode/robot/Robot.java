@@ -63,6 +63,8 @@ public class Robot {
         // gyro
         gyro = gyros.init();
 
+        // Only the ARM bot has these servos
+        // TODO: Make the config system easier to use for this case
         if (bot == ARM) {
             // servos
             rotation = servos.init(SERVOS.ROTATION);
