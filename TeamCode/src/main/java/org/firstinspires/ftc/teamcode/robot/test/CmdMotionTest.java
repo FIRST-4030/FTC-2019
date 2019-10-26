@@ -6,12 +6,15 @@ import org.firstinspires.ftc.teamcode.buttons.BUTTON_TYPE;
 import org.firstinspires.ftc.teamcode.buttons.ButtonHandler;
 import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
 import org.firstinspires.ftc.teamcode.config.BOT;
+import org.firstinspires.ftc.teamcode.driveto.AutoDriver;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.utils.RateLimit;
 import org.firstinspires.ftc.teamcode.vuforia.ImageFTC;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Cmd Motion", group = "Test")
 public class CmdMotionTest extends OpMode {
+
+    private static final boolean AUTO = false;
 
     // Devices and subsystems
     private Robot robot = null;
@@ -46,7 +49,7 @@ public class CmdMotionTest extends OpMode {
     private int lastDistance = 0;
     private String lastImage = "<None>";
     private String lastTarget = "<None>";
-
+    private AutoDriver driver = null;
 
     @Override
     public void init() {
@@ -77,6 +80,9 @@ public class CmdMotionTest extends OpMode {
         if (robot.bot == BOT.ARM) {
             robot.rotation.setPosition(0.5f);
         }
+
+        // Disable teleop motion controls if we're in AUTO mode
+        robot.wheels.setTeleop(!AUTO);
 
         // Wait for the game to begin
         telemetry.addData(">", "Ready for game start");
@@ -160,6 +166,26 @@ public class CmdMotionTest extends OpMode {
             telemetry.addLine("normal mode");
         }
 
+        if (AUTO) {
+            // Handle AutoDriver driving
+            // This does the actual driving
+            driver = robot.common.drive.loop(driver);
+
+            /*
+             * Cut the loop short when we are AutoDriver'ing
+             */
+            if (driver.isRunning(time)) {
+                return;
+            }
+
+            // TODO: Test and calibrate these
+            // Last year's auto:
+            // https://github.com/FIRST-4030/FTC-2018/blob/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/robot/auto/RuckusAutoTheBetterOne.java
+            //robot.common.drive.distance(200);
+            //robot.common.drive.degrees(90);
+        }
+
+        // This is automatically skipped when setTelop() is false
         robot.wheels.loop(gamepad1);
     }
 
