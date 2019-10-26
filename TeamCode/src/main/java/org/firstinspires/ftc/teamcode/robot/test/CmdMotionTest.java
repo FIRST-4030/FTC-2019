@@ -1,11 +1,14 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.robot.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.buttons.BUTTON_TYPE;
 import org.firstinspires.ftc.teamcode.buttons.ButtonHandler;
 import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
+import org.firstinspires.ftc.teamcode.config.BOT;
+import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.utils.RateLimit;
+import org.firstinspires.ftc.teamcode.vuforia.ImageFTC;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Cmd Motion", group = "Test")
 public class CmdMotionTest extends OpMode {
@@ -23,6 +26,7 @@ public class CmdMotionTest extends OpMode {
     private static final float ARM_HOME_Y = 5.0f;
 
     // Arm rate limiting
+    // TODO: Move this into the Arm class -- we want config at runtime but all this can be hidden
     private RateLimit rateX;
     private RateLimit rateY;
     private RateLimit rateR;
@@ -35,10 +39,14 @@ public class CmdMotionTest extends OpMode {
     private static final float SLOW_MODE = 0.25f;
 
     // variables
-    private int lastCountTime = 0;
-    private int loops = 0;
-    private int lastLoops = 0;
     private float armRotation = 0.5f;
+
+    // Dynamic things we need to remember
+    private int lastBearing = 0;
+    private int lastDistance = 0;
+    private String lastImage = "<None>";
+    private String lastTarget = "<None>";
+
 
     @Override
     public void init() {
@@ -52,6 +60,7 @@ public class CmdMotionTest extends OpMode {
 
         // Register buttons
         buttons = new ButtonHandler(robot);
+        buttons.register("CAPTURE", gamepad1, PAD_BUTTON.a);
         buttons.register("CLAW", gamepad2, PAD_BUTTON.left_bumper, BUTTON_TYPE.TOGGLE);
         buttons.register("HOME_ARM", gamepad2, PAD_BUTTON.y, BUTTON_TYPE.SINGLE_PRESS);
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.left_bumper, BUTTON_TYPE.TOGGLE);
@@ -64,7 +73,10 @@ public class CmdMotionTest extends OpMode {
 
         // Move arm to home
         robot.common.arm.setPosition(ARM_HOME_X, ARM_HOME_Y);
-        robot.rotation.setPosition(0.5f);
+        // TODO: This should be in the arm class and protected there
+        if (robot.bot == BOT.ARM) {
+            robot.rotation.setPosition(0.5f);
+        }
 
         // Wait for the game to begin
         telemetry.addData(">", "Ready for game start");
@@ -77,28 +89,62 @@ public class CmdMotionTest extends OpMode {
 
     @Override
     public void start() {
+        telemetry.clearAll();
+
+        // Start Vuforia tracking and enable capture
+        robot.vuforia.start();
+        robot.vuforia.enableCapture();
     }
 
     @Override
     public void loop() {
-        // update loop counter
-        loops++;
-
-        // Update buttons
+        // Update buttons, location, and target info
         buttons.update();
+        robot.vuforia.track();
+
+        // Capture
+        if (buttons.get("CAPTURE")) {
+            robot.vuforia.capture();
+        }
+        if (robot.vuforia.getImage() != null) {
+            ImageFTC image = robot.vuforia.getImage();
+            lastImage = "(" + image.getWidth() + "," + image.getHeight() + ") " + image.getTimestamp();
+            String filename = "vuforia-" + image.getTimestamp() + ".png";
+            if (!image.savePNG(filename)) {
+                telemetry.log().add(this.getClass().getSimpleName() + ": Unable to save file: " + filename);
+            }
+            robot.vuforia.clearImage();
+        }
+
+        // Collect data about the first visible target
+        String target = null;
+        int bearing = 0;
+        int distance = 0;
+        if (!robot.vuforia.isStale()) {
+            for (String t : robot.vuforia.getVisible().keySet()) {
+                if (t == null || t.isEmpty()) {
+                    continue;
+                }
+                if (robot.vuforia.getVisible(t)) {
+                    target = t;
+                    int index = robot.vuforia.getTargetIndex(target);
+                    bearing = robot.vuforia.bearing(index);
+                    distance = robot.vuforia.distance(index);
+                    break;
+                }
+            }
+            lastTarget = target;
+            lastBearing = bearing;
+            lastDistance = distance;
+        }
 
         // Move the robot
         driveBase();
         auxiliary();
 
-        // hurts
-        if (time >= lastCountTime + 1) {
-            lastCountTime = (int) time;
-            lastLoops = loops;
-            loops = 0;
-        }
-        telemetry.addData("Loop Frequency", lastLoops);
-
+        robot.vuforia.display(telemetry);
+        telemetry.addData("Image", lastImage);
+        telemetry.addData("Target (" + lastTarget + ")", lastDistance + "mm @ " + lastBearing + "°");
         telemetry.update();
     }
 
@@ -127,7 +173,10 @@ public class CmdMotionTest extends OpMode {
         armRotation = Math.min(1.0f, armRotation);
         armRotation = Math.max(0.0f, armRotation);
 
-        robot.rotation.setPosition(armRotation);
+        // TODO: This should be in the arm class and protected there
+        if (robot.bot == BOT.ARM) {
+            robot.rotation.setPosition(armRotation);
+        }
         robot.common.arm.setPositionDelta(dx, dy);
 
         if (buttons.get("HOME_ARM")) {
@@ -139,13 +188,17 @@ public class CmdMotionTest extends OpMode {
         telemetry.addData("arm rotation", armRotation);
 
         // claw
-        if (buttons.get("CLAW")) {
-            robot.claw.setPosition(CLAW_CLOSED);
-        } else {
-            robot.claw.setPosition(CLAW_OPEN);
+        // TODO: This should be in the Claw class and protected there
+        if (robot.bot == BOT.ARM) {
+            if (buttons.get("CLAW")) {
+                robot.claw.setPosition(CLAW_CLOSED);
+            } else {
+                robot.claw.setPosition(CLAW_OPEN);
+            }
         }
     }
 
     public void stop() {
+        robot.vuforia.stop();
     }
 }
