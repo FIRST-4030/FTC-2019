@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.common;
 
 import org.firstinspires.ftc.teamcode.actuators.ServoFTC;
+import org.firstinspires.ftc.teamcode.config.BOT;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
 public class Arm implements CommonTask {
@@ -45,6 +46,10 @@ public class Arm implements CommonTask {
      * @param y y position in inches (elevation)
      */
     public void setPosition(float x, float y) {
+        if (robot.bot != BOT.ARM) {
+            return;
+        }
+
         // check position// check new arm position
         if (!checkPosition(x, y)) {
             return;

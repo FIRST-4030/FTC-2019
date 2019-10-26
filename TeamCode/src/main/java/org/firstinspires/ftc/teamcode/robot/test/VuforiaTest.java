@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.test;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
@@ -8,8 +10,8 @@ import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.vuforia.ImageFTC;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Vuforia Test", group = "Test")
 @Disabled
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Vuforia Test", group = "Test")
 public class VuforiaTest extends OpMode {
 
     // Devices and subsystems
@@ -41,6 +43,7 @@ public class VuforiaTest extends OpMode {
 
         // Start Vuforia tracking and enable capture
         robot.vuforia.start();
+        telemetry.addData("Vuforia Running", robot.vuforia.isRunning());
         robot.vuforia.enableCapture();
     }
 
@@ -71,9 +74,12 @@ public class VuforiaTest extends OpMode {
         int distance = 0;
         if (!robot.vuforia.isStale()) {
             for (String t : robot.vuforia.getVisible().keySet()) {
+                if (t == null || t.isEmpty()) {
+                    continue;
+                }
                 if (robot.vuforia.getVisible(t)) {
                     target = t;
-                    int index = robot.vuforia.getTargetIndex(t);
+                    int index = robot.vuforia.getTargetIndex(target);
                     bearing = robot.vuforia.bearing(index);
                     distance = robot.vuforia.distance(index);
                     break;
