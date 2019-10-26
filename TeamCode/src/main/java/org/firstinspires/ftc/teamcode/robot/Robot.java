@@ -30,10 +30,6 @@ public class Robot {
     public final Telemetry telemetry;
 
     public final Wheels wheels;
-    public final ServoFTC rotation;
-    public final ServoFTC claw;
-    public final ServoFTC orange;
-    public final ServoFTC black;
     public final Gyro gyro;
 
     public Robot(HardwareMap map, Telemetry telemetry) {
@@ -62,19 +58,6 @@ public class Robot {
 
         // gyro
         gyro = gyros.init();
-
-        if (bot == ARM) {
-            // servos
-            rotation = servos.init(SERVOS.ROTATION);
-            claw = servos.init(SERVOS.CLAW);
-            orange = servos.init(SERVOS.ORANGE);
-            black = servos.init(SERVOS.BLACK);
-        } else {
-            rotation = null;
-            claw = null;
-            orange = null;
-            black = null;
-        }
 
         // Other
         vuforia = new VuforiaFTC(map, telemetry, bot, "Webcam");

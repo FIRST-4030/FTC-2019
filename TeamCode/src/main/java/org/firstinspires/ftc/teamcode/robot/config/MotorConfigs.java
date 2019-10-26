@@ -32,10 +32,6 @@ public class MotorConfigs extends Configs {
 
             // IMPORTANT: If you need to change the *names* of the motors here, change them in PIDMotorConfigs too
 
-            case ARM:
-                break;
-            case MECANUM:
-                break;
         }
         return config;
     }
