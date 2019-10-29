@@ -39,7 +39,7 @@ public class Motor implements Available {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
         if (!enabled) {
-            this.stop();
+            stop();
         }
     }
 
@@ -51,10 +51,17 @@ public class Motor implements Available {
         if (!isAvailable()) {
             return;
         }
+        if (isPositionPID()) {
+            telemetry.log().add(this.getClass().getSimpleName() + ": Position PID active");
+            return;
+        }
         motor.setPower(power);
     }
 
     public void stop() {
+        if (isPositionPID()) {
+            setMode(null);
+        }
         setPower(0);
     }
 
@@ -66,10 +73,38 @@ public class Motor implements Available {
     }
 
     public void resetEncoder() {
+        stop();
         DcMotor.RunMode mode = getMode();
         setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setMode(mode);
         offset = -getEncoder();
+    }
+
+    public boolean isPositionPID() {
+        return (motor.getMode() == DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public void setTarget(int target) {
+        if (!isAvailable()) {
+            return;
+        }
+        if (!isPositionPID()) {
+            stop();
+            telemetry.log().add(this.getClass().getSimpleName() + ": Position PID not active");
+            return;
+        }
+        motor.setTargetPosition(target - offset);
+    }
+
+    public int getTarget() {
+        if (!isAvailable()) {
+            return 0;
+        }
+        if (!isPositionPID()) {
+            telemetry.log().add(this.getClass().getSimpleName() + ": Position PID not active");
+            return 0;
+        }
+        return motor.getTargetPosition() + offset;
     }
 
     public void setMode(DcMotor.RunMode mode) {
@@ -80,6 +115,9 @@ public class Motor implements Available {
             mode = DEFAULT_MODE;
         }
         motor.setMode(mode);
+        if (isPositionPID()) {
+            motor.setTargetPosition(motor.getCurrentPosition());
+        }
     }
 
     public DcMotor.RunMode getMode() {
