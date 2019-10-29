@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.actuators.Motor;
-import org.firstinspires.ftc.teamcode.actuators.PIDMotor;
 import org.firstinspires.ftc.teamcode.actuators.ServoFTC;
 import org.firstinspires.ftc.teamcode.config.BOT;
 import org.firstinspires.ftc.teamcode.robot.common.Common;
@@ -15,11 +14,8 @@ import org.firstinspires.ftc.teamcode.robot.config.ServoConfigs;
 import org.firstinspires.ftc.teamcode.robot.config.SwitchConfigs;
 import org.firstinspires.ftc.teamcode.robot.config.WheelsConfigs;
 import org.firstinspires.ftc.teamcode.sensors.gyro.Gyro;
-import org.firstinspires.ftc.teamcode.sensors.switches.Switch;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 import org.firstinspires.ftc.teamcode.wheels.Wheels;
-
-import static org.firstinspires.ftc.teamcode.config.BOT.ARM;
 
 public class Robot {
     public static Robot robot = null;
@@ -30,6 +26,14 @@ public class Robot {
     public final Telemetry telemetry;
 
     public final Wheels wheels;
+    public final Motor collectorLeft;
+    public final Motor collectorRight;
+    public final Motor lift;
+    public final ServoFTC hookLeft;
+    public final ServoFTC hookRight;
+    public final ServoFTC claw;
+    public final ServoFTC flipper;
+    public final ServoFTC capstone;
     public final Gyro gyro;
 
     public Robot(HardwareMap map, Telemetry telemetry) {
@@ -55,6 +59,18 @@ public class Robot {
         // wheels
         this.wheels = wheels.init();
         this.wheels.stop();
+
+        // motors
+        collectorLeft = motors.init(MOTORS.COLLECTOR_LEFT);
+        collectorRight = motors.init(MOTORS.COLLECTOR_RIGHT);
+        lift = motors.init(MOTORS.LIFT);
+
+        // servos
+        hookLeft = servos.init(SERVOS.LEFT_HOOK);
+        hookRight = servos.init(SERVOS.RIGHT_HOOK);
+        claw = servos.init(SERVOS.CLAW);
+        flipper = servos.init(SERVOS.FLIPPER);
+        capstone = servos.init(SERVOS.CAPSTONE);
 
         // gyro
         gyro = gyros.init();

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.config;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.actuators.ServoFTC;
@@ -28,6 +29,24 @@ public class ServoConfigs extends Configs {
 
         ServoConfig config = null;
         switch (bot) {
+            case PRODUCTION:
+                switch(servo) {
+                    case CLAW:
+                        config = new ServoConfig("Claw");
+                        break;
+                    case FLIPPER:
+                        config = new ServoConfig("Flipper");
+                        break;
+                    case CAPSTONE:
+                        config = new ServoConfig("Capstone");
+                        break;
+                    case LEFT_HOOK:
+                        config = new ServoConfig("Left Hook");
+                        break;
+                    case RIGHT_HOOK:
+                        config = new ServoConfig("Right Hook");
+                }
+                break;
         }
 
         return config;

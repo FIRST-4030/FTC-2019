@@ -41,6 +41,9 @@ public class GyroConfigs extends Configs {
 
         GyroConfig config = null;
         switch (bot) {
+            case PRODUCTION:
+                config = new GyroConfig(GYRO_TYPES.REV, "imu");
+                break;
         }
         return config;
     }
