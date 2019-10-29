@@ -19,16 +19,12 @@ public class TeleOpMode extends OpMode {
     private int lastLoops = 0;
     private int lastCountTime = 0;
 
-    private static ColorSensor c;
-
     // Consts
     private static final float SLOW_MODE = 0.25f;
     private static final float NORMAL_SPEED = 1.0f;
 
     @Override
     public void init() {
-        c = hardwareMap.get(ColorSensor.class, "color");
-
         // Placate drivers
         telemetry.addData(">", "NOT READY");
         telemetry.update();

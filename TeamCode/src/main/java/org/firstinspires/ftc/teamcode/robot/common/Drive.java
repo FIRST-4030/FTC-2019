@@ -17,12 +17,9 @@ public class Drive implements CommonTask, DriveToListener {
 
     // PID Turns
     private static final float TURN_TOLERANCE = 1.5f; // Permitted heading error in degrees
-    private static final float TURN_TOLERANCE_CODE = 3f; // Permitted heading error in degrees
     private static final float TURN_DIFF_TOLERANCE = 0.001f; // Permitted error change rate
     private static final int TURN_TIMEOUT = (int) (DriveTo.TIMEOUT_DEFAULT * 1.5);
     public static final PIDParams TURN_PARAMS = new PIDParams(0.011f, 0.003f, 0.0f,
-            null, true, true);
-    public static final PIDParams TURN_PARAMS_CODE = new PIDParams(0.011f, 0.064f, 0.0f,
             null, true, true);
 
     // PID Drive
@@ -116,13 +113,6 @@ public class Drive implements CommonTask, DriveToListener {
         PIDParams params = TURN_PARAMS;
         float tolerance = TURN_TOLERANCE;
         float diffTolerance = TURN_DIFF_TOLERANCE;
-        switch (robot.bot) {
-            case ARM:
-                params = TURN_PARAMS;
-                tolerance = TURN_TOLERANCE;
-                diffTolerance = TURN_DIFF_TOLERANCE;
-                break;
-        }
         param.rotationPid(heading, params, tolerance, diffTolerance);
         param.timeout = TURN_TIMEOUT; // Allow extra time for turns to settle (we expect them to overshoot)
         return new DriveTo(new DriveToParams[]{param});

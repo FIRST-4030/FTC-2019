@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
 import org.firstinspires.ftc.teamcode.config.BOT;
 import org.firstinspires.ftc.teamcode.driveto.AutoDriver;
 import org.firstinspires.ftc.teamcode.robot.Robot;
-import org.firstinspires.ftc.teamcode.utils.RateLimit;
 import org.firstinspires.ftc.teamcode.vuforia.ImageFTC;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Cmd Motion", group = "Test")
@@ -20,29 +19,12 @@ public class CmdMotionTest extends OpMode {
     private Robot robot = null;
     private ButtonHandler buttons;
 
-    // arm consts
-    private static final float ARM_MOVEMENT_SCALE = 1.0f / 16;
-    private static final float ARM_ROTATION_SCALE = 1.0f / 512;
-    private static final float CLAW_CLOSED = 0.25f;
-    private static final float CLAW_OPEN = 0.5f;
-    private static final float ARM_HOME_X = 5.0f;
-    private static final float ARM_HOME_Y = 5.0f;
-
-    // Arm rate limiting
-    // TODO: Move this into the Arm class -- we want config at runtime but all this can be hidden
-    private RateLimit rateX;
-    private RateLimit rateY;
-    private RateLimit rateR;
-    private static final double MAX_ARM_RATE_X = 1.0d; // In inches per second
-    private static final double MAX_ARM_RATE_Y = 1.0d; // In inches per second
-    private static final double MAX_ARM_RATE_R = 0.25d; // In servo position per second
-
     // other consts
     private static final float NORMAL_SPEED = 0.75f;
     private static final float SLOW_MODE = 0.25f;
-
-    // variables
-    private float armRotation = 0.5f;
+    // TODO: This should be in a Claw class
+    private static final float CLAW_CLOSED = 0.25f;
+    private static final float CLAW_OPEN = 0.5f;
 
     // Dynamic things we need to remember
     private int lastBearing = 0;
@@ -65,21 +47,8 @@ public class CmdMotionTest extends OpMode {
         buttons = new ButtonHandler(robot);
         buttons.register("CAPTURE", gamepad1, PAD_BUTTON.a);
         buttons.register("CLAW", gamepad2, PAD_BUTTON.left_bumper, BUTTON_TYPE.TOGGLE);
-        buttons.register("HOME_ARM", gamepad2, PAD_BUTTON.y, BUTTON_TYPE.SINGLE_PRESS);
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.left_bumper, BUTTON_TYPE.TOGGLE);
         buttons.register("oh god oh fuck", gamepad1, PAD_BUTTON.back, BUTTON_TYPE.TOGGLE);
-
-        // Init rate limits for the arm
-        rateX = new RateLimit(this, MAX_ARM_RATE_X);
-        rateY = new RateLimit(this, MAX_ARM_RATE_Y);
-        rateR = new RateLimit(this, MAX_ARM_RATE_R);
-
-        // Move arm to home
-        robot.common.arm.setPosition(ARM_HOME_X, ARM_HOME_Y);
-        // TODO: This should be in the arm class and protected there
-        if (robot.bot == BOT.ARM) {
-            robot.rotation.setPosition(0.5f);
-        }
 
         // Disable teleop motion controls if we're in AUTO mode
         robot.wheels.setTeleop(!AUTO);
@@ -190,32 +159,9 @@ public class CmdMotionTest extends OpMode {
     }
 
     private void auxiliary() {
-        // arm movement
-        float dx = (float) rateX.update(-gamepad2.left_stick_y * ARM_MOVEMENT_SCALE);
-        float dy = (float) rateY.update(-gamepad2.right_stick_y * ARM_MOVEMENT_SCALE);
-        armRotation -= (float) rateR.update(Math.pow(gamepad2.left_stick_x, 2) * ARM_ROTATION_SCALE);
-
-        // cap values
-        armRotation = Math.min(1.0f, armRotation);
-        armRotation = Math.max(0.0f, armRotation);
-
-        // TODO: This should be in the arm class and protected there
-        if (robot.bot == BOT.ARM) {
-            robot.rotation.setPosition(armRotation);
-        }
-        robot.common.arm.setPositionDelta(dx, dy);
-
-        if (buttons.get("HOME_ARM")) {
-            robot.common.arm.setPosition(ARM_HOME_X, ARM_HOME_Y);
-        }
-
-        telemetry.addData("arm x", robot.common.arm.getArmX());
-        telemetry.addData("arm y", robot.common.arm.getArmY());
-        telemetry.addData("arm rotation", armRotation);
-
         // claw
-        // TODO: This should be in the Claw class and protected there
-        if (robot.bot == BOT.ARM) {
+        // TODO: This should be in a Claw class and protected there
+        if (robot.bot == BOT.PRODUCTION) {
             if (buttons.get("CLAW")) {
                 robot.claw.setPosition(CLAW_CLOSED);
             } else {
