@@ -12,7 +12,6 @@ public class Common {
 
     // Runtime
     private final Robot robot;
-    public final Arm arm;
     public final Drive drive;
 
     public Common(Robot r) {
@@ -21,7 +20,6 @@ public class Common {
         }
         this.robot = r;
 
-        this.arm = new Arm(robot);
         this.drive = new Drive(robot);
     }
 }

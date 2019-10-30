@@ -49,19 +49,7 @@ public class WheelsConfigs extends Configs {
         WheelMotor[] motors;
         WheelsConfig config = null;
         switch (bot) {
-            case ARM:
-                motors = new WheelMotor[4];
-                motors[0] = new WheelMotor("L1", MOTOR_SIDE.LEFT, MOTOR_END.FRONT, true,
-                        M_TICKS_PER_MM);
-                motors[1] = new WheelMotor("L2", MOTOR_SIDE.LEFT, MOTOR_END.BACK, true,
-                        M_TICKS_PER_MM);
-                motors[2] = new WheelMotor("R1", MOTOR_SIDE.RIGHT, MOTOR_END.BACK, false,
-                        M_TICKS_PER_MM);
-                motors[3] = new WheelMotor("R2", MOTOR_SIDE.RIGHT, MOTOR_END.FRONT, false,
-                        M_TICKS_PER_MM);
-                config = new WheelsConfig(DRIVE_TYPE.TANK, motors, true, DcMotor.RunMode.RUN_USING_ENCODER);
-                break;
-            case MECANUM:
+            case PRODUCTION:
                 motors = new WheelMotor[4];
                 motors[0] = new WheelMotor("FL", MOTOR_SIDE.LEFT, MOTOR_END.FRONT, false,
                         M_TICKS_PER_MM);

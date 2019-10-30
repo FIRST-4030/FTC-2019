@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 public enum SERVOS {
-    ROTATION, CLAW, ORANGE, BLACK
+    LEFT_HOOK, RIGHT_HOOK, CLAW, FLIPPER, CAPSTONE
 }

@@ -31,10 +31,17 @@ public class MotorConfigs extends Configs {
         switch (bot) {
 
             // IMPORTANT: If you need to change the *names* of the motors here, change them in PIDMotorConfigs too
-
-            case ARM:
-                break;
-            case MECANUM:
+            case PRODUCTION:
+                switch(motor) {
+                    case LIFT:
+                        config = new MotorConfig("Lift", false, true);
+                        break;
+                    case COLLECTOR_LEFT:
+                        config = new MotorConfig("Left Collector", false, true);
+                        break;
+                    case COLLECTOR_RIGHT:
+                        config = new MotorConfig("Right Collector", true, true);
+                }
                 break;
         }
         return config;
