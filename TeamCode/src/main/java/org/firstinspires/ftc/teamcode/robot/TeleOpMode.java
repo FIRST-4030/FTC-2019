@@ -35,6 +35,14 @@ public class TeleOpMode extends OpMode {
 
         // Register buttons
         buttons = new ButtonHandler(robot);
+        buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
+        buttons.register("COLLECT", gamepad1, PAD_BUTTON.a, BUTTON_TYPE.TOGGLE);
+
+        buttons.register("LIFT_UP", gamepad2, PAD_BUTTON.right_bumper);
+        buttons.register("LIFT_DOWN", gamepad2, PAD_BUTTON.left_bumper);
+        buttons.register("GRAB", gamepad2, PAD_BUTTON.x, BUTTON_TYPE.TOGGLE);
+        buttons.register("CAPSTONE", gamepad2, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
+
 
         // Wait for the game to begin
         telemetry.addData(">", "Ready for game start");
@@ -85,7 +93,50 @@ public class TeleOpMode extends OpMode {
     }
 
     private void auxiliary() {
-        // nothing yet ;)
+        //LIFT
+        if(buttons.get("LIFT_UP")) {
+            robot.lift.setPower(0.5f);
+        } else {
+            robot.lift.setPower(0.0f);
+        }
+        if(buttons.get("LIFT_DOWN")) {
+            robot.lift.setPower(-0.5f);
+        } else {
+            robot.lift.setPower(0.0f);
+        }
+
+        //Collector
+        if(buttons.get("COLLECT")){
+            robot.collectorLeft.setPower(0.5f);
+            robot.collectorRight.setPower(0.5f);
+        } else {
+            robot.collectorLeft.setPower(0.0f);
+            robot.collectorRight.setPower(0.0f);
+        }
+
+        //Confusing trig stuff for swingy arm
+        float armX = gamepad2.left_stick_x;
+        float armY = -gamepad2.left_stick_y;
+        float theta = (float)Math.atan(armY/armX)/360;
+        if(armX<0.0f){
+            robot.flipper.setPosition(theta + 18.0f/36.0f);
+        } else{
+            robot.flipper.setPosition(theta);
+        }
+
+        //CLAW
+        if(buttons.get("GRAB")){
+            robot.claw.setPosition(0.0f);
+        } else {
+            robot.claw.setPosition(0.5f);
+        }
+
+        //Capstone thingy
+        if(buttons.get("CAPSTONE")){
+            robot.capstone.setPosition(0.5f);
+        } else {
+            robot.capstone.setPosition(0.0f);
+        }
     }
 
     public void stop() {

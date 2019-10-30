@@ -34,7 +34,7 @@ public class MotorConfigs extends Configs {
             case PRODUCTION:
                 switch(motor) {
                     case LIFT:
-                        config = new MotorConfig("Lift", false, true);
+                        config = new MotorConfig("Lift", true, true);
                         break;
                     case COLLECTOR_LEFT:
                         config = new MotorConfig("Left Collector", false, true);
