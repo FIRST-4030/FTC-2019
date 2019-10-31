@@ -23,6 +23,17 @@ public class TeleOpMode extends OpMode {
     private static final float SLOW_MODE = 0.25f;
     private static final float NORMAL_SPEED = 1.0f;
 
+    private static final float CLAW_CLOSED = 0.5f;
+    private static final float CLAW_OPEN = 0.75f;
+
+    private static final float CAP_UP = 0.0f;
+    private static final float CAP_DOWN = 0.75f;
+
+    private static final float SWING_OFFSET = 0.05f;
+
+    private static final float COLLECT_SPEED = 0.8f;
+
+
     @Override
     public void init() {
         // Placate drivers
@@ -94,48 +105,39 @@ public class TeleOpMode extends OpMode {
 
     private void auxiliary() {
         //LIFT
-        if(buttons.get("LIFT_UP")) {
-            robot.lift.setPower(0.5f);
-        } else {
-            robot.lift.setPower(0.0f);
-        }
-        if(buttons.get("LIFT_DOWN")) {
-            robot.lift.setPower(-0.5f);
-        } else {
-            robot.lift.setPower(0.0f);
-        }
+        robot.lift.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
 
         //Collector
-        if(buttons.get("COLLECT")){
-            robot.collectorLeft.setPower(0.5f);
-            robot.collectorRight.setPower(0.5f);
+        if (buttons.get("COLLECT")) {
+            robot.collectorLeft.setPower(COLLECT_SPEED);
+            robot.collectorRight.setPower(COLLECT_SPEED);
         } else {
             robot.collectorLeft.setPower(0.0f);
             robot.collectorRight.setPower(0.0f);
         }
 
-        //Confusing trig stuff for swingy arm
+        /*Confusing trig stuff for swingy arm
         float armX = gamepad2.left_stick_x;
         float armY = -gamepad2.left_stick_y;
-        float theta = (float)Math.atan(armY/armX)/360;
-        if(armX<0.0f){
-            robot.flipper.setPosition(theta + 18.0f/36.0f);
-        } else{
-            robot.flipper.setPosition(theta);
+        float theta = (float) (Math.atan2(armY, armX)/Math.PI);
+        if (armX >= 0.0f || (armX == 0.0f && armY == 0.0f)) {
+            robot.flipper.setPosition(theta + SWING_OFFSET);
         }
+        telemetry.addData("Swing Theta", theta);*/
+        robot.flipper.setPosition(((-gamepad2.left_stick_x) + 1.0f) / 2 + SWING_OFFSET);
 
         //CLAW
-        if(buttons.get("GRAB")){
-            robot.claw.setPosition(0.0f);
+        if (buttons.get("GRAB")) {
+            robot.claw.setPosition(CLAW_OPEN);
         } else {
-            robot.claw.setPosition(0.5f);
+            robot.claw.setPosition(CLAW_CLOSED);
         }
 
         //Capstone thingy
-        if(buttons.get("CAPSTONE")){
-            robot.capstone.setPosition(0.5f);
+        if (buttons.get("CAPSTONE")) {
+            robot.capstone.setPosition(CAP_DOWN);
         } else {
-            robot.capstone.setPosition(0.0f);
+            robot.capstone.setPosition(CAP_UP);
         }
     }
 
