@@ -33,10 +33,6 @@ public class TeleOpMode extends OpMode {
 
     private static final float COLLECT_SPEED = 0.8f;
 
-    private static final float FOUNDATION_HOOKED = 0.5f;
-    private static final float FOUNDATION_OPEN = 0.3f;
-    private static final float HOOK_OFFSET = -0.3f;
-
 
     @Override
     public void init() {
@@ -109,10 +105,10 @@ public class TeleOpMode extends OpMode {
     }
 
     private void auxiliary() {
-        //LIFT
+        // LIFT
         robot.lift.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
 
-        //Collector
+        // Collector
         if (buttons.get("COLLECT")) {
             robot.collectorLeft.setPower(COLLECT_SPEED);
             robot.collectorRight.setPower(COLLECT_SPEED);
@@ -121,37 +117,30 @@ public class TeleOpMode extends OpMode {
             robot.collectorRight.setPower(0.0f);
         }
 
-        /*Confusing trig stuff for swingy arm
-        float armX = gamepad2.left_stick_x;
-        float armY = -gamepad2.left_stick_y;
-        float theta = (float) (Math.atan2(armY, armX)/Math.PI);
-        if (armX >= 0.0f || (armX == 0.0f && armY == 0.0f)) {
-            robot.flipper.setPosition(theta + SWING_OFFSET);
-        }
-        telemetry.addData("Swing Theta", theta);*/
+        // Flipper
         robot.flipper.setPosition(((-gamepad2.left_stick_x) + 1.0f) / 2 + SWING_OFFSET);
 
-        //CLAW
+        // CLAW
         if (buttons.get("GRAB")) {
             robot.claw.setPosition(CLAW_OPEN);
         } else {
             robot.claw.setPosition(CLAW_CLOSED);
         }
 
-        //Capstone thingy
+        // Capstone thingy
         if (buttons.get("CAPSTONE")) {
             robot.capstone.setPosition(CAP_DOWN);
         } else {
             robot.capstone.setPosition(CAP_UP);
         }
 
-        //Foundation hooks
+        // Foundation hooks
         if (buttons.get("FOUNDATION_HOOK")) {
-            robot.hookLeft.setPosition(FOUNDATION_HOOKED - HOOK_OFFSET);
-            robot.hookRight.setPosition(FOUNDATION_HOOKED);
+            robot.hookLeft.min();
+            robot.hookRight.min();
         } else {
-            robot.hookLeft.setPosition(FOUNDATION_OPEN);
-            robot.hookRight.setPosition(Math.abs(FOUNDATION_OPEN - 1 + HOOK_OFFSET));
+            robot.hookLeft.max();
+            robot.hookRight.max();
         }
     }
 
