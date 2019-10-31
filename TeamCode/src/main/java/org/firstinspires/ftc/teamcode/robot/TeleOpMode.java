@@ -33,6 +33,10 @@ public class TeleOpMode extends OpMode {
 
     private static final float COLLECT_SPEED = 0.8f;
 
+    private static final float FOUNDATION_HOOKED = 0.5f;
+    private static final float FOUNDATION_OPEN = 0.3f;
+    private static final float HOOK_OFFSET = -0.3f;
+
 
     @Override
     public void init() {
@@ -48,6 +52,7 @@ public class TeleOpMode extends OpMode {
         buttons = new ButtonHandler(robot);
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
         buttons.register("COLLECT", gamepad1, PAD_BUTTON.a, BUTTON_TYPE.TOGGLE);
+        buttons.register("FOUNDATION_HOOK", gamepad1, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
 
         buttons.register("LIFT_UP", gamepad2, PAD_BUTTON.right_bumper);
         buttons.register("LIFT_DOWN", gamepad2, PAD_BUTTON.left_bumper);
@@ -138,6 +143,15 @@ public class TeleOpMode extends OpMode {
             robot.capstone.setPosition(CAP_DOWN);
         } else {
             robot.capstone.setPosition(CAP_UP);
+        }
+
+        //Foundation hooks
+        if (buttons.get("FOUNDATION_HOOK")) {
+            robot.hookLeft.setPosition(FOUNDATION_HOOKED - HOOK_OFFSET);
+            robot.hookRight.setPosition(FOUNDATION_HOOKED);
+        } else {
+            robot.hookLeft.setPosition(FOUNDATION_OPEN);
+            robot.hookRight.setPosition(Math.abs(FOUNDATION_OPEN - 1 + HOOK_OFFSET));
         }
     }
 
