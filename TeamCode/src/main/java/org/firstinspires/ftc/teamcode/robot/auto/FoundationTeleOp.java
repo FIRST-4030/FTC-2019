@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.robot.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.buttons.BUTTON_TYPE;
 import org.firstinspires.ftc.teamcode.buttons.ButtonHandler;
 import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
 import org.firstinspires.ftc.teamcode.driveto.AutoDriver;
+import org.firstinspires.ftc.teamcode.field.Field;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.common.Common;
 import org.firstinspires.ftc.teamcode.utils.OrderedEnum;
@@ -25,6 +27,7 @@ public class FoundationTeleOp extends OpMode {
     // Runtime vars
     private AUTO_STATE state = AUTO_STATE.INIT;
     private boolean gameReady = false;
+    private Field.AllianceColor color = Field.AllianceColor.BLUE;
 
     @Override
     public void init() {
@@ -41,10 +44,11 @@ public class FoundationTeleOp extends OpMode {
         vuforia.enableCapture();
 
         // TODO: figure out what to do with this
-        initTfod();
+        //initTfod();
 
         // Register buttons
         buttons = new ButtonHandler(robot);
+        buttons.register("SELECT_SIDE", gamepad1, PAD_BUTTON.a, BUTTON_TYPE.TOGGLE);
     }
 
     @Override
@@ -80,7 +84,7 @@ public class FoundationTeleOp extends OpMode {
         robot.vuforia.start();
         robot.vuforia.enableCapture();
 
-        tfod.activate();
+        //tfod.activate();
     }
 
     @Override
@@ -94,7 +98,6 @@ public class FoundationTeleOp extends OpMode {
         telemetry.addData("Gyro", Round.truncate(robot.gyro.getHeading()));
         telemetry.addData("Encoder", robot.wheels.getEncoder());
 
-        // TODO: wouldn't it make more sense for AutoDriver commands to be blocking?
         // Cut the loop short while AutoDriver is driving
         // This prevents the state machine from running before the preceding state is complete
         if (driver.isRunning(time)) return;
@@ -104,7 +107,67 @@ public class FoundationTeleOp extends OpMode {
          * enum has descriptions of each state
          */
         switch (state) {
-            // TODO: lmao
+            case INIT:
+                driver.done = false;
+                advance();
+                break;
+
+            case LEAVE_WALL:
+                driver.drive = common.drive.distance(InchesToMM(6.0f));
+                advance();
+                break;
+
+            case TURN_1:
+                if (color == Field.AllianceColor.BLUE) {
+                    driver.drive = common.drive.degrees(-45.0f);
+                } else {
+                    driver.drive = common.drive.degrees(45.0f);
+                }
+                advance();
+                break;
+
+            case DRIVE_TO_FOUNDATION:
+                driver.drive = common.drive.distance(InchesToMM(25.5f));
+                advance();
+                break;
+
+            case TURN_2:
+                if (color == Field.AllianceColor.BLUE) {
+                    driver.drive = common.drive.degrees(45.0f);
+                } else {
+                    driver.drive = common.drive.degrees(-45.0f);
+                }
+                advance();
+                break;
+
+            case REACH:
+                driver.drive = common.drive.distance(InchesToMM(6.0f));
+                advance();
+                break;
+
+            case GRAB:
+                robot.hookRight.min();
+                robot.hookLeft.min();
+                advance();
+                break;
+
+            case BACK_UP:
+                driver.drive = common.drive.distance(InchesToMM(30.0f));
+                advance();
+                break;
+
+            case PARK_UNDER_SKYBRIDGE:
+                if (color == Field.AllianceColor.BLUE) {
+                    driver.drive = common.drive.translate(InchesToMM(54.0f));
+                } else {
+                    driver.drive = common.drive.translate(InchesToMM(-54.0f));
+                }
+                advance();
+                break;
+
+            case DONE:
+                driver.done = true;
+                break;
         }
 
         // Update telemetry
@@ -115,7 +178,25 @@ public class FoundationTeleOp extends OpMode {
      * Defines the order of the auto routine steps
      */
     enum AUTO_STATE implements OrderedEnum {
-        INIT;
+        INIT, // Initialization
+
+        LEAVE_WALL, // Drive away from the wall
+
+        TURN_1, // Turn towards foundation
+
+        DRIVE_TO_FOUNDATION, // Drive towards foundation
+
+        TURN_2, // Align with foundation
+
+        REACH, // Drive forward to be next to foundation
+
+        GRAB, // Grab foundation
+
+        BACK_UP, // Back up to wall
+
+        PARK_UNDER_SKYBRIDGE, // Strafe under skybridge
+
+        DONE;
 
         public AUTO_STATE prev() { return OrderedEnumHelper.prev(this); }
         public AUTO_STATE next() { return OrderedEnumHelper.next(this); }
@@ -127,7 +208,12 @@ public class FoundationTeleOp extends OpMode {
     private void userSettings(){
         buttons.update();
 
-        // no settings yet
+        if (buttons.get("SELECT_SIDE")) {
+            color = Field.AllianceColor.RED;
+        } else {
+            color = Field.AllianceColor.BLUE;
+        }
+        telemetry.addData("Team Color", color.toString());
     }
 
     /**
@@ -143,5 +229,23 @@ public class FoundationTeleOp extends OpMode {
         }
 
         return autoDriver;
+    }
+
+    /**
+     * does what it says on the tin
+     *
+     * @param inches inches
+     * @return those inches but in millimeters
+     */
+    private int InchesToMM(float inches) {
+        return (int) (inches * 25.4);
+    }
+
+    /**
+     * just does state = state.next()
+     * i don't want to keep writing that out
+     */
+    private void advance() {
+        state = state.next();
     }
 }
