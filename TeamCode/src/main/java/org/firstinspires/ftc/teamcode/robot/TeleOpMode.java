@@ -30,6 +30,7 @@ public class TeleOpMode extends OpMode {
     private static final float CAP_DOWN = 0.75f;
 
     private static final float SWING_OFFSET = 0.05f;
+    private static final float ARM_SPEED = 0.005f;
 
     private static final float COLLECT_SPEED = 0.8f;
 
@@ -118,7 +119,7 @@ public class TeleOpMode extends OpMode {
         }
 
         // Flipper
-        robot.flipper.setPosition(((-gamepad2.left_stick_x) + 1.0f) / 2 + SWING_OFFSET);
+        robot.flipper.setPosition(robot.flipper.getPosition() + ARM_SPEED * gamepad2.left_stick_x);
 
         // CLAW
         if (buttons.get("GRAB")) {
