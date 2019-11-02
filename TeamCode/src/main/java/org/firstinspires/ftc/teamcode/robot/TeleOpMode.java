@@ -56,8 +56,8 @@ public class TeleOpMode extends OpMode {
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
         buttons.register("COLLECT", gamepad1, PAD_BUTTON.a, BUTTON_TYPE.TOGGLE);
         buttons.register("FOUNDATION_HOOK", gamepad1, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
-        buttons.register("ARM_RESET", gamepad1, PAD_BUTTON.x, BUTTON_TYPE.SINGLE_PRESS);
 
+        buttons.register("ARM_RESET", gamepad2, PAD_BUTTON.b, BUTTON_TYPE.SINGLE_PRESS);
         buttons.register("LIFT_UP", gamepad2, PAD_BUTTON.right_bumper);
         buttons.register("LIFT_DOWN", gamepad2, PAD_BUTTON.left_bumper);
         buttons.register("GRAB", gamepad2, PAD_BUTTON.x, BUTTON_TYPE.TOGGLE);
