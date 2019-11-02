@@ -141,9 +141,9 @@ public class FoundationAuto extends OpMode {
 
             case PARK_UNDER_SKYBRIDGE:
                 if (color == Field.AllianceColor.BLUE) {
-                    driver.drive = common.drive.translate(InchesToMM(54.0f));
+                    driver.drive = common.drive.translate(InchesToMM(44.0f));
                 } else {
-                    driver.drive = common.drive.translate(InchesToMM(-54.0f));
+                    driver.drive = common.drive.translate(InchesToMM(-44.0f));
                 }
                 advance();
                 break;
