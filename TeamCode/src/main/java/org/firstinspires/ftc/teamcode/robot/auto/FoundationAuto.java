@@ -135,14 +135,15 @@ public class FoundationAuto extends OpMode {
             case LET_GO:
                 robot.hookRight.max();
                 robot.hookLeft.max();
+                driver.drive = common.drive.sleep(1000);
                 advance();
                 break;
 
             case PARK_UNDER_SKYBRIDGE:
                 if (color == Field.AllianceColor.BLUE) {
-                    driver.drive = common.drive.translate(InchesToMM(54.0f));
+                    driver.drive = common.drive.translate(InchesToMM(44.0f));
                 } else {
-                    driver.drive = common.drive.translate(InchesToMM(-54.0f));
+                    driver.drive = common.drive.translate(InchesToMM(-44.0f));
                 }
                 advance();
                 break;
@@ -170,9 +171,9 @@ public class FoundationAuto extends OpMode {
 
         LET_GO, // Put the foundation down robot, it's not yours
 
-        PARK_UNDER_SKYBRIDGE,
+        PARK_UNDER_SKYBRIDGE, // Strafe under skybridge
 
-        DONE; // Strafe under skybridge
+        DONE;
 
         public AUTO_STATE prev() { return OrderedEnumHelper.prev(this); }
         public AUTO_STATE next() { return OrderedEnumHelper.next(this); }
