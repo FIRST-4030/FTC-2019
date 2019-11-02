@@ -48,7 +48,7 @@ public class FoundationAuto extends OpMode {
 
         // Register buttons
         buttons = new ButtonHandler(robot);
-        buttons.register("SELECT_SIDE", gamepad1, PAD_BUTTON.a, BUTTON_TYPE.TOGGLE);
+        buttons.register("SELECT_SIDE", gamepad1, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
     }
 
     @Override
@@ -138,12 +138,22 @@ public class FoundationAuto extends OpMode {
                 advance();
                 break;
 
+            case brUH:
+                //driver.drive = common.drive.time(100, 0.25f);
+                advance();
+                break;
+
             case PARK_UNDER_SKYBRIDGE:
                 if (color == Field.AllianceColor.BLUE) {
-                    driver.drive = common.drive.translate(InchesToMM(44.0f));
+                    driver.drive = common.drive.translate(InchesToMM(38.0f));
                 } else {
-                    driver.drive = common.drive.translate(InchesToMM(-44.0f));
+                    driver.drive = common.drive.translate(InchesToMM(-38.0f));
                 }
+                advance();
+                break;
+
+            case broPLS:
+                driver.drive = common.drive.distance(InchesToMM(-6f));
                 advance();
                 break;
 
@@ -170,7 +180,11 @@ public class FoundationAuto extends OpMode {
 
         LET_GO, // Put the foundation down robot, it's not yours
 
+        brUH,
+
         PARK_UNDER_SKYBRIDGE, // Strafe under skybridge
+
+        broPLS,
 
         DONE;
 

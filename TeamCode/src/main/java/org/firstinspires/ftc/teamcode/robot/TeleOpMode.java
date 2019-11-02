@@ -26,7 +26,7 @@ public class TeleOpMode extends OpMode {
     private float armPos = ARM_HOME;
 
     // Consts
-    private static final float SLOW_MODE = 0.5f;
+    private static final float SLOW_MODE = 0.7f;
     private static final float NORMAL_SPEED = 1.0f;
 
     private static final float CLAW_CLOSED = 0.5f;
@@ -55,7 +55,7 @@ public class TeleOpMode extends OpMode {
         // Register buttons
         buttons = new ButtonHandler(robot);
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
-        //buttons.register("COLLECT", gamepad1, PAD_BUTTON.a, BUTTON_TYPE.TOGGLE);
+        buttons.register("COLLECT", gamepad1, PAD_BUTTON.a, BUTTON_TYPE.TOGGLE);
         buttons.register("FOUNDATION_HOOK", gamepad1, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
         buttons.register("CAPSTONE1", gamepad1, PAD_BUTTON.x);
 
@@ -66,6 +66,8 @@ public class TeleOpMode extends OpMode {
         buttons.register("CAPSTONE2", gamepad2, PAD_BUTTON.y);
         buttons.getListener("ARM_TO_0").setLongHeldTimeout(0);
         buttons.getListener("ARM_TO_1").setLongHeldTimeout(0);
+        buttons.getListener("ARM_TO_0").setAutokeyTimeout(0);
+        buttons.getListener("ARM_TO_1").setAutokeyTimeout(0);
 
         // Speed limiting
         armRate = new RateLimit(this, ARM_MAX_SPEED);
@@ -114,6 +116,15 @@ public class TeleOpMode extends OpMode {
     private void auxiliary() {
         // LIFT
         robot.lift.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+
+        // Collector
+        if (buttons.get("COLLECT")) {
+            robot.collectorLeft.setPower(-COLLECT_SPEED);
+            robot.collectorRight.setPower(-COLLECT_SPEED);
+        } else {
+            robot.collectorLeft.setPower(0.0f);
+            robot.collectorRight.setPower(0.0f);
+        }
 
         // Flipper
         if (buttons.autokey("ARM_TO_0")) {

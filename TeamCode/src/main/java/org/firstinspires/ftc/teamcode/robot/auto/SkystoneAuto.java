@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.vuforia.INIT_ERRORCODE;
 
 import org.firstinspires.ftc.teamcode.buttons.BUTTON_TYPE;
 import org.firstinspires.ftc.teamcode.buttons.ButtonHandler;
@@ -14,7 +15,7 @@ import org.firstinspires.ftc.teamcode.utils.OrderedEnumHelper;
 import org.firstinspires.ftc.teamcode.utils.Round;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Grab Foundation")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Skystone Side")
 public class SkystoneAuto extends OpMode {
 
     // Devices and subsystems
@@ -49,7 +50,7 @@ public class SkystoneAuto extends OpMode {
 
         // Register buttons
         buttons = new ButtonHandler(robot);
-        buttons.register("SELECT_SIDE", gamepad1, PAD_BUTTON.a, BUTTON_TYPE.TOGGLE);
+        buttons.register("SELECT_SIDE", gamepad1, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
         buttons.register("AWAY_FROM_WALL", gamepad1, PAD_BUTTON.dpad_up);
         buttons.register("TOWARDS_WALL", gamepad1, PAD_BUTTON.dpad_down);
     }
@@ -117,18 +118,14 @@ public class SkystoneAuto extends OpMode {
                 advance();
                 break;
 
-            case LEAVE_WALL:
-                if (stopByWall) {
-                    driver.drive = common.drive.distance(InchesToMM(12.0f));
-                }
+            case YUH:
+                driver.drive = common.drive.distance(InchesToMM(24.0f));
                 advance();
                 break;
 
-            case STRAFE:
-                if (color == Field.AllianceColor.BLUE) {
-                    driver.drive = common.drive.translate(InchesToMM(-48.0f));
-                } else {
-                    driver.drive = common.drive.translate(InchesToMM(48.0f));
+            case YEH:
+                if (!stopByWall) {
+                    driver.drive = common.drive.translate(InchesToMM(-24.0f));
                 }
                 advance();
                 break;
@@ -148,9 +145,9 @@ public class SkystoneAuto extends OpMode {
     enum AUTO_STATE implements OrderedEnum {
         INIT, // Initialization
 
-        LEAVE_WALL, // ... leave the wall
+        YUH, // go under bgie
 
-        STRAFE, // bruh
+        YEH, // strafe if need
 
         DONE;
 
