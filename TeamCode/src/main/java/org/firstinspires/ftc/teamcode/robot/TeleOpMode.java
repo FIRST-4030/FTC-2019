@@ -35,7 +35,6 @@ public class TeleOpMode extends OpMode {
     private static final float CAP_UP = 0.0f;
     private static final float CAP_DOWN = 0.75f;
 
-    private static final float SWING_OFFSET = 0.05f;
     private static final float ARM_SPEED = 0.02f;
     private static final float ARM_HOME = 0.1f;
     private static final double ARM_MAX_SPEED = 0.25;
@@ -56,7 +55,7 @@ public class TeleOpMode extends OpMode {
         // Register buttons
         buttons = new ButtonHandler(robot);
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
-        buttons.register("COLLECT", gamepad1, PAD_BUTTON.a, BUTTON_TYPE.TOGGLE);
+        //buttons.register("COLLECT", gamepad1, PAD_BUTTON.a, BUTTON_TYPE.TOGGLE);
         buttons.register("FOUNDATION_HOOK", gamepad1, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
         buttons.register("CAPSTONE1", gamepad1, PAD_BUTTON.x);
 
@@ -109,29 +108,12 @@ public class TeleOpMode extends OpMode {
     }
 
     private void driveBase() {
-        if (buttons.get("SLOW_MODE")) {
-            robot.wheels.setSpeedScale(SLOW_MODE);
-            telemetry.addLine("slow mode");
-        } else {
-            robot.wheels.setSpeedScale(NORMAL_SPEED);
-            telemetry.addLine("normal mode");
-        }
-
         robot.wheels.loop(gamepad1);
     }
 
     private void auxiliary() {
         // LIFT
         robot.lift.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
-
-        // Collector
-        if (buttons.get("COLLECT")) {
-            robot.collectorLeft.setPower(COLLECT_SPEED);
-            robot.collectorRight.setPower(COLLECT_SPEED);
-        } else {
-            robot.collectorLeft.setPower(0.0f);
-            robot.collectorRight.setPower(0.0f);
-        }
 
         // Flipper
         if (buttons.autokey("ARM_TO_0")) {
@@ -167,13 +149,19 @@ public class TeleOpMode extends OpMode {
             robot.capstone.setPosition(CAP_UP);
         }
 
-        // Foundation hooks
+        // Foundation hooks + Slowmode
         if (buttons.get("FOUNDATION_HOOK")) {
             robot.hookLeft.min();
             robot.hookRight.min();
+
+            robot.wheels.setSpeedScale(SLOW_MODE);
+            telemetry.addLine("slow mode");
         } else {
             robot.hookLeft.max();
             robot.hookRight.max();
+
+            robot.wheels.setSpeedScale(NORMAL_SPEED);
+            telemetry.addLine("normal mode");
         }
     }
 
