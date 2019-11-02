@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.utils.Round;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Grab Foundation")
-public class FoundationTeleOp extends OpMode {
+public class FoundationAuto extends OpMode {
 
     // Devices and subsystems
     private Robot robot = null;
@@ -40,8 +40,8 @@ public class FoundationTeleOp extends OpMode {
         vuforia = robot.vuforia;
 
         // Init the camera system
-        vuforia.start();
-        vuforia.enableCapture();
+        //vuforia.start();
+        //vuforia.enableCapture();
 
         // TODO: figure out what to do with this
         //initTfod();
@@ -81,8 +81,8 @@ public class FoundationTeleOp extends OpMode {
         // Set state to starting state
         state = AUTO_STATE.values()[0];
 
-        robot.vuforia.start();
-        robot.vuforia.enableCapture();
+        //robot.vuforia.start();
+        //robot.vuforia.enableCapture();
 
         //tfod.activate();
     }
@@ -113,6 +113,7 @@ public class FoundationTeleOp extends OpMode {
                 break;
 
             case LEAVE_WALL:
+            case REACH:
                 driver.drive = common.drive.distance(InchesToMM(6.0f));
                 advance();
                 break;
@@ -137,11 +138,6 @@ public class FoundationTeleOp extends OpMode {
                 } else {
                     driver.drive = common.drive.degrees(-45.0f);
                 }
-                advance();
-                break;
-
-            case REACH:
-                driver.drive = common.drive.distance(InchesToMM(6.0f));
                 advance();
                 break;
 
