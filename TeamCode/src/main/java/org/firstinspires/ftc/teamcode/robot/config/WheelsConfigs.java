@@ -55,9 +55,9 @@ public class WheelsConfigs extends Configs {
                         M_TICKS_PER_MM);
                 motors[1] = new WheelMotor("BL", MOTOR_SIDE.LEFT, MOTOR_END.BACK, false,
                         M_TICKS_PER_MM);
-                motors[2] = new WheelMotor("FR", MOTOR_SIDE.RIGHT, MOTOR_END.BACK, true,
+                motors[2] = new WheelMotor("FR", MOTOR_SIDE.RIGHT, MOTOR_END.FRONT, true,
                         M_TICKS_PER_MM);
-                motors[3] = new WheelMotor("BR", MOTOR_SIDE.RIGHT, MOTOR_END.FRONT, true,
+                motors[3] = new WheelMotor("BR", MOTOR_SIDE.RIGHT, MOTOR_END.BACK, true,
                         M_TICKS_PER_MM);
                 config = new WheelsConfig(DRIVE_TYPE.MECANUM, motors, true, DcMotor.RunMode.RUN_USING_ENCODER);
         }
