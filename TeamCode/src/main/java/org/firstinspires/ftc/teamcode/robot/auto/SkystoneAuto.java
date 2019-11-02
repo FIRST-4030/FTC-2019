@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.utils.Round;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Grab Foundation")
-public class FoundationAuto extends OpMode {
+public class SkystoneAuto extends OpMode {
 
     // Devices and subsystems
     private Robot robot = null;
@@ -28,6 +28,7 @@ public class FoundationAuto extends OpMode {
     private AUTO_STATE state;
     private boolean gameReady = false;
     private Field.AllianceColor color = Field.AllianceColor.BLUE;
+    private boolean stopByWall = true;
 
     @Override
     public void init() {
@@ -49,6 +50,8 @@ public class FoundationAuto extends OpMode {
         // Register buttons
         buttons = new ButtonHandler(robot);
         buttons.register("SELECT_SIDE", gamepad1, PAD_BUTTON.a, BUTTON_TYPE.TOGGLE);
+        buttons.register("AWAY_FROM_WALL", gamepad1, PAD_BUTTON.dpad_up);
+        buttons.register("TOWARDS_WALL", gamepad1, PAD_BUTTON.dpad_down);
     }
 
     @Override
@@ -114,35 +117,18 @@ public class FoundationAuto extends OpMode {
                 advance();
                 break;
 
-            case DRIVE_TO_FOUNDATION:
-                driver.drive = common.drive.distance(InchesToMM(31.0f));
+            case LEAVE_WALL:
+                if (stopByWall) {
+                    driver.drive = common.drive.distance(InchesToMM(12.0f));
+                }
                 advance();
                 break;
 
-            case GRAB:
-                robot.hookRight.min();
-                robot.hookLeft.min();
-                driver.drive = common.drive.sleep(1000);
-                advance();
-                break;
-
-            case BACK_UP:
-                driver.drive = common.drive.distance(InchesToMM(-41.0f)); // FTC: Escape From the Field
-                advance();
-                break;
-
-            case LET_GO:
-                robot.hookRight.max();
-                robot.hookLeft.max();
-                driver.drive = common.drive.sleep(1000);
-                advance();
-                break;
-
-            case PARK_UNDER_SKYBRIDGE:
+            case STRAFE:
                 if (color == Field.AllianceColor.BLUE) {
-                    driver.drive = common.drive.translate(InchesToMM(44.0f));
+                    driver.drive = common.drive.translate(InchesToMM(-48.0f));
                 } else {
-                    driver.drive = common.drive.translate(InchesToMM(-44.0f));
+                    driver.drive = common.drive.translate(InchesToMM(48.0f));
                 }
                 advance();
                 break;
@@ -162,15 +148,9 @@ public class FoundationAuto extends OpMode {
     enum AUTO_STATE implements OrderedEnum {
         INIT, // Initialization
 
-        DRIVE_TO_FOUNDATION, // Drive towards foundation
+        LEAVE_WALL, // ... leave the wall
 
-        GRAB, // Grab foundation
-
-        BACK_UP, // Back up to wall
-
-        LET_GO, // Put the foundation down robot, it's not yours
-
-        PARK_UNDER_SKYBRIDGE, // Strafe under skybridge
+        STRAFE, // bruh
 
         DONE;
 
@@ -190,6 +170,10 @@ public class FoundationAuto extends OpMode {
             color = Field.AllianceColor.BLUE;
         }
         telemetry.addData("Team Color", color.toString());
+
+        if (buttons.get("AWAY_FROM_WALL")) stopByWall = false;
+        if (buttons.get("TOWARDS_WALL")) stopByWall = true;
+        telemetry.addData("Stop by wall?", stopByWall);
     }
 
     /**
