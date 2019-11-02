@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.vuforia.ImageFTC;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Cmd Motion", group = "Test")
 public class CmdMotionTest extends OpMode {
 
-    private static final boolean AUTO = false;
+    private static final boolean AUTO = true;
 
     // Devices and subsystems
     private Robot robot = null;
@@ -32,6 +32,8 @@ public class CmdMotionTest extends OpMode {
     private String lastImage = "<None>";
     private String lastTarget = "<None>";
     private AutoDriver driver = null;
+
+    private boolean droved = false;
 
     @Override
     public void init() {
@@ -124,6 +126,7 @@ public class CmdMotionTest extends OpMode {
     }
 
     private void driveBase() {
+        /*
         if (buttons.get("oh god oh fuck")) {
             robot.wheels.setSpeedScale((float) Math.sin(time * 10));
             telemetry.addLine("uh oh");
@@ -133,24 +136,26 @@ public class CmdMotionTest extends OpMode {
         } else {
             robot.wheels.setSpeedScale(NORMAL_SPEED);
             telemetry.addLine("normal mode");
-        }
+        }*/
 
         if (AUTO) {
             // Handle AutoDriver driving
             // This does the actual driving
             driver = robot.common.drive.loop(driver);
+            driver.done = false;
 
             /*
              * Cut the loop short when we are AutoDriver'ing
              */
-            if (driver.isRunning(time)) {
+            if (driver.isRunning(time) || droved) {
                 return;
             }
 
             // TODO: Test and calibrate these
             // Last year's auto:
             // https://github.com/FIRST-4030/FTC-2018/blob/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/robot/auto/RuckusAutoTheBetterOne.java
-            //robot.common.drive.distance(200);
+            driver.drive = robot.common.drive.distance(1000);
+            droved = true;
             //robot.common.drive.degrees(90);
         }
 
