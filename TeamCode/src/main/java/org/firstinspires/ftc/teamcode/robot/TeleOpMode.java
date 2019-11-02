@@ -31,7 +31,7 @@ public class TeleOpMode extends OpMode {
 
     private static final float SWING_OFFSET = 0.05f;
     private static final float ARM_SPEED = 0.005f;
-    private static final float ARM_HOME = 0.0f;
+    private static final float ARM_HOME = 0.1f;
 
     private static final float COLLECT_SPEED = 0.8f;
 
