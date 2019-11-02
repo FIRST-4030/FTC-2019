@@ -31,6 +31,7 @@ public class TeleOpMode extends OpMode {
 
     private static final float SWING_OFFSET = 0.05f;
     private static final float ARM_SPEED = 0.005f;
+    private static final float ARM_HOME = 0.0f;
 
     private static final float COLLECT_SPEED = 0.8f;
 
@@ -50,6 +51,7 @@ public class TeleOpMode extends OpMode {
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
         buttons.register("COLLECT", gamepad1, PAD_BUTTON.a, BUTTON_TYPE.TOGGLE);
         buttons.register("FOUNDATION_HOOK", gamepad1, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
+        buttons.register("ARM_RESET", gamepad1, PAD_BUTTON.x, BUTTON_TYPE.SINGLE_PRESS);
 
         buttons.register("LIFT_UP", gamepad2, PAD_BUTTON.right_bumper);
         buttons.register("LIFT_DOWN", gamepad2, PAD_BUTTON.left_bumper);
@@ -120,6 +122,9 @@ public class TeleOpMode extends OpMode {
 
         // Flipper
         robot.flipper.setPosition(robot.flipper.getPosition() + ARM_SPEED * gamepad2.left_stick_x);
+        if(buttons.get("ARM_RESET")){
+            robot.flipper.setPosition(ARM_HOME);
+        }
 
         // CLAW
         if (buttons.get("GRAB")) {
