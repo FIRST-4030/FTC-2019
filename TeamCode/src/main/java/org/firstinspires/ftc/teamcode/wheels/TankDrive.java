@@ -11,6 +11,8 @@ public class TankDrive implements Wheels {
     private static final float JOYSTICK_DEADZONE = 0.1f;
     private static final float SPEED_DEADZONE = JOYSTICK_DEADZONE * 0.85f;
     private static final int JOYSTICK_EXPONENT = 3;
+    public static final MOTOR_SIDE DEFAULT_ENCODER_SIDE = MOTOR_SIDE.RIGHT;
+    public static final MOTOR_END DEFAULT_ENCODER_END = MOTOR_END.BACK;
 
     protected WheelsConfig config = null;
     protected final Telemetry telemetry;
@@ -39,6 +41,10 @@ public class TankDrive implements Wheels {
 
     private int getIndex(MOTOR_SIDE side, MOTOR_END end){
         for (int i = 0; i < config.motors.length; i++) {
+            if (end == null && side == null) {
+                end = DEFAULT_ENCODER_END;
+                side = DEFAULT_ENCODER_SIDE;
+            }
             if ((end == null || config.motors[i].end == end) &&
                     (side == null || config.motors[i].side == side)) {
                 return i;

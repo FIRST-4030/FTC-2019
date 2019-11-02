@@ -25,9 +25,10 @@ public class FoundationAuto extends OpMode {
     private AutoDriver driver = new AutoDriver();
 
     // Runtime vars
-    private AUTO_STATE state = AUTO_STATE.INIT;
+    private AUTO_STATE state;
     private boolean gameReady = false;
     private Field.AllianceColor color = Field.AllianceColor.BLUE;
+    private double waitUntil = 0.0;
 
     @Override
     public void init() {
@@ -78,7 +79,7 @@ public class FoundationAuto extends OpMode {
             telemetry.log().add("Started before ready");
         }
 
-        // Set state to starting state
+        // Set initial state
         state = AUTO_STATE.values()[0];
 
         //robot.vuforia.start();
@@ -109,46 +110,31 @@ public class FoundationAuto extends OpMode {
         switch (state) {
             case INIT:
                 driver.done = false;
-                advance();
-                break;
-
-            case LEAVE_WALL:
-            case REACH:
-                driver.drive = common.drive.distance(InchesToMM(6.0f));
-                advance();
-                break;
-
-            case TURN_1:
-                if (color == Field.AllianceColor.BLUE) {
-                    driver.drive = common.drive.degrees(-45.0f);
-                } else {
-                    driver.drive = common.drive.degrees(45.0f);
-                }
+                robot.hookRight.max();
+                robot.hookLeft.max();
                 advance();
                 break;
 
             case DRIVE_TO_FOUNDATION:
-                driver.drive = common.drive.distance(InchesToMM(25.5f));
-                advance();
-                break;
-
-            case TURN_2:
-                if (color == Field.AllianceColor.BLUE) {
-                    driver.drive = common.drive.degrees(45.0f);
-                } else {
-                    driver.drive = common.drive.degrees(-45.0f);
-                }
+                driver.drive = common.drive.distance(InchesToMM(31.0f));
                 advance();
                 break;
 
             case GRAB:
                 robot.hookRight.min();
                 robot.hookLeft.min();
+                driver.drive = common.drive.sleep(1000);
                 advance();
                 break;
 
             case BACK_UP:
-                driver.drive = common.drive.distance(InchesToMM(30.0f));
+                driver.drive = common.drive.distance(InchesToMM(-41.0f)); // FTC: Escape From the Field
+                advance();
+                break;
+
+            case LET_GO:
+                robot.hookRight.max();
+                robot.hookLeft.max();
                 advance();
                 break;
 
@@ -176,23 +162,17 @@ public class FoundationAuto extends OpMode {
     enum AUTO_STATE implements OrderedEnum {
         INIT, // Initialization
 
-        LEAVE_WALL, // Drive away from the wall
-
-        TURN_1, // Turn towards foundation
-
         DRIVE_TO_FOUNDATION, // Drive towards foundation
-
-        TURN_2, // Align with foundation
-
-        REACH, // Drive forward to be next to foundation
 
         GRAB, // Grab foundation
 
         BACK_UP, // Back up to wall
 
-        PARK_UNDER_SKYBRIDGE, // Strafe under skybridge
+        LET_GO, // Put the foundation down robot, it's not yours
 
-        DONE;
+        PARK_UNDER_SKYBRIDGE,
+
+        DONE; // Strafe under skybridge
 
         public AUTO_STATE prev() { return OrderedEnumHelper.prev(this); }
         public AUTO_STATE next() { return OrderedEnumHelper.next(this); }

@@ -37,6 +37,13 @@ public class MecanumDrive extends TankDrive {
     }
 
     @Override
+    public void setSpeed(float speed) {
+        for (MOTOR_SIDE side : MOTOR_SIDE.values()) {
+            setSpeed(speed, side);
+        }
+    }
+
+    @Override
     public void setSpeed(float x, float y, float rotation) {
 
         // modified code from https://ftcforum.usfirst.org/forum/ftc-technology/android-studio/6361-mecanum-wheels-drive-code-example

@@ -28,7 +28,7 @@ public class Drive implements CommonTask, DriveToListener {
     public static final PIDParams DRIVE_PARAMS = new PIDParams(0.0005f, 0.0002f, 0.0f,
             null, true, true);
 
-    // Straight drive speed -- Forward is toward the claws, motor positive, ticks increasing
+    // Straight drive speed -- Forward is toward the hooks, motor positive, ticks increasing
     public final static float SPEED_FORWARD = 1.0f;
     public final static float SPEED_FORWARD_SLOW = SPEED_FORWARD * 0.75f;
     public final static float SPEED_REVERSE = -SPEED_FORWARD;
@@ -181,7 +181,7 @@ public class Drive implements CommonTask, DriveToListener {
                         robot.wheels.setSpeed(speed);
                         break;
                     case TRANSLATION_PID:
-                        robot.wheels.setSpeed(0, speed, 0);
+                        robot.wheels.setSpeed(speed, 0, 0);
                         break;
                     default:
                         throw new IllegalStateException("Unhandled driveToRun: " +
