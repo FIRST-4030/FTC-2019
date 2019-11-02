@@ -72,6 +72,7 @@ public class VuforiaFTC {
     private boolean running = false;
     private boolean capture = false;
     private final Telemetry telemetry;
+    private final HardwareMap map;
     private VuforiaFTCConfig config;
     public VuforiaLocalizer vuforia = null;
     private int trackingTimeout = 100;
@@ -89,6 +90,10 @@ public class VuforiaFTC {
 
     public VuforiaFTC(HardwareMap map, Telemetry telemetry, BOT bot) {
         this.telemetry = telemetry;
+        this.map = map;
+    }
+
+    public void init() {
         config = new VuforiaFTCConfig();
         targetsRaw = config.init(map);
         targets.addAll(targetsRaw);
@@ -104,20 +109,31 @@ public class VuforiaFTC {
         vuforia = config.vuforia;
     }
 
+    // True if we initialized Vuforia
+    public boolean isAvailable() {
+        return (vuforia != null);
+    }
+
     // Start tracking
     public void start() {
+        if (!isAvailable()) {
+            return;
+        }
         targetsRaw.activate();
         running = true;
     }
 
     // This doesn't completely disable Vuforia, but it stops most tracking tasks
     public void stop() {
+        if (!isRunning()) {
+            return;
+        }
         targetsRaw.deactivate();
         running = false;
     }
 
     public boolean isRunning() {
-        return running;
+        return isAvailable() && running;
     }
 
     public void track() {
