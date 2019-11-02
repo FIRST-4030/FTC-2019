@@ -18,6 +18,10 @@ public class TeleOpMode extends OpMode {
     private int loops = 0;
     private int lastLoops = 0;
     private int lastCountTime = 0;
+    private RateLimit armRate;
+
+    // Changies
+    private float armPos = ARM_HOME;
 
     // Consts
     private static final float SLOW_MODE = 0.25f;
@@ -32,6 +36,7 @@ public class TeleOpMode extends OpMode {
     private static final float SWING_OFFSET = 0.05f;
     private static final float ARM_SPEED = 0.005f;
     private static final float ARM_HOME = 0.1f;
+    private static final double ARM_MAX_SPEED = 0.25;
 
     private static final float COLLECT_SPEED = 0.8f;
 
@@ -57,6 +62,9 @@ public class TeleOpMode extends OpMode {
         buttons.register("LIFT_DOWN", gamepad2, PAD_BUTTON.left_bumper);
         buttons.register("GRAB", gamepad2, PAD_BUTTON.x, BUTTON_TYPE.TOGGLE);
         buttons.register("CAPSTONE", gamepad2, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
+
+        // Speed limiting
+        armRate = new RateLimit(this, ARM_MAX_SPEED);
 
 
         // Wait for the game to begin
@@ -121,10 +129,13 @@ public class TeleOpMode extends OpMode {
         }
 
         // Flipper
-        robot.flipper.setPosition(robot.flipper.getPosition() + ARM_SPEED * gamepad2.left_stick_x);
-        if(buttons.get("ARM_RESET")){
-            robot.flipper.setPosition(ARM_HOME);
+        float dy = (float) armRate.update(ARM_SPEED * gamepad2.left_stick_x);
+        armPos += dy;
+        if (buttons.get("ARM_RESET")) {
+            armPos = ARM_HOME;
         }
+        robot.flipper.setPosition(armPos);
+        telemetry.addData("Arm Pos", robot.flipper.getPosition());
 
         // CLAW
         if (buttons.get("GRAB")) {
