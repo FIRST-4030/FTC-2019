@@ -68,6 +68,10 @@ public class Drive implements CommonTask, DriveToListener {
         TIME_TURN
     }
 
+    public DriveTo sleep(int mills) {
+        return time(mills, 0.0f);
+    }
+
     public DriveTo time(int mills, float speed) {
         return time(mills, speed, false);
     }
