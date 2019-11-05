@@ -47,6 +47,22 @@ public class ServoConfigs extends Configs {
                         config = new ServoConfig("Right Hook", false, 0.55f, 1.0f);
                 }
                 break;
+
+            case ARM:
+                switch (servo) {
+                    case LOWER:
+                        config = new ServoConfig("Lower");
+                        break;
+                    case UPPER:
+                        config = new ServoConfig("Upper");
+                        break;
+                    case ROTATION:
+                        config = new ServoConfig("Rotation");
+                        break;
+                    case CLAW:
+                        config = new ServoConfig("Claw");
+                        break;
+                }
         }
 
         return config;

@@ -9,9 +9,10 @@ import org.firstinspires.ftc.teamcode.buttons.BUTTON_TYPE;
 import org.firstinspires.ftc.teamcode.buttons.Button;
 import org.firstinspires.ftc.teamcode.buttons.ButtonHandler;
 import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
+import org.firstinspires.ftc.teamcode.config.BOT;
 import org.firstinspires.ftc.teamcode.utils.RateLimit;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "Production")
 public class TeleOpMode extends OpMode {
 
     // Devices and subsystems
@@ -51,6 +52,12 @@ public class TeleOpMode extends OpMode {
         // Init the common tasks elements
         robot = new Robot(hardwareMap, telemetry);
         robot.wheels.setTeleop(true);
+
+        // Check robot
+        if (robot.bot != BOT.PRODUCTION) {
+            telemetry.log().add("Opmode not compatible with bot " + robot.bot);
+            stop();
+        }
 
         // Register buttons
         buttons = new ButtonHandler(robot);

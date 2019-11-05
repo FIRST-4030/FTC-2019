@@ -25,24 +25,27 @@ public class Robot {
     public final HardwareMap map;
     public final Telemetry telemetry;
 
-    // Base
+    // Shared
     public final Gyro gyro;
     public final Wheels wheels;
     public final VuforiaFTC vuforia;
+    public ServoFTC claw;
 
-    // Collector
-    public final Motor collectorLeft;
-    public final Motor collectorRight;
-    public final ColorRange loadSensor;
+    // Production
+    public Motor collectorLeft;
+    public Motor collectorRight;
+    public ColorRange loadSensor;
+    public Motor lift;
+    public ServoFTC flipper;
+    public ServoFTC hookLeft;
+    public ServoFTC hookRight;
+    public ServoFTC capstone;
 
-    // Lift
-    public final Motor lift;
-    public final ServoFTC claw;
-    public final ServoFTC flipper;
+    // Arm
+    public ServoFTC lower;
+    public ServoFTC upper;
+    public ServoFTC rotation;
 
-    public final ServoFTC hookLeft;
-    public final ServoFTC hookRight;
-    public final ServoFTC capstone;
 
     public Robot(HardwareMap map, Telemetry telemetry) {
         this(map, telemetry, null);
@@ -66,51 +69,32 @@ public class Robot {
         // TODO: Disabled until we can test
         //ColorRangeConfigs colors = new ColorRangeConfigs(map, telemetry, bot);
 
-        // Base
+        // Shared
         this.wheels = wheels.init();
         this.wheels.stop();
         gyro = gyros.init();
         vuforia = new VuforiaFTC(map, telemetry, bot);
 
-        // Lift
-        if (bot == BOT.PRODUCTION) {
-            lift = motors.init(MOTORS.LIFT);
-            claw = servos.init(SERVOS.CLAW);
-            flipper = servos.init(SERVOS.FLIPPER);
-        } else {
-            lift = null;
-            claw = null;
-            flipper = null;
+        // Bot specific
+        switch (bot) {
+            case PRODUCTION:
+                lift = motors.init(MOTORS.LIFT);
+                claw = servos.init(SERVOS.CLAW);
+                flipper = servos.init(SERVOS.FLIPPER);
+                collectorLeft = motors.init(MOTORS.COLLECTOR_LEFT);
+                collectorRight = motors.init(MOTORS.COLLECTOR_RIGHT);
+                hookLeft = servos.init(SERVOS.LEFT_HOOK);
+                hookRight = servos.init(SERVOS.RIGHT_HOOK);
+                capstone = servos.init(SERVOS.CAPSTONE);
+                break;
+
+            case ARM:
+                lower = servos.init(SERVOS.LOWER);
+                upper = servos.init(SERVOS.UPPER);
+                rotation = servos.init(SERVOS.ROTATION);
+                claw = servos.init(SERVOS.CLAW);
         }
 
-        // Collector
-        if (bot == BOT.PRODUCTION) {
-            collectorLeft = motors.init(MOTORS.COLLECTOR_LEFT);
-            collectorRight = motors.init(MOTORS.COLLECTOR_RIGHT);
-            // TODO: Disabled until we can test
-            loadSensor = null;
-            //loadSensor = colors.init();
-        } else {
-            collectorLeft = null;
-            collectorRight = null;
-            loadSensor = null;
-        }
-
-        // Foundation hooks
-        if (bot == BOT.PRODUCTION) {
-            hookLeft = servos.init(SERVOS.LEFT_HOOK);
-            hookRight = servos.init(SERVOS.RIGHT_HOOK);
-        } else {
-            hookLeft = null;
-            hookRight = null;
-        }
-
-        // Capstone
-        if (bot == BOT.PRODUCTION) {
-            capstone = servos.init(SERVOS.CAPSTONE);
-        } else {
-            capstone = null;
-        }
 
         this.common = new Common(this);
     }

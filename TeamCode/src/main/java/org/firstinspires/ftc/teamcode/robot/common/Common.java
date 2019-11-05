@@ -13,12 +13,19 @@ public class Common {
     // Runtime
     private final Robot robot;
     public final Drive drive;
+    public Arm arm;
 
     public Common(Robot r) {
         if (r == null) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() + ": Null robot");
         }
         this.robot = r;
+
+        switch (robot.bot) {
+            case ARM:
+                arm = new Arm(robot);
+                break;
+        }
 
         this.drive = new Drive(robot);
     }

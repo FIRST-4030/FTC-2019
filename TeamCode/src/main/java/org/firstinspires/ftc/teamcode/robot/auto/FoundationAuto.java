@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.buttons.BUTTON_TYPE;
 import org.firstinspires.ftc.teamcode.buttons.ButtonHandler;
 import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
+import org.firstinspires.ftc.teamcode.config.BOT;
 import org.firstinspires.ftc.teamcode.driveto.AutoDriver;
 import org.firstinspires.ftc.teamcode.field.Field;
 import org.firstinspires.ftc.teamcode.robot.Robot;
@@ -14,7 +15,7 @@ import org.firstinspires.ftc.teamcode.utils.OrderedEnumHelper;
 import org.firstinspires.ftc.teamcode.utils.Round;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Grab Foundation")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Grab Foundation", group = "Production")
 public class FoundationAuto extends OpMode {
 
     // Devices and subsystems
@@ -38,6 +39,12 @@ public class FoundationAuto extends OpMode {
         robot = new Robot(hardwareMap, telemetry);
         common = robot.common;
         vuforia = robot.vuforia;
+
+        // Check robot
+        if (robot.bot != BOT.PRODUCTION) {
+            telemetry.log().add("Opmode not compatible with bot " + robot.bot);
+            stop();
+        }
 
         // Init the camera system
         //vuforia.start();
