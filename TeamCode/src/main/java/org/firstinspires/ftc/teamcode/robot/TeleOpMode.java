@@ -20,13 +20,12 @@ public class TeleOpMode extends OpMode {
     private int loops = 0;
     private int lastLoops = 0;
     private int lastCountTime = 0;
-    private RateLimit armRate;
 
     // Changies
     private float armPos = ARM_HOME;
 
     // Consts
-    private static final float SLOW_MODE = 0.5f;
+    private static final float SLOW_MODE = 0.7f;
     private static final float NORMAL_SPEED = 1.0f;
 
     private static final float CLAW_CLOSED = 0.5f;
@@ -35,9 +34,9 @@ public class TeleOpMode extends OpMode {
     private static final float CAP_UP = 0.0f;
     private static final float CAP_DOWN = 0.75f;
 
-    private static final float SWING_OFFSET = 0.05f;
     private static final float ARM_SPEED = 0.02f;
     private static final float ARM_HOME = 0.1f;
+    private static final float ARM_OUT = 0.5f;
     private static final double ARM_MAX_SPEED = 0.25;
 
     private static final float COLLECT_SPEED = 0.8f;
@@ -61,15 +60,15 @@ public class TeleOpMode extends OpMode {
         buttons.register("CAPSTONE1", gamepad1, PAD_BUTTON.x);
 
         buttons.register("ARM_RESET", gamepad2, PAD_BUTTON.b, BUTTON_TYPE.SINGLE_PRESS);
+        buttons.register("ARM_OUT", gamepad2, PAD_BUTTON.a, BUTTON_TYPE.SINGLE_PRESS);
         buttons.register("ARM_TO_1", gamepad2, PAD_BUTTON.right_bumper);
         buttons.register("ARM_TO_0", gamepad2, PAD_BUTTON.left_bumper);
         buttons.register("GRAB", gamepad2, PAD_BUTTON.x, BUTTON_TYPE.TOGGLE);
         buttons.register("CAPSTONE2", gamepad2, PAD_BUTTON.y);
         buttons.getListener("ARM_TO_0").setLongHeldTimeout(0);
         buttons.getListener("ARM_TO_1").setLongHeldTimeout(0);
-
-        // Speed limiting
-        armRate = new RateLimit(this, ARM_MAX_SPEED);
+        buttons.getListener("ARM_TO_0").setAutokeyTimeout(0);
+        buttons.getListener("ARM_TO_1").setAutokeyTimeout(0);
 
 
         // Wait for the game to begin
@@ -109,14 +108,6 @@ public class TeleOpMode extends OpMode {
     }
 
     private void driveBase() {
-        if (buttons.get("SLOW_MODE")) {
-            robot.wheels.setSpeedScale(SLOW_MODE);
-            telemetry.addLine("slow mode");
-        } else {
-            robot.wheels.setSpeedScale(NORMAL_SPEED);
-            telemetry.addLine("normal mode");
-        }
-
         robot.wheels.loop(gamepad1);
     }
 
@@ -126,8 +117,8 @@ public class TeleOpMode extends OpMode {
 
         // Collector
         if (buttons.get("COLLECT")) {
-            robot.collectorLeft.setPower(COLLECT_SPEED);
-            robot.collectorRight.setPower(COLLECT_SPEED);
+            robot.collectorLeft.setPower(-COLLECT_SPEED);
+            robot.collectorRight.setPower(-COLLECT_SPEED);
         } else {
             robot.collectorLeft.setPower(0.0f);
             robot.collectorRight.setPower(0.0f);
@@ -141,10 +132,11 @@ public class TeleOpMode extends OpMode {
             armPos += ARM_SPEED;
         }
 
-        //float dy = (float) armRate.update(ARM_SPEED * gamepad2.left_stick_x);
-        //armPos += dy;
         if (buttons.get("ARM_RESET")) {
             armPos = ARM_HOME;
+        }
+        if (buttons.get("ARM_OUT")) {
+            armPos = ARM_OUT;
         }
 
         // caps
@@ -167,13 +159,19 @@ public class TeleOpMode extends OpMode {
             robot.capstone.setPosition(CAP_UP);
         }
 
-        // Foundation hooks
+        // Foundation hooks + Slowmode
         if (buttons.get("FOUNDATION_HOOK")) {
             robot.hookLeft.min();
             robot.hookRight.min();
+
+            robot.wheels.setSpeedScale(SLOW_MODE);
+            telemetry.addLine("slow mode");
         } else {
             robot.hookLeft.max();
             robot.hookRight.max();
+
+            robot.wheels.setSpeedScale(NORMAL_SPEED);
+            telemetry.addLine("normal mode");
         }
     }
 
