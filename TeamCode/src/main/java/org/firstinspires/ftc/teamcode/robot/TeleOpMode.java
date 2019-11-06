@@ -37,8 +37,7 @@ public class TeleOpMode extends OpMode {
 
     private static final float ARM_SPEED = 0.02f;
     private static final float ARM_HOME = 0.1f;
-    private static final float ARM_OUT = 0.5f;
-    private static final double ARM_MAX_SPEED = 0.25;
+    private static final float ARM_OUT = 0.65f;
 
     private static final float COLLECT_SPEED = 0.8f;
 

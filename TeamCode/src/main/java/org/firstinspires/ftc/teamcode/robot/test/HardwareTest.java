@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.sensors.switches.Switch;
 import org.firstinspires.ftc.teamcode.wheels.MOTOR_END;
 import org.firstinspires.ftc.teamcode.wheels.MOTOR_SIDE;
 
-@Disabled
+//@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Hardware Test", group = "Test")
 public class HardwareTest extends OpMode {
 
@@ -69,10 +69,10 @@ public class HardwareTest extends OpMode {
     public void loop() {
         buttons.update();
 
-        telemetry.addData("Gimli::Glick", robot.wheels.getEncoder(MOTOR_SIDE.LEFT, MOTOR_END.BACK));
-        telemetry.addData("Gimli::Glaen", robot.wheels.getEncoder(MOTOR_SIDE.LEFT, MOTOR_END.FRONT));
-        telemetry.addData("Gimli::Dad", robot.wheels.getEncoder(MOTOR_SIDE.RIGHT, MOTOR_END.BACK));
-        telemetry.addData("Gimli::Gloin", robot.wheels.getEncoder(MOTOR_SIDE.RIGHT, MOTOR_END.FRONT));
+        telemetry.addData("BL", robot.wheels.getEncoder(MOTOR_SIDE.LEFT, MOTOR_END.BACK));
+        telemetry.addData("FL", robot.wheels.getEncoder(MOTOR_SIDE.LEFT, MOTOR_END.FRONT));
+        telemetry.addData("BR", robot.wheels.getEncoder(MOTOR_SIDE.RIGHT, MOTOR_END.BACK));
+        telemetry.addData("FR", robot.wheels.getEncoder(MOTOR_SIDE.RIGHT, MOTOR_END.FRONT));
         robot.wheels.loop(gamepad1);
 
         if (buttons.get("ENCODER_RESET")) {
