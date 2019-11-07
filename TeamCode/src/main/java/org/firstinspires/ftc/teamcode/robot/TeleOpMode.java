@@ -123,8 +123,8 @@ public class TeleOpMode extends OpMode {
 
         // Collector
         if (buttons.get("COLLECT")) {
-            robot.collectorLeft.setPower(-COLLECT_SPEED);
-            robot.collectorRight.setPower(-COLLECT_SPEED);
+            robot.collectorLeft.setPower(COLLECT_SPEED);
+            robot.collectorRight.setPower(COLLECT_SPEED);
         } else {
             robot.collectorLeft.setPower(0.0f);
             robot.collectorRight.setPower(0.0f);
