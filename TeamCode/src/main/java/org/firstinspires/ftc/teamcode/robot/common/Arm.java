@@ -12,15 +12,15 @@ public class Arm implements CommonTask {
     private final ServoFTC upper;
 
     // Servo positions when the servo is at 90 degrees
-    private static final float LOWER_MIDPOINT = 0.7f;
-    private static final float UPPER_MIDPOINT = 0.75f;
+    private static final float LOWER_MIDPOINT = 0.5f;
+    private static final float UPPER_MIDPOINT = 0.6f;
 
     // The arm has two segments, measured from joint to joint
     // The lower segment is from the base to the middle joint
     // The upper segment is from the base to the claw joint
     // lengths are measured in inches
-    private static final double LOWER_LENGTH = 5.5;
-    private static final double UPPER_LENGTH = 5.75;
+    private static final double LOWER_LENGTH = 12.625;
+    private static final double UPPER_LENGTH = 12.625;
 
     // Circle for arm limit checking
     private static final double CENTER_X = 4.77;
@@ -124,6 +124,7 @@ public class Arm implements CommonTask {
                 LOWER_LENGTH >= UPPER_LENGTH + hypot)
             return false;
 
+        /*
         // Big circle limit (magic internet math)
         if(((x-CENTER_X)*(x-CENTER_X) + (y-CENTER_Y)*(y-CENTER_Y) > RADIUS*RADIUS))
             return false;
@@ -131,6 +132,7 @@ public class Arm implements CommonTask {
         // Check the little slice of the circle
         if (y < ((-5.0/3.0) * x + 6.0))
             return false;
+       */
 
         // keep x positive
         if (x <= 0)

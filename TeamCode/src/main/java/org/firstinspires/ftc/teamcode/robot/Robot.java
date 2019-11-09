@@ -7,13 +7,11 @@ import org.firstinspires.ftc.teamcode.actuators.Motor;
 import org.firstinspires.ftc.teamcode.actuators.ServoFTC;
 import org.firstinspires.ftc.teamcode.config.BOT;
 import org.firstinspires.ftc.teamcode.robot.common.Common;
-import org.firstinspires.ftc.teamcode.robot.config.ColorRangeConfigs;
 import org.firstinspires.ftc.teamcode.robot.config.GyroConfigs;
 import org.firstinspires.ftc.teamcode.robot.config.MotorConfigs;
 import org.firstinspires.ftc.teamcode.robot.config.ServoConfigs;
 import org.firstinspires.ftc.teamcode.robot.config.WheelsConfigs;
 import org.firstinspires.ftc.teamcode.sensors.color_range.ColorRange;
-import org.firstinspires.ftc.teamcode.sensors.color_range.RevColorRange;
 import org.firstinspires.ftc.teamcode.sensors.gyro.Gyro;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 import org.firstinspires.ftc.teamcode.wheels.Wheels;
@@ -31,7 +29,7 @@ public class Robot {
     public final VuforiaFTC vuforia;
     public ServoFTC claw;
 
-    // Production
+    // Scissor
     public Motor collectorLeft;
     public Motor collectorRight;
     public ColorRange loadSensor;
@@ -45,6 +43,7 @@ public class Robot {
     public ServoFTC lower;
     public ServoFTC upper;
     public ServoFTC rotation;
+    public ServoFTC swivel;
 
 
     public Robot(HardwareMap map, Telemetry telemetry) {
@@ -77,7 +76,7 @@ public class Robot {
 
         // Bot specific
         switch (bot) {
-            case PRODUCTION:
+            case SCISSOR:
                 lift = motors.init(MOTORS.LIFT);
                 claw = servos.init(SERVOS.CLAW);
                 flipper = servos.init(SERVOS.FLIPPER);
@@ -93,6 +92,7 @@ public class Robot {
                 upper = servos.init(SERVOS.UPPER);
                 rotation = servos.init(SERVOS.ROTATION);
                 claw = servos.init(SERVOS.CLAW);
+                swivel = servos.init(SERVOS.SWIVEL);
         }
 
 

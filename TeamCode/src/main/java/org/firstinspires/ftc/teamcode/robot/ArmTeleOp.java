@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
 import org.firstinspires.ftc.teamcode.config.BOT;
 import org.firstinspires.ftc.teamcode.utils.RateLimit;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "Arm")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp - Arm", group = "Arm")
 public class ArmTeleOp extends OpMode {
 
     // Devices and subsystems
@@ -25,10 +25,10 @@ public class ArmTeleOp extends OpMode {
     // arm consts
     private static final float ARM_MOVEMENT_SCALE = 1.0f/16;
     private static final float ARM_ROTATION_SCALE = 1.0f/512;
-    private static final float CLAW_CLOSED = 0.25f;
-    private static final float CLAW_OPEN = 0.5f;
-    private static final float ARM_HOME_X = 5.0f;
-    private static final float ARM_HOME_Y = 5.0f;
+    private static final float CLAW_CLOSED = 0.0f;
+    private static final float CLAW_OPEN = 1.0f;
+    private static final float ARM_HOME_X = 1.8f;
+    private static final float ARM_HOME_Y = 5.9f;
 
     // Arm rate limiting
     private RateLimit rateX;
@@ -58,12 +58,12 @@ public class ArmTeleOp extends OpMode {
         // Check robot
         if (robot.bot != BOT.ARM) {
             telemetry.log().add("Opmode not compatible with bot " + robot.bot);
-            stop();
+            requestOpModeStop();
         }
 
         // Register buttons
         buttons = new ButtonHandler(robot);
-        buttons.register("CLAW", gamepad2, PAD_BUTTON.left_bumper, BUTTON_TYPE.TOGGLE);
+        buttons.register("CLAW", gamepad2, PAD_BUTTON.x, BUTTON_TYPE.TOGGLE);
         buttons.register("HOME_ARM", gamepad2, PAD_BUTTON.y, BUTTON_TYPE.SINGLE_PRESS);
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.left_bumper, BUTTON_TYPE.TOGGLE);
 
@@ -113,6 +113,11 @@ public class ArmTeleOp extends OpMode {
     }
 
     private void driveBase() {
+        if (buttons.get("SLOW_MODE")) {
+            robot.wheels.setSpeedScale(SLOW_MODE);
+        } else {
+            robot.wheels.setSpeedScale(NORMAL_SPEED);
+        }
         robot.wheels.loop(gamepad1);
     }
 

@@ -1,18 +1,13 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.vuforia.ViewerParameters;
 
 import org.firstinspires.ftc.teamcode.buttons.BUTTON_TYPE;
-import org.firstinspires.ftc.teamcode.buttons.Button;
 import org.firstinspires.ftc.teamcode.buttons.ButtonHandler;
 import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
 import org.firstinspires.ftc.teamcode.config.BOT;
-import org.firstinspires.ftc.teamcode.utils.RateLimit;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "Production")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp - Prod", group = "Scissor")
 public class TeleOpMode extends OpMode {
 
     // Devices and subsystems
@@ -53,9 +48,9 @@ public class TeleOpMode extends OpMode {
         robot.wheels.setTeleop(true);
 
         // Check robot
-        if (robot.bot != BOT.PRODUCTION) {
+        if (robot.bot != BOT.SCISSOR) {
             telemetry.log().add("Opmode not compatible with bot " + robot.bot);
-            stop();
+            requestOpModeStop();
         }
 
         // Register buttons

@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.utils.OrderedEnumHelper;
 import org.firstinspires.ftc.teamcode.utils.Round;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Grab Foundation", group = "Production")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Grab Foundation", group = "Scissor")
 public class FoundationAuto extends OpMode {
 
     // Devices and subsystems
@@ -41,9 +41,9 @@ public class FoundationAuto extends OpMode {
         vuforia = robot.vuforia;
 
         // Check robot
-        if (robot.bot != BOT.PRODUCTION) {
+        if (robot.bot != BOT.SCISSOR) {
             telemetry.log().add("Opmode not compatible with bot " + robot.bot);
-            stop();
+            requestOpModeStop();
         }
 
         // Init the camera system
