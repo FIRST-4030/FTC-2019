@@ -24,7 +24,7 @@ public class TeleOpMode extends OpMode {
     private static final float SLOW_MODE = 0.7f;
     private static final float NORMAL_SPEED = 1.0f;
 
-    private static final float CLAW_CLOSED = 0.6f;
+    private static final float CLAW_CLOSED = 0.25f;
     private static final float CLAW_OPEN = 0.0f;
 
     private static final float CAP_UP = 0.0f;
