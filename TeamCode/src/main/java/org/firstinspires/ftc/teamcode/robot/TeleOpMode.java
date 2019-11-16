@@ -25,7 +25,9 @@ public class TeleOpMode extends OpMode {
     private static final float NORMAL_SPEED = 1.0f;
 
     private static final float CLAW_CLOSED = 0.6f;
-    private static final float CLAW_OPEN = 0.15f;
+    private static final float SMALL_OPEN = 0.35f;
+    private static final float BIG_OPEN = 0.0f;
+    private static final float BIG_MIN_POS = 0.6f;
 
     private static final float CAP_UP = 0.0f;
     private static final float CAP_DOWN = 0.75f;
@@ -35,6 +37,7 @@ public class TeleOpMode extends OpMode {
     private static final float ARM_OUT = 0.65f;
 
     private static final float COLLECT_SPEED = 0.9f;
+
 
 
     @Override
@@ -54,12 +57,14 @@ public class TeleOpMode extends OpMode {
         }
 
         // Register buttons
+        //game pad one controls movement
         buttons = new ButtonHandler(robot);
-        buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
         buttons.register("COLLECT", gamepad1, PAD_BUTTON.a, BUTTON_TYPE.TOGGLE);
         buttons.register("FOUNDATION_HOOK", gamepad1, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
         buttons.register("CAPSTONE1", gamepad1, PAD_BUTTON.x);
+        buttons.register("CAPSTONE3", gamepad1, PAD_BUTTON.left_bumper);
 
+        //game pad two controls the arm, aka everything else
         buttons.register("ARM_RESET", gamepad2, PAD_BUTTON.b, BUTTON_TYPE.SINGLE_PRESS);
         buttons.register("ARM_OUT", gamepad2, PAD_BUTTON.a, BUTTON_TYPE.SINGLE_PRESS);
         buttons.register("ARM_TO_1", gamepad2, PAD_BUTTON.right_bumper);
@@ -97,7 +102,7 @@ public class TeleOpMode extends OpMode {
         driveBase();
         auxiliary();
 
-        // hurts
+        // Loops per second
         if (time >= lastCountTime + 1) {
             lastCountTime = (int) time;
             lastLoops = loops;
@@ -112,11 +117,14 @@ public class TeleOpMode extends OpMode {
         robot.wheels.loop(gamepad1);
     }
 
+    //moves everything
+
     private void auxiliary() {
         // LIFT
         robot.lift.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
 
-        // Collector
+
+        // Stone Collector
         if (buttons.get("COLLECT")) {
             robot.collectorLeft.setPower(COLLECT_SPEED);
             robot.collectorRight.setPower(COLLECT_SPEED);
@@ -125,22 +133,24 @@ public class TeleOpMode extends OpMode {
             robot.collectorRight.setPower(0.0f);
         }
 
-        // Flipper
+        // Swingy arm
         if (buttons.autokey("ARM_TO_0")) {
             armPos -= ARM_SPEED;
         }
+        //Automatically spams the Arm buttons at regular intervals.
         if (buttons.autokey("ARM_TO_1")) {
             armPos += ARM_SPEED;
         }
-
+        //Homes arm inside the robot
         if (buttons.get("ARM_RESET")) {
             armPos = ARM_HOME;
         }
+        //Quickly moves arm into a decent position for collecting
         if (buttons.get("ARM_OUT")) {
             armPos = ARM_OUT;
         }
 
-        // caps
+        // Arm limits
         if (armPos > 1.0f) armPos = 1.0f;
         if (armPos < 0.0f) armPos = 0.0f;
         robot.flipper.setPosition(armPos);
@@ -148,13 +158,18 @@ public class TeleOpMode extends OpMode {
 
         // CLAW
         if (buttons.get("GRAB")) {
-            robot.claw.setPosition(CLAW_OPEN);
+            //Ensures the arm doesn't open wide enough to get stuck in the robot
+            if (robot.flipper.getPosition() > BIG_MIN_POS) {
+                robot.claw.setPosition(BIG_OPEN);
+            } else {
+                robot.claw.setPosition(SMALL_OPEN);
+            }
         } else {
             robot.claw.setPosition(CLAW_CLOSED);
         }
 
         // Capstone thingy
-        if (buttons.held("CAPSTONE1") && buttons.held("CAPSTONE2")) {
+        if (buttons.held("CAPSTONE1") && buttons.held("CAPSTONE2") && buttons.held("CAPSTONE3")) {
             robot.capstone.setPosition(CAP_DOWN);
         } else {
             robot.capstone.setPosition(CAP_UP);
