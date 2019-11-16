@@ -124,6 +124,14 @@ public class Arm implements CommonTask {
                 LOWER_LENGTH >= UPPER_LENGTH + hypot)
             return false;
 
+        // minimum angle A between the two arms
+        double min_A_angle = 15 * Math.PI / 180;
+        double requestedRange = Math.sqrt(x*x + y*y);
+        double minRange = Math.sqrt(UPPER_LENGTH*UPPER_LENGTH+LOWER_LENGTH*LOWER_LENGTH-2*UPPER_LENGTH*LOWER_LENGTH*Math.cos(min_A_angle));
+        double maxRange = LOWER_LENGTH + UPPER_LENGTH;
+
+        if ((requestedRange > maxRange) || (requestedRange < minRange)) return false;
+
         /*
         // Big circle limit (magic internet math)
         if(((x-CENTER_X)*(x-CENTER_X) + (y-CENTER_Y)*(y-CENTER_Y) > RADIUS*RADIUS))
