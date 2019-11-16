@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.sensors.switches.Switch;
 import org.firstinspires.ftc.teamcode.wheels.MOTOR_END;
 import org.firstinspires.ftc.teamcode.wheels.MOTOR_SIDE;
 
-@Disabled
+//@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Hardware Test", group = "Test")
 public class HardwareTest extends OpMode {
 
@@ -37,18 +37,13 @@ public class HardwareTest extends OpMode {
         // Buttons
         buttons = new ButtonHandler(robot);
         buttons.register("ENCODER_RESET", gamepad1, PAD_BUTTON.guide);
-        buttons.register("CHARMY" + MOTOR_FWD, gamepad1, PAD_BUTTON.dpad_up);
-        buttons.register("CHARMY" + MOTOR_BACK, gamepad1, PAD_BUTTON.dpad_down);
-        buttons.register("CHARMY" + SERVO_FWD, gamepad1, PAD_BUTTON.left_bumper);
-        buttons.register("CHARMY" + SERVO_BACK, gamepad1, PAD_BUTTON.right_bumper);
-        buttons.register("FLAG_DROPPER" + SERVO_FWD, gamepad1, PAD_BUTTON.left_stick_button);
-        buttons.register("FLAG_DROPPER" + SERVO_BACK, gamepad1, PAD_BUTTON.right_stick_button);
-        buttons.register("SMARMY" + MOTOR_FWD, gamepad1, PAD_BUTTON.dpad_left);
-        buttons.register("SMARMY" + MOTOR_BACK, gamepad1, PAD_BUTTON.dpad_right);
-        buttons.register("DUMPY" + MOTOR_FWD, gamepad1, PAD_BUTTON.y);
-        buttons.register("DUMPY" + MOTOR_BACK, gamepad1, PAD_BUTTON.a);
-        buttons.register("DOC" + MOTOR_FWD, gamepad1, PAD_BUTTON.x);
-        buttons.register("DOC" + MOTOR_BACK, gamepad1, PAD_BUTTON.b);
+        buttons.register("LOWER" + SERVO_FWD, gamepad1, PAD_BUTTON.dpad_right);
+        buttons.register("LOWER" + SERVO_BACK, gamepad1, PAD_BUTTON.dpad_left);
+        buttons.register("UPPER" + SERVO_FWD, gamepad1, PAD_BUTTON.dpad_up);
+        buttons.register("UPPER" + SERVO_BACK, gamepad1, PAD_BUTTON.dpad_down);
+
+        // home arm
+        robot.common.arm.setPosition(12.0f, 12.0f);
     }
 
     @Override
@@ -69,10 +64,11 @@ public class HardwareTest extends OpMode {
     public void loop() {
         buttons.update();
 
-        telemetry.addData("Gimli::Glick", robot.wheels.getEncoder(MOTOR_SIDE.LEFT, MOTOR_END.BACK));
-        telemetry.addData("Gimli::Glaen", robot.wheels.getEncoder(MOTOR_SIDE.LEFT, MOTOR_END.FRONT));
-        telemetry.addData("Gimli::Dad", robot.wheels.getEncoder(MOTOR_SIDE.RIGHT, MOTOR_END.BACK));
-        telemetry.addData("Gimli::Gloin", robot.wheels.getEncoder(MOTOR_SIDE.RIGHT, MOTOR_END.FRONT));
+        /*
+        telemetry.addData("BL", robot.wheels.getEncoder(MOTOR_SIDE.LEFT, MOTOR_END.BACK));
+        telemetry.addData("FL", robot.wheels.getEncoder(MOTOR_SIDE.LEFT, MOTOR_END.FRONT));
+        telemetry.addData("BR", robot.wheels.getEncoder(MOTOR_SIDE.RIGHT, MOTOR_END.BACK));
+        telemetry.addData("FR", robot.wheels.getEncoder(MOTOR_SIDE.RIGHT, MOTOR_END.FRONT));
         robot.wheels.loop(gamepad1);
 
         if (buttons.get("ENCODER_RESET")) {
@@ -80,7 +76,10 @@ public class HardwareTest extends OpMode {
             robot.wheels.resetEncoder(MOTOR_SIDE.RIGHT, MOTOR_END.BACK);
             robot.wheels.resetEncoder(MOTOR_SIDE.LEFT, MOTOR_END.FRONT);
             robot.wheels.resetEncoder(MOTOR_SIDE.RIGHT, MOTOR_END.FRONT);
-        }
+        }*/
+
+        updateServo("LOWER", robot.lower);
+        updateServo("UPPER", robot.upper);
 
         telemetry.update();
     }

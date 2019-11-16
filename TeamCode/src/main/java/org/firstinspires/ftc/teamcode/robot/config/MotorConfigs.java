@@ -31,7 +31,7 @@ public class MotorConfigs extends Configs {
         switch (bot) {
 
             // IMPORTANT: If you need to change the *names* of the motors here, change them in PIDMotorConfigs too
-            case PRODUCTION:
+            case SCISSOR:
                 switch(motor) {
                     case LIFT:
                         config = new MotorConfig("Lift", true, true);

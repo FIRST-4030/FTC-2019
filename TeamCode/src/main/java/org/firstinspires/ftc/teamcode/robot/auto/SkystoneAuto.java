@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.robot.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.vuforia.INIT_ERRORCODE;
 
 import org.firstinspires.ftc.teamcode.buttons.BUTTON_TYPE;
 import org.firstinspires.ftc.teamcode.buttons.ButtonHandler;
 import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
+import org.firstinspires.ftc.teamcode.config.BOT;
 import org.firstinspires.ftc.teamcode.driveto.AutoDriver;
 import org.firstinspires.ftc.teamcode.field.Field;
 import org.firstinspires.ftc.teamcode.robot.Robot;
@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.utils.OrderedEnumHelper;
 import org.firstinspires.ftc.teamcode.utils.Round;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Skystone Side")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Skystone Side", group = "Scissor")
 public class SkystoneAuto extends OpMode {
 
     // Devices and subsystems
@@ -40,6 +40,12 @@ public class SkystoneAuto extends OpMode {
         robot = new Robot(hardwareMap, telemetry);
         common = robot.common;
         vuforia = robot.vuforia;
+
+        // Check robot
+        if (robot.bot != BOT.SCISSOR) {
+            telemetry.log().add("Opmode not compatible with bot " + robot.bot);
+            requestOpModeStop();
+        }
 
         // Init the camera system
         //vuforia.start();

@@ -1,17 +1,13 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.vuforia.ViewerParameters;
 
 import org.firstinspires.ftc.teamcode.buttons.BUTTON_TYPE;
-import org.firstinspires.ftc.teamcode.buttons.Button;
 import org.firstinspires.ftc.teamcode.buttons.ButtonHandler;
 import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
-import org.firstinspires.ftc.teamcode.utils.RateLimit;
+import org.firstinspires.ftc.teamcode.config.BOT;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp - Prod", group = "Scissor")
 public class TeleOpMode extends OpMode {
 
     // Devices and subsystems
@@ -28,18 +24,17 @@ public class TeleOpMode extends OpMode {
     private static final float SLOW_MODE = 0.7f;
     private static final float NORMAL_SPEED = 1.0f;
 
-    private static final float CLAW_CLOSED = 0.5f;
-    private static final float CLAW_OPEN = 1.0f;
+    private static final float CLAW_CLOSED = 0.6f;
+    private static final float CLAW_OPEN = 0.15f;
 
     private static final float CAP_UP = 0.0f;
     private static final float CAP_DOWN = 0.75f;
 
     private static final float ARM_SPEED = 0.02f;
     private static final float ARM_HOME = 0.1f;
-    private static final float ARM_OUT = 0.5f;
-    private static final double ARM_MAX_SPEED = 0.25;
+    private static final float ARM_OUT = 0.65f;
 
-    private static final float COLLECT_SPEED = 0.8f;
+    private static final float COLLECT_SPEED = 0.9f;
 
 
     @Override
@@ -51,6 +46,12 @@ public class TeleOpMode extends OpMode {
         // Init the common tasks elements
         robot = new Robot(hardwareMap, telemetry);
         robot.wheels.setTeleop(true);
+
+        // Check robot
+        if (robot.bot != BOT.SCISSOR) {
+            telemetry.log().add("Opmode not compatible with bot " + robot.bot);
+            requestOpModeStop();
+        }
 
         // Register buttons
         buttons = new ButtonHandler(robot);
@@ -117,8 +118,8 @@ public class TeleOpMode extends OpMode {
 
         // Collector
         if (buttons.get("COLLECT")) {
-            robot.collectorLeft.setPower(-COLLECT_SPEED);
-            robot.collectorRight.setPower(-COLLECT_SPEED);
+            robot.collectorLeft.setPower(COLLECT_SPEED);
+            robot.collectorRight.setPower(COLLECT_SPEED);
         } else {
             robot.collectorLeft.setPower(0.0f);
             robot.collectorRight.setPower(0.0f);
