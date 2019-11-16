@@ -129,7 +129,7 @@ public class Arm implements CommonTask {
         double requestedRange = Math.sqrt(x*x + y*y);
         double minRange = Math.sqrt(UPPER_LENGTH*UPPER_LENGTH+LOWER_LENGTH*LOWER_LENGTH-2*UPPER_LENGTH*LOWER_LENGTH*Math.cos(min_A_angle));
         double maxRange = LOWER_LENGTH + UPPER_LENGTH;
-
+asd
         if ((requestedRange > maxRange) || (requestedRange < minRange)) return false;
 
         /*
