@@ -63,6 +63,7 @@ public class Drive implements CommonTask, DriveToListener {
     // Sensor reference types for our DriveTo callbacks
     public enum SENSOR_TYPE {
         DRIVE_ENCODER,
+        REVHUB_ENCODER,
         GYROSCOPE,
         TIME,
         TIME_TURN
@@ -100,6 +101,16 @@ public class Drive implements CommonTask, DriveToListener {
         return new DriveTo(new DriveToParams[]{param});
     }
 
+    public DriveTo distance(int millimeters, float speed) {
+        robot.wheels.setTeleop(false);
+
+        DriveToParams param = new DriveToParams(this, SENSOR_TYPE.REVHUB_ENCODER);
+        int target = (int) ((float) millimeters * robot.wheels.getTicksPerMM()) + robot.wheels.getEncoder();
+        param.timeout = target;
+        param.limitRange = speed;
+        return new DriveTo(new DriveToParams[]{param});
+    }
+
     public DriveTo distance(int millimeters) {
         robot.wheels.setTeleop(false);
 
@@ -130,6 +141,7 @@ public class Drive implements CommonTask, DriveToListener {
     public void driveToStop(DriveToParams param) {
         switch ((SENSOR_TYPE) param.reference) {
             case DRIVE_ENCODER:
+            case REVHUB_ENCODER:
             case GYROSCOPE:
             case TIME:
             case TIME_TURN:
@@ -147,6 +159,9 @@ public class Drive implements CommonTask, DriveToListener {
         float value;
         switch ((SENSOR_TYPE) param.reference) {
             case DRIVE_ENCODER:
+                value = robot.wheels.onTarget() ? 1.0f : 0.0f;
+                break;
+            case REVHUB_ENCODER:
                 value = robot.wheels.getEncoder();
                 break;
             case GYROSCOPE:
@@ -174,6 +189,12 @@ public class Drive implements CommonTask, DriveToListener {
                     "\t(" + Round.truncate(param.pid.output()) + ")");
         }
         switch ((SENSOR_TYPE) param.reference) {
+            case REVHUB_ENCODER:
+                if (!robot.wheels.isPositionPID()) {
+                    robot.wheels.setPositionPID(true);
+                    robot.wheels.setTarget(param.timeout);
+                }
+                robot.wheels.setSpeed(param.limitRange);
             case DRIVE_ENCODER:
                 speed = param.pid.output();
                 switch (param.comparator) {

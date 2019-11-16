@@ -7,6 +7,7 @@ public enum DriveToComp {
     OUTSIDE_RANGE(false, false),
     ROTATION_LESS(true, false),
     ROTATION_GREATER(true, false),
+    REVPID(false, false),
     PID(false, true),
     ROTATION_PID(true, true),
     TRANSLATION_PID(false, true);

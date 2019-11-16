@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.wheels;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -39,7 +40,7 @@ public class TankDrive implements Wheels {
         return config != null;
     }
 
-    private int getIndex(MOTOR_SIDE side, MOTOR_END end){
+    private int getIndex(MOTOR_SIDE side, MOTOR_END end) {
         for (int i = 0; i < config.motors.length; i++) {
             /*if (end == null && side == null) {
                 end = DEFAULT_ENCODER_END;
@@ -129,6 +130,56 @@ public class TankDrive implements Wheels {
         }
     }
 
+    public boolean isPositionPID() {
+        boolean pid = true;
+        for (int i = 0; i < config.motors.length; i++) {
+            if (!config.motors[i].motor.isPositionPID()) {
+                if (i > 0 && pid != false) {
+                    telemetry.log().add(this.getClass().getSimpleName() + ": Inconsistent PID state");
+                }
+                pid = false;
+            }
+        }
+        return pid;
+    }
+
+    public void setPositionPID(boolean enable) {
+        DcMotor.RunMode mode = config.mode;
+        if (enable) {
+            mode = DcMotor.RunMode.RUN_TO_POSITION;
+            setTeleop(false);
+        }
+
+        stop();
+        for (int i = 0; i < config.motors.length; i++) {
+            config.motors[i].motor.setMode(mode);
+        }
+    }
+
+    public boolean onTarget() {
+        boolean done = true;
+        for (int i = 0; i < config.motors.length; i++) {
+            if (!config.motors[i].motor.onTarget()) {
+                done = false;
+            }
+        }
+        return done;
+    }
+
+    public void setTarget(int target) {
+        if (!isAvailable()) {
+            return;
+        }
+        if (!isPositionPID()) {
+            stop();
+            telemetry.log().add(this.getClass().getSimpleName() + ": Position PID not active");
+            return;
+        }
+        for (int i = 0; i < config.motors.length; i++) {
+            config.motors[i].motor.setTarget(target);
+        }
+    }
+
     public void stop() {
         if (!isAvailable()) {
             return;
@@ -178,7 +229,7 @@ public class TankDrive implements Wheels {
         }
 
         float power = limit(stick);
-        power = (float)Math.pow(power, JOYSTICK_EXPONENT);
+        power = (float) Math.pow(power, JOYSTICK_EXPONENT);
         power = Math.copySign(power, stick);
         return power;
     }
