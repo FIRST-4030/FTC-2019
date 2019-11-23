@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.wheels.Wheels;
 public class WheelsConfigs extends Configs {
     private final static float DERATE = 1.0f;
     private final static float WC_MAX_RATE = 2.50f * DERATE;
-    private final static float WC_TICKS_PER_MM = 1.504f;
+    private final static float WC_TICKS_PER_MM = 0.5f;
 
     private final static float M_MAX_RATE = WC_MAX_RATE;
     private final static float M_TICKS_PER_MM = WC_TICKS_PER_MM;
@@ -59,11 +59,10 @@ public class WheelsConfigs extends Configs {
                         M_TICKS_PER_MM);
                 motors[3] = new WheelMotor("BR", MOTOR_SIDE.RIGHT, MOTOR_END.BACK, true,
                         M_TICKS_PER_MM);
-                config = new WheelsConfig(DRIVE_TYPE.MECANUM, motors, true, DcMotor.RunMode.RUN_USING_ENCODER);
+                config = new WheelsConfig(DRIVE_TYPE.MECANUM, motors, true, DcMotor.RunMode.RUN_TO_POSITION);
                 break;
 
             case ARM:
-
                 motors = new WheelMotor[4];
                 motors[0] = new WheelMotor("L1", MOTOR_SIDE.LEFT, MOTOR_END.FRONT, true,
                         M_TICKS_PER_MM);
