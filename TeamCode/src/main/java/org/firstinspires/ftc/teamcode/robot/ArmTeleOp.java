@@ -34,15 +34,18 @@ public class ArmTeleOp extends OpMode {
     private RateLimit rateX;
     private RateLimit rateY;
     private RateLimit rateR;
+    private RateLimit rateW;
     private static final double MAX_ARM_RATE_X = 1.0d; // In inches per second
     private static final double MAX_ARM_RATE_Y = 1.0d; // In inches per second
     private static final double MAX_ARM_RATE_R = 0.25d; // In servo position per second
+    private static final double MAX_ARM_RATE_W = 0.25d; // In servo position per second
 
     // other consts
     private static final float NORMAL_SPEED = 0.75f;
     private static final float SLOW_MODE = 0.25f;
 
     // vars
+    private float wristRotation = 0.5f;
     private float armRotation = 0.5f;
 
     @Override
@@ -71,10 +74,12 @@ public class ArmTeleOp extends OpMode {
         rateX = new RateLimit(this, MAX_ARM_RATE_X);
         rateY = new RateLimit(this, MAX_ARM_RATE_Y);
         rateR = new RateLimit(this, MAX_ARM_RATE_R);
+        rateW = new RateLimit(this, MAX_ARM_RATE_W);
 
         // Move arm to home
         robot.common.arm.setPosition(ARM_HOME_X, ARM_HOME_Y);
         robot.rotation.setPosition(0.5f);
+        robot.swivel.setPosition(wristRotation);
 
         // Wait for the game to begin
         telemetry.addData(">", "Ready for game start");
@@ -126,12 +131,17 @@ public class ArmTeleOp extends OpMode {
         float dx = (float) rateX.update(-gamepad2.left_stick_y * ARM_MOVEMENT_SCALE);
         float dy = (float) rateY.update(-gamepad2.right_stick_y * ARM_MOVEMENT_SCALE);
         armRotation -= (float) rateR.update(Math.pow(gamepad2.left_stick_x, 3) * ARM_ROTATION_SCALE);
+        wristRotation -= (float) rateW.update(Math.pow(gamepad2.right_stick_x, 3) * ARM_ROTATION_SCALE);
 
         // cap values
         armRotation = Math.min(1.0f, armRotation);
         armRotation = Math.max(0.0f, armRotation);
+        wristRotation = Math.min(1.0f, wristRotation);
+        wristRotation = Math.max(0.0f, wristRotation);
+
 
         robot.rotation.setPosition(armRotation);
+        robot.swivel.setPosition(wristRotation);
         robot.common.arm.setPositionDelta(dx, dy);
 
         if (buttons.get("HOME_ARM")) {
