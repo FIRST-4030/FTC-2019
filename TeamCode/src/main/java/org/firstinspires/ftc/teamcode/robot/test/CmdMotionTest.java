@@ -153,7 +153,7 @@ public class CmdMotionTest extends OpMode {
             // TODO: Test and calibrate these
             // Last year's auto:
             // https://github.com/FIRST-4030/FTC-2018/blob/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/robot/auto/RuckusAutoTheBetterOne.java
-            driver.drive = robot.common.drive.distance(1000);
+            driver.drive = robot.common.drive.distance(1000, 1f);
             droved = true;
             //robot.common.drive.degrees(90);
         }
