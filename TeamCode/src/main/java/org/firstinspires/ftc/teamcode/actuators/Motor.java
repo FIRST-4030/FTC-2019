@@ -107,17 +107,6 @@ public class Motor implements Available {
         return motor.getTargetPosition() + offset;
     }
 
-    public boolean onTarget() {
-        if (!isAvailable()) {
-            return false;
-        }
-        if (!isPositionPID()) {
-            telemetry.log().add(this.getClass().getSimpleName() + ": Position PID not active");
-            return false;
-        }
-        return !motor.isBusy();
-    }
-
     public void setMode(DcMotor.RunMode mode) {
         if (!isAvailable()) {
             return;
