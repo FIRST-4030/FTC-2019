@@ -82,11 +82,6 @@ public class DriveTo {
             }
 
             switch (param.comparator) {
-                case REVPID:
-                    if (actual > 0.0f) {
-                        onTarget = true;
-                    }
-                    break;
                 case LESS:
                     if (actual <= param.limit) {
                         onTarget = true;

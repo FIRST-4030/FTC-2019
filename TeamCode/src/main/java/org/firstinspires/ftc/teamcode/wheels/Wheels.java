@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.wheels;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.utils.Available;
@@ -19,6 +18,12 @@ public interface Wheels extends Available {
     float getTicksPerMM(MOTOR_SIDE side);
 
     float getTicksPerMM(MOTOR_SIDE side, MOTOR_END end);
+
+    float getTranslationTicksPerMM();
+
+    float getTranslationTicksPerMM(MOTOR_SIDE side);
+
+    float getTranslationTicksPerMM(MOTOR_SIDE side, MOTOR_END end);
 
     int getEncoder();
 
@@ -39,12 +44,4 @@ public interface Wheels extends Available {
     void setTeleop(boolean enabled);
 
     void setSpeedScale(float scale);
-
-    void setPositionPID(boolean enabled);
-
-    boolean isPositionPID();
-
-    boolean onTarget();
-
-    void setTarget(int target);
 }

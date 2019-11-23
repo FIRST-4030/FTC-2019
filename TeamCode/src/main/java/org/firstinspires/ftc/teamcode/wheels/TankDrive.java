@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.wheels;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -12,8 +11,8 @@ public class TankDrive implements Wheels {
     private static final float JOYSTICK_DEADZONE = 0.1f;
     private static final float SPEED_DEADZONE = JOYSTICK_DEADZONE * 0.85f;
     private static final int JOYSTICK_EXPONENT = 3;
-    public static final MOTOR_SIDE DEFAULT_ENCODER_SIDE = MOTOR_SIDE.RIGHT;
-    public static final MOTOR_END DEFAULT_ENCODER_END = MOTOR_END.FRONT;
+    //public static final MOTOR_SIDE DEFAULT_ENCODER_SIDE = MOTOR_SIDE.RIGHT;
+    //public static final MOTOR_END DEFAULT_ENCODER_END = MOTOR_END.FRONT;
 
     protected WheelsConfig config = null;
     protected final Telemetry telemetry;
@@ -40,12 +39,12 @@ public class TankDrive implements Wheels {
         return config != null;
     }
 
-    private int getIndex(MOTOR_SIDE side, MOTOR_END end) {
+    private int getIndex(MOTOR_SIDE side, MOTOR_END end){
         for (int i = 0; i < config.motors.length; i++) {
-            if (end == null && side == null) {
+            /*if (end == null && side == null) {
                 end = DEFAULT_ENCODER_END;
                 side = DEFAULT_ENCODER_SIDE;
-            }
+            }*/
             if ((end == null || config.motors[i].end == end) &&
                     (side == null || config.motors[i].side == side)) {
                 return i;
@@ -84,6 +83,21 @@ public class TankDrive implements Wheels {
         return config.motors[getIndex(side, end)].ticksPerMM;
     }
 
+    public float getTranslationTicksPerMM() {
+        return getTranslationTicksPerMM(null, null);
+    }
+
+    public float getTranslationTicksPerMM(MOTOR_SIDE side) {
+        return getTranslationTicksPerMM(side, null);
+    }
+
+    public float getTranslationTicksPerMM(MOTOR_SIDE side, MOTOR_END end) {
+        if (!isAvailable()) {
+            return 0.0f;
+        }
+        return config.motors[getIndex(side, end)].tranlationTicksPerMM;
+    }
+
     public int getEncoder() {
         return getEncoder(null, null);
     }
@@ -112,56 +126,6 @@ public class TankDrive implements Wheels {
             if (side == null || motor.side == side) {
                 motor.motor.setPower(limit(speed * speedScale));
             }
-        }
-    }
-
-    public boolean isPositionPID() {
-        boolean pid = true;
-        for (int i = 0; i < config.motors.length; i++) {
-            if (!config.motors[i].motor.isPositionPID()) {
-                if (i > 0 && pid != false) {
-                    telemetry.log().add(this.getClass().getSimpleName() + ": Inconsistent PID state");
-                }
-                pid = false;
-            }
-        }
-        return pid;
-    }
-
-    public void setPositionPID(boolean enable) {
-        DcMotor.RunMode mode = config.mode;
-        if (enable) {
-            mode = DcMotor.RunMode.RUN_TO_POSITION;
-            setTeleop(false);
-        }
-
-        stop();
-        for (int i = 0; i < config.motors.length; i++) {
-            config.motors[i].motor.setMode(mode);
-        }
-    }
-
-    public boolean onTarget() {
-        boolean done = true;
-        for (int i = 0; i < config.motors.length; i++) {
-            if (!config.motors[i].motor.onTarget()) {
-                done = false;
-            }
-        }
-        return done;
-    }
-
-    public void setTarget(int target) {
-        if (!isAvailable()) {
-            return;
-        }
-        if (!isPositionPID()) {
-            stop();
-            telemetry.log().add(this.getClass().getSimpleName() + ": Position PID not active");
-            return;
-        }
-        for (int i = 0; i < config.motors.length; i++) {
-            config.motors[i].motor.setTarget(target);
         }
     }
 
@@ -214,7 +178,7 @@ public class TankDrive implements Wheels {
         }
 
         float power = limit(stick);
-        power = (float) Math.pow(power, JOYSTICK_EXPONENT);
+        power = (float)Math.pow(power, JOYSTICK_EXPONENT);
         power = Math.copySign(power, stick);
         return power;
     }

@@ -30,6 +30,7 @@ public class SkystoneAuto extends OpMode {
     private boolean gameReady = false;
     private Field.AllianceColor color = Field.AllianceColor.BLUE;
     private boolean stopByWall = true;
+    private SkystonePos skyPos = SkystonePos.RIGHT;
 
     @Override
     public void init() {
@@ -117,28 +118,116 @@ public class SkystoneAuto extends OpMode {
          * enum has descriptions of each state
          */
         switch (state) {
+
             case INIT:
                 driver.done = false;
-                robot.hookRight.max();
-                robot.hookLeft.max();
+                robot.hookLeft.min();
+                robot.hookRight.min();
+                robot.flipper.setPosition(0.0f);
+                robot.claw.min();
                 advance();
                 break;
 
-            case YUH:
-                driver.drive = common.drive.distance(InchesToMM(24.0f));
+            case DETECT_SKYSTONE:
+                // TODO: actually make this one
+                skyPos = SkystonePos.RIGHT;
                 advance();
                 break;
 
-            case YEH:
-                if (!stopByWall) {
-                    driver.drive = common.drive.translate(InchesToMM(-24.0f));
+            case MOVE_TO_STONES:
+                driver.drive = common.drive.translate(InchesToMM(36.0f));
+                advance();
+                break;
+
+            case ADJUST:
+                switch(skyPos) {
+                    case LEFT:
+                        // idk
+                        break;
+
+                    case CENTER:
+                        driver.drive = common.drive.distance(InchesToMM(6.0f));
+                        break;
+
+                    case RIGHT:
+                        driver.drive = common.drive.distance(InchesToMM(12.0f));
+                        break;
                 }
+                advance();
+                break;
+
+            case PUSH_STONES:
+                driver.drive = common.drive.translate(InchesToMM(4.0f));
+                advance();
+                break;
+
+            case REACH_OUT_HALF:
+                robot.flipper.setPosition(0.5f);
+                driver.drive = common.drive.sleep(200);
+                advance();
+                break;
+
+            case OPEN_CLAW:
+            case RELEASE_STONE:
+                robot.claw.max();
+                driver.drive = common.drive.sleep(200);
+                advance();
+                break;
+
+            case REACH_OUT_MORE:
+                robot.flipper.setPosition(1.0f);
+                driver.drive = common.drive.sleep(200);
+                advance();
+                break;
+
+            case GRAB:
+                robot.claw.min();
+                driver.drive = common.drive.sleep(200);
+                advance();
+                break;
+
+            case SMALL_LIFT:
+                robot.flipper.setPosition(0.01f);
+                driver.drive = common.drive.sleep(200);
+                advance();
+                break;
+
+            case SPIN_ATTACK:
+                driver.drive = common.drive.degrees(180);
+                advance();
+                break;
+
+            case MOVE_TO_WALL:
+                if (stopByWall) {
+                    driver.drive = common.drive.translate(InchesToMM(36.0f));
+                } else {
+                    driver.drive = common.drive.translate(InchesToMM(12.0f));
+                }
+                advance();
+                break;
+
+            case DRIVE_UNDER_BRIDGE:
+                driver.drive = common.drive.distance(InchesToMM(12.0f));
+                advance();
+                break;
+
+            case RETRACT_ARM:
+                robot.flipper.setPosition(0.0f);
+                robot.claw.min();
+                driver.drive = common.drive.sleep(300);
+                advance();
+                break;
+
+            case PARK:
+                driver.drive = common.drive.distance(InchesToMM(-3.0f));
                 advance();
                 break;
 
             case DONE:
                 driver.done = true;
                 break;
+
+
         }
 
         // Update telemetry
@@ -151,9 +240,31 @@ public class SkystoneAuto extends OpMode {
     enum AUTO_STATE implements OrderedEnum {
         INIT, // Initialization
 
-        YUH, // go under bgie
+        DETECT_SKYSTONE, // Where's Waldo?
 
-        YEH, // strafe if need
+        MOVE_TO_STONES, // Move closer to the stones
+
+        ADJUST, // Line up with the skystone to pick it up
+
+        PUSH_STONES, // Move the normie stones out of the way
+
+        // Steps to grab the arm
+        REACH_OUT_HALF, // Reach out the arm
+        OPEN_CLAW,
+        REACH_OUT_MORE,
+        GRAB, //  Grab the skystone
+        SMALL_LIFT, // Lift it off of the ground
+
+        SPIN_ATTACK, // Rotate 180
+
+        MOVE_TO_WALL, // Move back towards the wall (user configurable)
+
+        DRIVE_UNDER_BRIDGE, // Go under the bridge
+
+        RELEASE_STONE, // <--
+        RETRACT_ARM,
+
+        PARK, // Stop under the bridge
 
         DONE;
 
@@ -210,5 +321,9 @@ public class SkystoneAuto extends OpMode {
      */
     private void advance() {
         state = state.next();
+    }
+
+    private enum SkystonePos {
+        LEFT, CENTER, RIGHT
     }
 }
