@@ -62,6 +62,7 @@ public class ArmTeleOp extends OpMode {
         if (robot.bot != BOT.ARM) {
             telemetry.log().add("Opmode not compatible with bot " + robot.bot);
             requestOpModeStop();
+            return;
         }
 
         // Register buttons

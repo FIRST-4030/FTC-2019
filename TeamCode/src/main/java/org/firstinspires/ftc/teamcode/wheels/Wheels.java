@@ -19,6 +19,12 @@ public interface Wheels extends Available {
 
     float getTicksPerMM(MOTOR_SIDE side, MOTOR_END end);
 
+    float getTranslationTicksPerMM();
+
+    float getTranslationTicksPerMM(MOTOR_SIDE side);
+
+    float getTranslationTicksPerMM(MOTOR_SIDE side, MOTOR_END end);
+
     int getEncoder();
 
     int getEncoder(MOTOR_SIDE side);

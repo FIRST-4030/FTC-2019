@@ -95,7 +95,7 @@ public class Drive implements CommonTask, DriveToListener {
         robot.wheels.setTeleop(false);
 
         DriveToParams param = new DriveToParams(this, SENSOR_TYPE.DRIVE_ENCODER);
-        int target = (int) ((float) millimeters * robot.wheels.getTicksPerMM()) + robot.wheels.getEncoder();
+        int target = (int) ((float) millimeters * robot.wheels.getTranslationTicksPerMM()) + robot.wheels.getEncoder();
         param.translationPid(target, DRIVE_PARAMS, DRIVE_TOLERANCE, DRIVE_DIFF_TOLERANCE);
         return new DriveTo(new DriveToParams[]{param});
     }

@@ -61,6 +61,11 @@ public class CmdMotionTest extends OpMode {
 
     @Override
     public void init_loop() {
+        telemetry.addData("Gyro", robot.gyro.isReady() ? "Ready" : "Calibrating…");
+        if (robot.gyro.isReady()) {
+            telemetry.addData(">", "Ready for game start");
+        }
+        telemetry.update();
     }
 
     @Override
@@ -153,9 +158,9 @@ public class CmdMotionTest extends OpMode {
             // TODO: Test and calibrate these
             // Last year's auto:
             // https://github.com/FIRST-4030/FTC-2018/blob/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/robot/auto/RuckusAutoTheBetterOne.java
-            driver.drive = robot.common.drive.distance(1000, 1f);
+            //driver.drive = robot.common.drive.distance(1000);
+            driver.drive = robot.common.drive.translate(1000);
             droved = true;
-            //robot.common.drive.degrees(90);
         }
 
         // This is automatically skipped when setTelop() is false
