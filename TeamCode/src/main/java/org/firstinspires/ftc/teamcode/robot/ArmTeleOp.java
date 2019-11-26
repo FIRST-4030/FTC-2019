@@ -44,6 +44,10 @@ public class ArmTeleOp extends OpMode {
     private static final float NORMAL_SPEED = 0.75f;
     private static final float SLOW_MODE = 0.25f;
 
+    //Swivel consts
+    private static final float CLAW_FORWARD = 0.5f;
+    private static final float CLAW_SIDEWAYS = 0.5f;
+
     // vars
     private float wristRotation = 0.5f;
     private float armRotation = 0.5f;
@@ -68,8 +72,10 @@ public class ArmTeleOp extends OpMode {
         // Register buttons
         buttons = new ButtonHandler(robot);
         buttons.register("CLAW", gamepad2, PAD_BUTTON.x, BUTTON_TYPE.TOGGLE);
-        buttons.register("HOME_ARM", gamepad2, PAD_BUTTON.y, BUTTON_TYPE.SINGLE_PRESS);
-        buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.left_bumper, BUTTON_TYPE.TOGGLE);
+        buttons.register("HOME_ARM", gamepad2, PAD_BUTTON.b, BUTTON_TYPE.SINGLE_PRESS);
+        buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
+        buttons.register("SWIVEL_FORWARD", gamepad2, PAD_BUTTON.left_bumper, BUTTON_TYPE.SINGLE_PRESS);
+        buttons.register("SWIVEL_SIDEWAYS", gamepad2, PAD_BUTTON.left_bumper, BUTTON_TYPE.SINGLE_PRESS);
 
         // Init rate limits for the arm
         rateX = new RateLimit(this, MAX_ARM_RATE_X);
@@ -159,6 +165,8 @@ public class ArmTeleOp extends OpMode {
         } else {
             robot.claw.setPosition(CLAW_OPEN);
         }
+
+
     }
 
     public void stop() {
