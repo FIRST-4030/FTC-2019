@@ -13,12 +13,12 @@ import org.firstinspires.ftc.teamcode.robot.common.Common;
 import org.firstinspires.ftc.teamcode.utils.OrderedEnum;
 import org.firstinspires.ftc.teamcode.utils.OrderedEnumHelper;
 import org.firstinspires.ftc.teamcode.utils.Round;
-import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 import org.firstinspires.ftc.teamcode.vuforia.ImageFTC;
+import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Skystone Side", group = "Scissor")
-public class SkystoneAuto extends OpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Skystone Side (Vuforia", group = "Scissor")
+public class SkystoneAutoVuforia extends OpMode {
 
     // Devices and subsystems
     private Robot robot = null;
@@ -150,12 +150,6 @@ public class SkystoneAuto extends OpMode {
                 advance();
                 break;
 
-            case LOCATE_SKYSTONE:
-                skystonePlacement = 0;
-                SkystoneOffset = 8 * skystonePlacement;
-                advance();
-                break;
-
             case MOVE_OUT:
                 driver.drive = common.drive.distance(InchesToMM(-24.0f));
                 advance();
@@ -166,6 +160,13 @@ public class SkystoneAuto extends OpMode {
                     driver.drive = common.drive.degrees(-90.0f);
                 else
                     driver.drive = common.drive.degrees(90.0f);
+                advance();
+                break;
+
+            case LOCATE_SKYSTONE:
+                skystonePlacement = setSkystonePlacement();
+                skystonePlacement = 0;
+                SkystoneOffset = 8 * skystonePlacement;
                 advance();
                 break;
 
@@ -333,5 +334,24 @@ public class SkystoneAuto extends OpMode {
         state = state.next();
     }
 
+    public int setSkystonePlacement(){
+        SkystoneAutoVuforia.Vu = new VuforiaFTC(hardwareMap, telemetry, BOT.SCISSOR);
+        SkystoneAutoVuforia.Vu.init();
+        SkystoneAutoVuforia.Vu.start();
 
+        SkystoneAutoVuforia.Vu.enableCapture();
+
+        if(SkystoneAutoVuforia.Vu.capturing()) {
+            SkystoneAutoVuforia.Vu.capture();
+            SkystoneAutoVuforia.Img = SkystoneAutoVuforia.Vu.getImage();
+            SkystoneAutoVuforia.Vu.stop();
+            if (!SkystoneAutoVuforia.Vu.isStale()) {
+                SkystoneAutoVuforia.Img.savePNG("VuIMg");
+                SkystoneAutoVuforia.Img.savePNGMyVo("VulMg2");
+            }
+            return -2;
+        }else {
+            return -2;
+        }
+    }
 }

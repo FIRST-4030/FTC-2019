@@ -59,6 +59,14 @@ public class ImageFTC {
 
     public boolean savePNG(String name) {
         File dir = Environment.getExternalStoragePublicDirectory(SAVE_DIR_DEFAULT);
+        File dir2 = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        AppUtil.getInstance().ensureDirectoryExists(dir);
+        File file = new File(dir, name);
+        return save(file, Bitmap.CompressFormat.PNG, SAVE_QUALITY_DEFAULT);
+    }
+
+    public boolean savePNGMyVo(String name){
+        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
         AppUtil.getInstance().ensureDirectoryExists(dir);
         File file = new File(dir, name);
         return save(file, Bitmap.CompressFormat.PNG, SAVE_QUALITY_DEFAULT);
