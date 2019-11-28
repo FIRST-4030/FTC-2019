@@ -71,7 +71,7 @@ public class ServoFTC implements Available {
     }
 
     public void max() {
-        setPosition(max);
+        setPositionRaw(max);
     }
 
     public void toggle() {
@@ -81,5 +81,13 @@ public class ServoFTC implements Available {
         } else {
             max();
         }
+    }
+
+    public float getMin() {
+        return min;
+    }
+
+    public float getMax() {
+        return max;
     }
 }
