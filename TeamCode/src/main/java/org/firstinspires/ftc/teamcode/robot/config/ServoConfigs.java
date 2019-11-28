@@ -61,7 +61,7 @@ public class ServoConfigs extends Configs {
                     case CLAW:
                         config = new ServoConfig("Claw", false, 0.5f, 0.8f);
                         break;
-                    case SWIVEL:
+                    case WRIST:
                         config = new ServoConfig("Swivel", false, 0.0f, 1.0f);
                 }
         }

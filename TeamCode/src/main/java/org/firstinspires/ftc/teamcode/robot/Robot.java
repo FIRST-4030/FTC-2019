@@ -43,7 +43,7 @@ public class Robot {
     public ServoFTC lower;
     public ServoFTC upper;
     public ServoFTC rotation;
-    public ServoFTC swivel;
+    public ServoFTC wrist;
 
 
     public Robot(HardwareMap map, Telemetry telemetry) {
@@ -92,7 +92,7 @@ public class Robot {
                 upper = servos.init(SERVOS.UPPER);
                 rotation = servos.init(SERVOS.ROTATION);
                 claw = servos.init(SERVOS.CLAW);
-                swivel = servos.init(SERVOS.SWIVEL);
+                wrist = servos.init(SERVOS.WRIST);
         }
 
 
