@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.defaults.Default;
 import org.firstinspires.ftc.teamcode.robot.Hardware;
 
 public class RobotNG {
@@ -11,9 +12,11 @@ public class RobotNG {
     // Map the FTC-provided OpMode and our own hardware map
     public final OpMode opMode;
     public final Hardware hardware;
+    public final Default defaults;
 
     public RobotNG(OpMode opMode) {
         this.opMode = opMode;
+        this.defaults = new Default(this);
 
         // Hardware config lives in Hardware
         this.hardware = new Hardware(this);

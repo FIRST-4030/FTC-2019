@@ -18,8 +18,13 @@ public class ServoNG implements Actuator {
         this.p = p;
         try {
             servo = p.robot.opMode.hardwareMap.servo.get(p.name);
+            // FTC FORWARD/REVERSE mode
             if (p.reverse) {
                 servo.setDirection(Servo.Direction.REVERSE);
+            }
+            // Init position, if set
+            if (p.hasPreset(p.INIT_NAME)) {
+                position(p.getPreset(p.INIT_NAME));
             }
         } catch (Exception e) {
             servo = null;

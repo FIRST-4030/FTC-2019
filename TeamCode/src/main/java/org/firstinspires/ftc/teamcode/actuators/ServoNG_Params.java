@@ -3,18 +3,23 @@ package org.firstinspires.ftc.teamcode.actuators;
 import org.firstinspires.ftc.teamcode.RobotNG;
 import org.firstinspires.ftc.teamcode.utils.Round;
 
-public class ServoNG_Params {
-    public enum LIMIT_TYPE {POSITION, ANGLE, OUTPUT}
+import java.util.LinkedHashMap;
 
-    protected RobotNG robot;
+public class ServoNG_Params implements Actuator_Params {
+    public enum UNIT_TYPE {POSITION, ANGLE, OUTPUT}
+
+    public static final String INIT_NAME = "_INIT";
+
+    RobotNG robot;
+    double min = 0.0d;
+    double max = 1.0d;
+    LinkedHashMap<String, Double> presets;
 
     public final String name;
     public boolean reverse = false;
     public double range = 180.0d;
     public double outputScale = 1.0d;
     public double outputOffset = 0.0d;
-    protected double min = 0.0d;
-    protected double max = 1.0d;
     public double rateLimit = Double.MAX_VALUE;
 
     public ServoNG_Params(String name) {
@@ -30,11 +35,12 @@ public class ServoNG_Params {
             name = "<NULL>";
         }
 
+        this.presets = new LinkedHashMap<>();
         this.robot = robot;
         this.name = name;
     }
 
-    public boolean validate() {
+    public boolean valid() {
         boolean retval = true;
         if (name == null || name.isEmpty()) {
             robot.log(this, "Null/empty name");
@@ -52,7 +58,7 @@ public class ServoNG_Params {
         return retval;
     }
 
-    public void setLimits(double min, double max, LIMIT_TYPE type) {
+    public void setLimits(double min, double max, UNIT_TYPE type) {
         switch (type) {
             case POSITION:
                 this.min = min;
@@ -67,6 +73,44 @@ public class ServoNG_Params {
                 this.max = outputToPos(max);
                 break;
         }
+    }
+
+    public double getPreset(String name) {
+        if (name == null || name.isEmpty()) {
+            robot.log(this, "Null/empty present name");
+            return 0.0d;
+        }
+        if (!presets.containsKey(name)) {
+            robot.log(this, "Unregistered preset: " + name);
+            return 0.0d;
+        }
+        return presets.get(name);
+    }
+
+    public boolean hasPreset(String name) {
+        return presets.containsKey(name);
+    }
+
+    public void addPreset(String name, double pos, UNIT_TYPE type) {
+        if (name == null || name.isEmpty()) {
+            robot.log(this, "Null/empty present name");
+            return;
+        }
+        if (presets.containsKey(name)) {
+            robot.log(this, "Preset already exists: " + name);
+            return;
+        }
+        switch (type) {
+            case POSITION:
+                break;
+            case ANGLE:
+                pos = angleToPos(pos);
+                break;
+            case OUTPUT:
+                pos = outputToPos(pos);
+                break;
+        }
+        presets.put(name, pos);
     }
 
     public double posToScale(double pos) {

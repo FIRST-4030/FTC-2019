@@ -2,52 +2,38 @@ package org.firstinspires.ftc.teamcode.actuators;
 
 import org.firstinspires.ftc.teamcode.RobotNG;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Actuators {
     private final RobotNG robot;
-    private final HashMap<String, Actuator> a;
+    private final HashSet<Actuator> a;
 
     public Actuators(RobotNG robot) {
         this.robot = robot;
-        a = new HashMap<>();
+        a = new HashSet<Actuator>();
     }
 
-    public Set<String> getNames() {
-        return a.keySet();
+    public Set<Actuator> get() {
+        return (Set<Actuator>) a.clone();
     }
 
-    // Note that this can return null
-    public Actuator get(String name) {
-        return a.get(name);
-    }
-
-    public void add(String name, Actuator actuator) {
-        if (name == null || name.isEmpty()) {
-            robot.log("add(): Null/empty name");
-            return;
-        }
+    public void add(Actuator actuator) {
         if (actuator == null) {
-            robot.log("Null Actuator: " + name);
+            robot.log("Null Actuator");
             return;
         }
-        if (a.containsKey(name)) {
-            robot.log("Actuator exists: " + name);
-            return;
-        }
-        a.put(name, actuator);
+        a.add(actuator);
     }
 
-    public void remove(String name) {
-        if (name == null || name.isEmpty()) {
-            robot.log("remove(): Null/empty name");
+    public void remove(Actuator actuator) {
+        if (actuator == null) {
+            robot.log("Null actuator");
             return;
         }
-        if (!a.containsKey(name)) {
-            robot.log("Actuator does not exist: " + name);
-            return;
+        if (!a.contains(actuator)) {
+            robot.log(this, "Unregistered actuator: " + actuator.p.name);
         }
-        a.remove(name);
+        a.remove(actuator);
     }
 }
