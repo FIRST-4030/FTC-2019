@@ -2,20 +2,32 @@ package org.firstinspires.ftc.teamcode.actuators;
 
 import org.firstinspires.ftc.teamcode.RobotNG;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Set;
 
 public class Actuators {
     private final RobotNG robot;
-    private final HashSet<Actuator> a;
+    private final HashMap<String, Actuator> a;
 
     public Actuators(RobotNG robot) {
         this.robot = robot;
-        a = new HashSet<Actuator>();
+        a = new HashMap<String, Actuator>();
     }
 
-    public Set<Actuator> get() {
-        return (Set<Actuator>) a.clone();
+    public Set<String> get() {
+        return a.keySet();
+    }
+
+    public Actuator get(String name) {
+        if (name == null || name.isEmpty()) {
+            robot.log(this, "Null/empty actuator");
+            return null;
+        }
+        if (!a.containsKey(name)) {
+            robot.log(this, "Unregistered actuator: " + name);
+            return null;
+        }
+        return a.get(name);
     }
 
     public void add(Actuator actuator) {
@@ -23,17 +35,17 @@ public class Actuators {
             robot.log("Null Actuator");
             return;
         }
-        a.add(actuator);
+        a.put(actuator.p.name, actuator);
     }
 
-    public void remove(Actuator actuator) {
-        if (actuator == null) {
-            robot.log("Null actuator");
+    public void remove(String name) {
+        if (name == null || name.isEmpty()) {
+            robot.log(this, "Null/empty actuator");
             return;
         }
-        if (!a.contains(actuator)) {
-            robot.log(this, "Unregistered actuator: " + actuator.p.name);
+        if (!a.containsKey(name)) {
+            robot.log(this, "Unregistered actuator: " + name);
         }
-        a.remove(actuator);
+        a.remove(name);
     }
 }
