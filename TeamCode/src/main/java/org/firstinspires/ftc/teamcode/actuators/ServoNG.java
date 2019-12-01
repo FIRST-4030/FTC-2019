@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.actuators;
 
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.RobotNG;
+import org.firstinspires.ftc.teamcode.buttons.ButtonHandler;
+import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
 import org.firstinspires.ftc.teamcode.utils.Round;
 
 public class ServoNG implements Actuator {
@@ -14,10 +17,17 @@ public class ServoNG implements Actuator {
     private boolean teleop = false;
     private boolean enforce = true;
 
+    // Debug support
+    private ButtonHandler D_buttons = null;
+    private boolean D_teleop = teleop;
+    private boolean D_enforce = enforce;
+    private Telemetry D_telemetry;
+    private Gamepad D_gamepad;
+
     public ServoNG(ServoNG_Params p) {
         this.p = p;
         try {
-            servo = p.robot.opMode.hardwareMap.servo.get(p.name);
+            servo = p.robot.opMode.hardwareMap.servo.get(p.name());
             // FTC FORWARD/REVERSE mode
             if (p.reverse) {
                 servo.setDirection(Servo.Direction.REVERSE);
@@ -28,55 +38,68 @@ public class ServoNG implements Actuator {
             }
         } catch (Exception e) {
             servo = null;
-            p.robot.log(this, "Servo not available: " + p.name);
+            p.robot.log(this, "Servo not available: " + p.name());
             this.enabled = false;
         }
     }
 
-    public void loop(double input) {
-        if (!teleop) {
-            return;
-        }
-        // TODO: Rate-limited analog input
-        relative(input);
+    public Actuator_Params params() {
+        return p;
     }
 
     public void setTeleop(boolean enable) {
         teleop = enable;
     }
 
-    public void limits(boolean enforce) {
+    public void teleop(double delta) {
+        if (!teleop) {
+            return;
+        }
+        position(getPosition() + delta, true);
+    }
+
+    public void enforceLimits(boolean enforce) {
         this.enforce = enforce;
     }
 
     public double getPosition() {
         if (!ready()) {
-            return 0.5d;
+            return 0.0d;
         }
         return servo.getPosition();
     }
 
     private void limitError(double pos) {
-        p.robot.log(this, p.name + ": Cannot reach position: " +
-                Round.truncate(pos) + "/" +
-                Round.truncate(p.posToAngle(pos)) + "/" +
-                Round.truncate(p.posToOutput(pos)));
+        p.robot.log(this, p.name() + ": Cannot reach position: " +
+                Round.truncate(pos) + "\t" +
+                Round.truncate(p.posToAngle(pos)) + "°\t" +
+                Round.percent(p.posToScale(pos)) + "%\t" +
+                Round.truncate(p.posToOutput(pos)) + "°");
     }
 
     public void position(double pos) {
+        position(pos, false);
+    }
+
+    private void position(double pos, boolean teleopOverride) {
         if (!ready()) {
+            return;
+        }
+
+        // Don't allow auto commands in teleop
+        if (teleop && !teleopOverride) {
             return;
         }
 
         // Optionally enforce limits
         if (enforce) {
-            if (pos < p.min) {
+            if (pos < p.getMin()) {
                 limitError(pos);
-                pos = p.min;
+                pos = p.getMin();
             }
-            if (pos > p.max) {
+            if (pos > p.getMax()) {
                 limitError(pos);
-                pos = p.max;
+                pos = p.getMax();
             }
         }
 
@@ -102,7 +125,7 @@ public class ServoNG implements Actuator {
     }
 
     public void relativeScale(double delta) {
-        relative(delta * (p.max - p.min));
+        relative(delta * (p.getMinMaxRange()));
     }
 
     public void relativeAngle(double delta) {
@@ -115,31 +138,104 @@ public class ServoNG implements Actuator {
 
     @Override
     public void debug_init(RobotNG robot) {
-        // TODO: Install key bindings
-    }
+        D_teleop = teleop;
+        D_enforce = enforce;
+        D_telemetry = robot.opMode.telemetry;
+        D_gamepad = robot.opMode.gamepad1;
+        setTeleop(true);
 
-    @Override
-    public void debug_loop() {
-        Telemetry t = p.robot.opMode.telemetry;
-
-        String mode = p.name + "\t";
-        mode += enabled() ? "Enabled\t" : "Disabled\t";
-        mode += ready() ? "Ready\t" : "Not Ready\t";
-        t.addData("Mode", mode);
-
-        double pos = servo.getPosition();
-        String position = Round.truncate(pos) + "\t" +
-                Round.truncate(p.posToAngle(pos)) + "\t" +
-                Round.truncate(p.posToOutput(pos));
-        t.addData("Position", position);
-
-        // TODO: Other parameters
-        t.update();
+        Gamepad pad = robot.opMode.gamepad1;
+        D_buttons = new ButtonHandler(robot.opMode.telemetry);
+        D_buttons.register("PRESET_UP", pad, PAD_BUTTON.y);
+        D_buttons.register("PRESET_DOWN", pad, PAD_BUTTON.a);
+        D_buttons.register("LIMITS", pad, PAD_BUTTON.right_stick_button);
+        D_buttons.register("MIN", pad, PAD_BUTTON.left_bumper);
+        D_buttons.register("MAX", pad, PAD_BUTTON.right_bumper);
     }
 
     @Override
     public void debug_destroy() {
-        // TODO: Remove key bindings
+        D_buttons = null;
+        setTeleop(D_teleop);
+        enforceLimits(D_enforce);
+
+        // Force a null move to get everything in sync
+        relative(0.0d);
+    }
+
+    @Override
+    public void debug_loop() {
+        Telemetry t = D_telemetry;
+        String s;
+
+        D_buttons.update();
+        teleop(D_gamepad.right_stick_x);
+        if (D_buttons.get("PRESET_UP")) {
+            // TODO: Prev/Next presets
+        }
+        if (D_buttons.get("PRESET_DOWN")) {
+            // TODO: Prev/Next presets
+        }
+        if (D_buttons.get("LIMITS")) {
+            enforceLimits(!enforce);
+        }
+        if (D_buttons.get("MIN")) {
+            position(p.getMin());
+        }
+        if (D_buttons.get("MAX")) {
+            position(p.getMax());
+        }
+
+        // Name/Mode
+        s = p.name() + "\t" +
+                Round.truncate(p.range) + "°\t" +
+                (p.reverse ? "Reverse" : "Forward");
+        t.addData("Servo", s);
+        s = (enabled() ? "Enabled" : "Disabled") + "\t" +
+                (ready() ? "Ready" : "Not Ready") + "\t" +
+                (enforce ? "Limited" : "Unlimited");
+        t.addData("Mode", s);
+
+        // Position
+        double pos = servo.getPosition();
+        s = Round.truncate(pos) + "\t" +
+                Round.truncate(p.posToAngle(pos)) + "°";
+        t.addData("Pos Raw", s);
+        s = Round.percent(p.posToScale(pos)) + "%\t" +
+                Round.truncate(p.posToOutput(pos)) + "°";
+        t.addData("Pos Out", s);
+
+        // Min/Max
+        s = p.getMin() + " (" + p.posToAngle(p.getMin()) + "°)\t"
+                + p.getMax() + " (" + p.posToAngle(p.getMax()) + "°)";
+        t.addData("Min Max Raw", s);
+        s = Round.percent(p.posToScale(p.getMin())) + "% " +
+                "(" + Round.truncate(p.posToOutput(p.getMin())) + "°)\t"
+                + Round.percent(p.posToScale(p.getMax())) + "% " +
+                "(" + Round.truncate(p.posToAngle(p.getMax())) + "°)";
+        t.addData("Min Max Out", s);
+
+        // Output
+        s = Round.truncate(p.outputOffset) + "\t" + Round.truncate(p.outputScale);
+        t.addData("Output", s);
+
+        // Teleop
+        s = (teleop ? "Teleop" : "Auto") + "\t" +
+                Round.truncate(p.rateLimit);
+        t.addData("Teleop", s);
+
+        // Presets
+        s = "";
+        for (String name : p.getPresets()) {
+            if (!s.isEmpty()) {
+                s += ", ";
+            }
+            s += name + ":" + p.getPreset(name);
+        }
+        t.addData("Presets", s);
+
+        // Display
+        t.update();
     }
 
     @Override
@@ -150,6 +246,7 @@ public class ServoNG implements Actuator {
     @Override
     public void setEnable(boolean enable) {
         if (enable) {
+            // Force a null move to ensure the chain is ready
             relative(0.0d);
         } else {
             stop();

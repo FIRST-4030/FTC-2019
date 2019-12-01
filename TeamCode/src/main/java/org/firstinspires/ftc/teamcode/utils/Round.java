@@ -29,4 +29,8 @@ public class Round {
     public static float magnitudeValue(float val) {
         return (float) magnitudeValue((double) val);
     }
+
+    public static double percent(double val) { return truncate(val * 100.0d); }
+
+    public static float percent(float val) { return truncate(val * 100.0f); }
 }

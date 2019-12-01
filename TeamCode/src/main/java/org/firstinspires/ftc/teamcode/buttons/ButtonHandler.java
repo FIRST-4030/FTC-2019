@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.buttons;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.RobotNG;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
 import java.lang.reflect.Field;
@@ -13,13 +15,24 @@ public class ButtonHandler {
     private final static float AXIS_THRESHOLD = 0.4f;
 
     private final HashMap<String, PadButton> buttons;
-    private final Robot robot;
+    private final Telemetry telemetry;
     public final SpinnerHandler spinners;
 
     public ButtonHandler(Robot robot) {
+        this(robot.telemetry);
+    }
+
+    public ButtonHandler(RobotNG robot) {
+        this(robot.opMode.telemetry);
+    }
+
+    public ButtonHandler(Telemetry telemetry) {
+        if (telemetry == null) {
+            throw new IllegalArgumentException(this.getClass().getSimpleName() + ": Null Telemetry");
+        }
         this.buttons = new HashMap<>();
-        this.robot = robot;
-        this.spinners = new SpinnerHandler(this, robot);
+        this.telemetry = telemetry;
+        this.spinners = new SpinnerHandler(this, telemetry);
     }
 
     public void register(String name, Gamepad gamepad, PAD_BUTTON button) {
@@ -54,7 +67,7 @@ public class ButtonHandler {
 
         // Register it in the map
         if (buttons.containsKey(name)) {
-            robot.telemetry.log().add("De-registering existing button: " + name);
+            telemetry.log().add("De-registering existing button: " + name);
         }
         buttons.put(name, b);
     }
@@ -63,7 +76,7 @@ public class ButtonHandler {
     public Button getListener(String name) {
         PadButton button = buttons.get(name);
         if (button == null) {
-            robot.telemetry.log().add("Unregistered listener: " + name);
+            telemetry.log().add("Unregistered listener: " + name);
             return null;
         }
         return button.listener;
@@ -98,7 +111,7 @@ public class ButtonHandler {
             }
         } catch (Exception e) {
             // We checked this when registering so this shouldn't happen, but log if it does
-            robot.telemetry.log().add("Unable to read button: " + b.button);
+            telemetry.log().add("Unable to read button: " + b.button);
         }
         return pressed;
     }
@@ -107,7 +120,7 @@ public class ButtonHandler {
     public boolean raw(String name) {
         PadButton padButton = buttons.get(name);
         if (padButton == null) {
-            robot.telemetry.log().add("Unregistered padButton name: " + name);
+            telemetry.log().add("Unregistered padButton name: " + name);
             return false;
         }
         return read(padButton);
@@ -137,7 +150,7 @@ public class ButtonHandler {
     private boolean get(String name, String type) {
         PadButton button = buttons.get(name);
         if (button == null) {
-            robot.telemetry.log().add("Unregistered button name: " + name);
+            telemetry.log().add("Unregistered button name: " + name);
             return false;
         }
 
@@ -145,7 +158,7 @@ public class ButtonHandler {
         try {
             method = button.listener.getClass().getMethod(type);
         } catch (NoSuchMethodException e) {
-            robot.telemetry.log().add("Invalid button request type: " + type);
+            telemetry.log().add("Invalid button request type: " + type);
             return false;
         }
 
@@ -153,7 +166,7 @@ public class ButtonHandler {
         try {
             value = (boolean) method.invoke(button.listener);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            robot.telemetry.log().add("Unable to invoke button listener for type: " + type);
+            telemetry.log().add("Unable to invoke button listener for type: " + type);
             return false;
         }
         return value;

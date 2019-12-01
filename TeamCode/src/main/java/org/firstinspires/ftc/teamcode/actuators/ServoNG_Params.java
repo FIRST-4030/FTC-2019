@@ -4,18 +4,19 @@ import org.firstinspires.ftc.teamcode.RobotNG;
 import org.firstinspires.ftc.teamcode.utils.Round;
 
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 public class ServoNG_Params implements Actuator_Params {
-    public enum UNIT_TYPE {POSITION, ANGLE, OUTPUT}
+    public enum UNIT {POSITION, ANGLE, OUTPUT}
 
     public static final String INIT_NAME = "_INIT";
 
     RobotNG robot;
-    double min = 0.0d;
-    double max = 1.0d;
-    LinkedHashMap<String, Double> presets;
+    private String name;
+    private double min = 0.0d;
+    private double max = 1.0d;
+    private LinkedHashMap<String, Double> presets;
 
-    public final String name;
     public boolean reverse = false;
     public double range = 180.0d;
     public double outputScale = 1.0d;
@@ -40,6 +41,10 @@ public class ServoNG_Params implements Actuator_Params {
         this.name = name;
     }
 
+    public String name() {
+        return name;
+    }
+
     public boolean valid() {
         boolean retval = true;
         if (name == null || name.isEmpty()) {
@@ -58,7 +63,12 @@ public class ServoNG_Params implements Actuator_Params {
         return retval;
     }
 
-    public void setLimits(double min, double max, UNIT_TYPE type) {
+    public void setLimits(double min, double max, UNIT type) {
+        if (min < max) {
+            robot.log(this, "Invalid min/max: " +
+                    Round.truncate(min) + "/" + Round.truncate(max));
+            return;
+        }
         switch (type) {
             case POSITION:
                 this.min = min;
@@ -73,6 +83,22 @@ public class ServoNG_Params implements Actuator_Params {
                 this.max = outputToPos(max);
                 break;
         }
+    }
+
+    public double getMin() {
+        return min;
+    }
+
+    public double getMax() {
+        return max;
+    }
+
+    public double getMinMaxRange() {
+        return max - min;
+    }
+
+    public Set<String> getPresets() {
+        return presets.keySet();
     }
 
     public double getPreset(String name) {
@@ -91,7 +117,7 @@ public class ServoNG_Params implements Actuator_Params {
         return presets.containsKey(name);
     }
 
-    public void addPreset(String name, double pos, UNIT_TYPE type) {
+    public void addPreset(String name, double pos, UNIT type) {
         if (name == null || name.isEmpty()) {
             robot.log(this, "Null/empty present name");
             return;
@@ -114,11 +140,11 @@ public class ServoNG_Params implements Actuator_Params {
     }
 
     public double posToScale(double pos) {
-        return (pos - min) / (max - min);
+        return (pos - min) / getMinMaxRange();
     }
 
     public double scaleToPos(double scale) {
-        return (scale * (max - min)) + min;
+        return (scale * getMinMaxRange()) + min;
     }
 
     public double posToAngle(double pos) {

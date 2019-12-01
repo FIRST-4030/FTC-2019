@@ -35,7 +35,15 @@ public class Actuators {
             robot.log("Null Actuator");
             return;
         }
-        a.put(actuator.p.name, actuator);
+        if (actuator.params() == null) {
+            robot.log("Null Actuator_Params");
+            return;
+        }
+        if (actuator.params().name() == null) {
+            robot.log("Null Name");
+            return;
+        }
+        a.put(actuator.params().name(), actuator);
     }
 
     public void remove(String name) {

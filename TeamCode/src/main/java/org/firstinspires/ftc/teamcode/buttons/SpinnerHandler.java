@@ -2,22 +2,25 @@ package org.firstinspires.ftc.teamcode.buttons;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.robot.Robot;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utils.Round;
 
 import java.util.HashMap;
 
 public class SpinnerHandler {
     private final ButtonHandler parent;
-    private final Robot robot;
+    private final Telemetry telemetry;
     private final HashMap<String, Spinner> spinners;
     private boolean disabled = true;
 
-    public SpinnerHandler(ButtonHandler parent, Robot robot) {
+    public SpinnerHandler(ButtonHandler parent, Telemetry telemetry) {
         if (parent == null) {
-            throw new IllegalArgumentException(this.getClass().getSimpleName() + "Null handler");
+            throw new IllegalArgumentException(this.getClass().getSimpleName() + "Null ButtonHandler");
         }
-        this.robot = robot;
+        if (telemetry == null) {
+            throw new IllegalArgumentException(this.getClass().getSimpleName() + "Null Telemetry");
+        }
+        this.telemetry = telemetry;
         this.parent = parent;
         spinners = new HashMap<>();
     }
@@ -55,7 +58,7 @@ public class SpinnerHandler {
                 value = ((Double) (Round.truncate((Double) spinner.value, 5))).toString();
                 break;
         }
-        robot.telemetry.addData(label, value);
+        telemetry.addData(label, value);
     }
 
     public double getDouble(String name) {
@@ -201,7 +204,7 @@ public class SpinnerHandler {
 
         // Main object
         if (spinners.containsKey(name)) {
-            robot.telemetry.log().add("De-registering existing spinner: " + name);
+            telemetry.log().add("De-registering existing spinner: " + name);
         }
         Spinner spinner = new Spinner(this, name, type, increment, value);
         spinners.put(name, spinner);

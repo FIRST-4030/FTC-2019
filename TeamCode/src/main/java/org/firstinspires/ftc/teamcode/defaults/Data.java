@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.defaults;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -38,6 +39,10 @@ public class Data {
         d.s = this.s;
         d.type = this.type;
         return d;
+    }
+
+    public boolean isUnset() {
+        return type == DataTypes.UNSET;
     }
 
     public void set(boolean b) {
@@ -92,7 +97,7 @@ public class Data {
     }
 
     public void deserialize(String str) {
-        DataTypes t = DataTypes.UNSET;
+        // Strings expected in the form of <type>:<uri_encoded_value>
         if (str == null || str.isEmpty()) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() + ":" +
                     "Null/empty string");
@@ -105,7 +110,8 @@ public class Data {
             throw new IllegalArgumentException(this.getClass().getSimpleName() + ":" +
                     "Invalid delimiter in: " + str);
         }
-        switch(str.substring(0, 1)) {
+        DataTypes t;
+        switch (str.substring(0, 1)) {
             case "b":
                 t = DataTypes.BOOLEAN;
                 break;
@@ -123,8 +129,16 @@ public class Data {
                         "Invalid type in: " + str);
         }
 
-        // Parse using the set(String) method since that does parsing but override the type
-        set(str.substring(3));
+        String val;
+        // Decode from the URI encoding
+        try {
+            val = URLDecoder.decode(str.substring(3), StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException ex) {
+            throw new RuntimeException("Unable to encode with charset: " + StandardCharsets.UTF_8.toString());
+        }
+        // Parse using the set(String) method since that does parsing
+        set(val);
+        // Override the type to match the original
         type = t;
     }
 
@@ -148,7 +162,7 @@ public class Data {
                 break;
         }
 
-        // Store the
+        // URI encode to ensure we don't have output newlines or other odd bits
         String val;
         try {
             val = URLEncoder.encode(s, StandardCharsets.UTF_8.toString());

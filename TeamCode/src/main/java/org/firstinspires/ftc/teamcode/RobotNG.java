@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.buttons.ButtonHandler;
 import org.firstinspires.ftc.teamcode.defaults.Defaults;
 import org.firstinspires.ftc.teamcode.robot.config.Hardware;
 import org.firstinspires.ftc.teamcode.robot.config.BOTS;
@@ -9,9 +10,10 @@ import org.firstinspires.ftc.teamcode.robot.config.BOTS;
 public class RobotNG {
     // Static self reference
     public static RobotNG R = null;
-    public final BOTS bot;
 
-    // Map the FTC-provided OpMode and our own hardware map
+    // Global public bits
+    public final BOTS bot;
+    public final ButtonHandler buttons;
     public final OpMode opMode;
     public final Hardware hardware;
     public final Defaults defaults;
@@ -19,8 +21,10 @@ public class RobotNG {
     public RobotNG(OpMode opMode) {
         this.opMode = opMode;
         this.defaults = new Defaults(this);
-        this.bot = BOTS.NONE;
-        // TODO: Bot detection based on RevHub serial
+        this.buttons = new ButtonHandler(this);
+
+        // TODO: Bot detection based on RevHub or name
+        bot = BOTS.NONE;
 
         // Config lives in Hardware
         this.hardware = new Hardware(this);
