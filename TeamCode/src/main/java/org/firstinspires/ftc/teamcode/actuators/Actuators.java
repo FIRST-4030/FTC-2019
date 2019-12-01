@@ -1,17 +1,23 @@
 package org.firstinspires.ftc.teamcode.actuators;
 
 import org.firstinspires.ftc.teamcode.RobotNG;
+import org.firstinspires.ftc.teamcode.debug.Debug;
+import org.firstinspires.ftc.teamcode.debug.DeviceProvider;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.Set;
 
-public class Actuators {
+public class Actuators implements DeviceProvider {
     private final RobotNG robot;
     private final HashMap<String, Actuator> a;
+    private final ListIterator<String> it;
 
     public Actuators(RobotNG robot) {
         this.robot = robot;
-        a = new HashMap<String, Actuator>();
+        a = new HashMap<>();
+        it = new LinkedList<>(a.keySet()).listIterator();
     }
 
     public Set<String> get() {
@@ -46,14 +52,21 @@ public class Actuators {
         a.put(actuator.params().name(), actuator);
     }
 
-    public void remove(String name) {
-        if (name == null || name.isEmpty()) {
-            robot.log(this, "Null/empty actuator");
-            return;
+    public Debug debug_next() {
+        if (!it.hasNext()) {
+            while (it.hasPrevious()) {
+                it.previous();
+            }
         }
-        if (!a.containsKey(name)) {
-            robot.log(this, "Unregistered actuator: " + name);
+        return get(it.next());
+    }
+
+    public Debug debug_prev() {
+        if (!it.hasPrevious()) {
+            while (it.hasNext()) {
+                it.next();
+            }
         }
-        a.remove(name);
+        return get(it.previous());
     }
 }

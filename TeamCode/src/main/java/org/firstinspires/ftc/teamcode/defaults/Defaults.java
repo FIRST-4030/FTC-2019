@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.defaults;
 
 import org.firstinspires.ftc.teamcode.RobotNG;
-import org.firstinspires.ftc.teamcode.config.BOT;
 import org.firstinspires.ftc.teamcode.robot.config.BOTS;
 
 import java.util.HashMap;
 
 public class Defaults {
+    private boolean locked;
     private final RobotNG robot;
     private final HashMap<String, Default> defaults;
 
@@ -19,11 +19,33 @@ public class Defaults {
         for (BOTS bot : BOTS.values()) {
             defaults.put(bot.serial(), new Default());
         }
+        this.locked = false;
         this.robot = robot;
     }
 
+    private void load() {
+        // TODO: Load overrides from disk
+    }
+
+    private void save() {
+        // TODO: Save to disk
+    }
+
+    public void lock() {
+        locked = true;
+        load();
+        save();
+    }
+
     private Default getDefault(BOTS bot) {
-        Default d = defaults.get(bot.serial());
+        Default d = null;
+        if (locked) {
+            robot.log(this, "Registration locked");
+            d = new Default(robot);
+        }
+        if (d == null) {
+            d = defaults.get(bot.serial());
+        }
         if (d == null) {
             robot.log(this, "Unregistered bot: " + bot);
             d = new Default(robot);

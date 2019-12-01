@@ -5,25 +5,10 @@ import org.firstinspires.ftc.teamcode.actuators.Actuators;
 import org.firstinspires.ftc.teamcode.actuators.ServoNG;
 import org.firstinspires.ftc.teamcode.actuators.ServoNG_Params;
 import org.firstinspires.ftc.teamcode.defaults.Defaults;
-import org.firstinspires.ftc.teamcode.actuators.ServoNG_Params.UNIT;
 
-public class Hardware {
-    private final RobotNG robot;
-    private final Actuators actuators;
-
-    public Hardware(RobotNG robot) {
-        if (robot == null) {
-            throw new IllegalStateException(this.getClass().getSimpleName() + ": Robot not available");
-        }
-        this.robot = robot;
-
-        actuators = new Actuators(robot);
-
-        config();
-    }
-
-    // All robot config goes here
-    private void config() {
+// All robot config goes here
+public class HardwareConfig {
+    public static void actuators(RobotNG robot, Actuators actuators) {
         Defaults d = robot.defaults;
 
         // Foundation hooks
@@ -49,20 +34,20 @@ public class Hardware {
             p = new ServoNG_Params(robot, "Foundation_L");
             p.range = d.getD("FOUNDATION_L_RANGE");
             p.setLimits(d.getD("FOUNDATION_L_MIN"),
-                    d.getD("FOUNDATION_L_MAX"), UNIT.POSITION);
-            p.addPreset("CLOSED", d.getD("FOUNDATION_L_CLOSED"), UNIT.POSITION);
-            p.addPreset("OPEN", d.getD("FOUNDATION_L_OPEN"), UNIT.POSITION);
-            p.addPreset(ServoNG_Params.INIT_NAME, d.getD("FOUNDATION_L_OPEN"), UNIT.POSITION);
+                    d.getD("FOUNDATION_L_MAX"), ServoNG_Params.UNIT.POSITION);
+            p.addPreset("CLOSED", d.getD("FOUNDATION_L_CLOSED"), ServoNG_Params.UNIT.POSITION);
+            p.addPreset("OPEN", d.getD("FOUNDATION_L_OPEN"), ServoNG_Params.UNIT.POSITION);
+            p.addPreset(ServoNG_Params.INIT_NAME, d.getD("FOUNDATION_L_OPEN"), ServoNG_Params.UNIT.POSITION);
             actuators.add(new ServoNG(p));
 
             // Config and install a servo
             p = new ServoNG_Params(robot, "Foundation_R");
             p.range = d.getD("FOUNDATION_R_RANGE");
             p.setLimits(d.getD("FOUNDATION_R_MIN"),
-                    d.getD("FOUNDATION_R_MAX"), UNIT.POSITION);
-            p.addPreset("CLOSED", d.getD("FOUNDATION_R_CLOSED"), UNIT.POSITION);
-            p.addPreset("OPEN", d.getD("FOUNDATION_R_OPEN"), UNIT.POSITION);
-            p.addPreset(ServoNG_Params.INIT_NAME, d.getD("FOUNDATION_R_OPEN"), UNIT.POSITION);
+                    d.getD("FOUNDATION_R_MAX"), ServoNG_Params.UNIT.POSITION);
+            p.addPreset("CLOSED", d.getD("FOUNDATION_R_CLOSED"), ServoNG_Params.UNIT.POSITION);
+            p.addPreset("OPEN", d.getD("FOUNDATION_R_OPEN"), ServoNG_Params.UNIT.POSITION);
+            p.addPreset(ServoNG_Params.INIT_NAME, d.getD("FOUNDATION_R_OPEN"), ServoNG_Params.UNIT.POSITION);
             actuators.add(new ServoNG(p));
         }
     }

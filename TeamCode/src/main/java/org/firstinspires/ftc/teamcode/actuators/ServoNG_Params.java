@@ -4,6 +4,10 @@ import org.firstinspires.ftc.teamcode.RobotNG;
 import org.firstinspires.ftc.teamcode.utils.Round;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 public class ServoNG_Params implements Actuator_Params {
@@ -16,6 +20,7 @@ public class ServoNG_Params implements Actuator_Params {
     private double min = 0.0d;
     private double max = 1.0d;
     private LinkedHashMap<String, Double> presets;
+    private String lastPreset = null;
 
     public boolean reverse = false;
     public double range = 180.0d;
@@ -39,6 +44,59 @@ public class ServoNG_Params implements Actuator_Params {
         this.presets = new LinkedHashMap<>();
         this.robot = robot;
         this.name = name;
+    }
+
+    private ListIterator<String> ordered() {
+        if (presets.size() < 1) {
+            String msg = "No presets available";
+            robot.log(this, msg);
+            throw new NoSuchElementException(msg);
+        }
+        List<String> keys = new LinkedList<>(presets.keySet());
+        if (lastPreset == null) {
+            lastPreset = keys.get(keys.size() - 1);
+        }
+
+        // Find our spot in the list
+        // This is inefficient but works with no external coupling
+        ListIterator<String> it = keys.listIterator();
+        while (it.hasNext()) {
+            String n = it.next();
+            if (n.equals(lastPreset)) {
+                break;
+            }
+        }
+        return it;
+    }
+
+    public String prev() {
+        String str = "";
+        try {
+            ListIterator<String> it = ordered();
+            if (!it.hasPrevious()) {
+                while (it.hasNext()) {
+                    it.next();
+                }
+            }
+            str = it.previous();
+        } catch (NoSuchElementException e) {
+        }
+        return str;
+    }
+
+    public String next() {
+        String str = "";
+        try {
+            ListIterator<String> it = ordered();
+            if (!it.hasNext()) {
+                while (it.hasPrevious()) {
+                    it.previous();
+                }
+            }
+            str = it.next();
+        } catch (NoSuchElementException e) {
+        }
+        return str;
     }
 
     public String name() {
@@ -110,6 +168,7 @@ public class ServoNG_Params implements Actuator_Params {
             robot.log(this, "Unregistered preset: " + name);
             return 0.0d;
         }
+        lastPreset = name;
         return presets.get(name);
     }
 

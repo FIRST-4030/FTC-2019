@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.ServoController;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.RobotNG;
+import org.firstinspires.ftc.teamcode.buttons.BUTTON_TYPE;
 import org.firstinspires.ftc.teamcode.buttons.ButtonHandler;
 import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
 import org.firstinspires.ftc.teamcode.utils.Round;
@@ -25,6 +26,13 @@ public class ServoNG implements Actuator {
     private Gamepad D_gamepad;
 
     public ServoNG(ServoNG_Params p) {
+        if (p == null) {
+            throw new IllegalArgumentException(this.getClass().getSimpleName() + ": " +
+                    "Null ServoNG_Params");
+        }
+        if (!p.valid()) {
+            p.robot.log(this, "ServoNG_Params not valid");
+        }
         this.p = p;
         try {
             servo = p.robot.opMode.hardwareMap.servo.get(p.name());
@@ -33,8 +41,8 @@ public class ServoNG implements Actuator {
                 servo.setDirection(Servo.Direction.REVERSE);
             }
             // Init position, if set
-            if (p.hasPreset(p.INIT_NAME)) {
-                position(p.getPreset(p.INIT_NAME));
+            if (p.hasPreset(ServoNG_Params.INIT_NAME)) {
+                position(p.getPreset(ServoNG_Params.INIT_NAME));
             }
         } catch (Exception e) {
             servo = null;
@@ -136,6 +144,10 @@ public class ServoNG implements Actuator {
         relativeAngle(delta * p.outputScale);
     }
 
+    public void preset(String name) {
+        position(p.getPreset(name));
+    }
+
     @Override
     public void debug_init(RobotNG robot) {
         D_teleop = teleop;
@@ -148,7 +160,8 @@ public class ServoNG implements Actuator {
         D_buttons = new ButtonHandler(robot.opMode.telemetry);
         D_buttons.register("PRESET_UP", pad, PAD_BUTTON.y);
         D_buttons.register("PRESET_DOWN", pad, PAD_BUTTON.a);
-        D_buttons.register("LIMITS", pad, PAD_BUTTON.right_stick_button);
+        D_buttons.register("SLOW", pad, PAD_BUTTON.x, BUTTON_TYPE.TOGGLE);
+        D_buttons.register("LIMITS", pad, PAD_BUTTON.b);
         D_buttons.register("MIN", pad, PAD_BUTTON.left_bumper);
         D_buttons.register("MAX", pad, PAD_BUTTON.right_bumper);
     }
@@ -169,12 +182,12 @@ public class ServoNG implements Actuator {
         String s;
 
         D_buttons.update();
-        teleop(D_gamepad.right_stick_x);
+        teleop(D_gamepad.right_stick_x * (D_buttons.get("SLOW") ? 0.5d : 1.0d));
         if (D_buttons.get("PRESET_UP")) {
-            // TODO: Prev/Next presets
+            preset(p.next());
         }
         if (D_buttons.get("PRESET_DOWN")) {
-            // TODO: Prev/Next presets
+            preset(p.prev());
         }
         if (D_buttons.get("LIMITS")) {
             enforceLimits(!enforce);
@@ -246,7 +259,7 @@ public class ServoNG implements Actuator {
     @Override
     public void setEnable(boolean enable) {
         if (enable) {
-            // Force a null move to ensure the chain is ready
+            // Force a null move to ensure everything is in sync
             relative(0.0d);
         } else {
             stop();
@@ -266,7 +279,7 @@ public class ServoNG implements Actuator {
         }
 
         // I think this disables more than one channel, but it's what we can access
-        // I don't expect stop() will be called in normal use, but we may need to scrap this
+        // I don't expect stop() will be called in normal use, if it is this might need to go
         servo.getController().pwmDisable();
     }
 }
