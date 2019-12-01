@@ -30,7 +30,7 @@ public class Round {
         return (float) magnitudeValue((double) val);
     }
 
-    public static double percent(double val) { return truncate(val * 100.0d); }
+    public static int percent(double val) { return (int)truncate(val * 100.0d); }
 
-    public static float percent(float val) { return truncate(val * 100.0f); }
+    public static int percent(float val) { return (int)truncate(val * 100.0f); }
 }

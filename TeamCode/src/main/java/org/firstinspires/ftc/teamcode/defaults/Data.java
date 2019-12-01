@@ -112,6 +112,9 @@ public class Data {
         }
         DataTypes t;
         switch (str.substring(0, 1)) {
+            case "u":
+                t = DataTypes.UNSET;
+                break;
             case "b":
                 t = DataTypes.BOOLEAN;
                 break;
@@ -130,11 +133,16 @@ public class Data {
         }
 
         String val;
-        // Decode from the URI encoding
-        try {
-            val = URLDecoder.decode(str.substring(3), StandardCharsets.UTF_8.toString());
-        } catch (UnsupportedEncodingException ex) {
-            throw new RuntimeException("Unable to encode with charset: " + StandardCharsets.UTF_8.toString());
+        // Allow empty data segments
+        if (str.length() < 3) {
+            val = "";
+        } else {
+            // Decode from the URI encoding
+            try {
+                val = URLDecoder.decode(str.substring(3), StandardCharsets.UTF_8.toString());
+            } catch (UnsupportedEncodingException ex) {
+                throw new RuntimeException("Unable to encode with charset: " + StandardCharsets.UTF_8.toString());
+            }
         }
         // Parse using the set(String) method since that does parsing
         set(val);
