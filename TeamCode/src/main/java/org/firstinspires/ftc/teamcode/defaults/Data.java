@@ -41,8 +41,49 @@ public class Data {
         return d;
     }
 
+    public boolean equals(Data c) {
+        if (c == null) {
+            throw new IllegalArgumentException("Null Data");
+        }
+        if (type != c.type) {
+            return false;
+        }
+        switch (type) {
+            case UNSET:
+                return true;
+            case BOOLEAN:
+                if (b == c.b) {
+                    return true;
+                }
+            case INT:
+                if (i == c.i) {
+                    return true;
+                }
+            case DOUBLE:
+                if (d == c.d) {
+                    return true;
+                }
+            case STRING:
+                if (s.equals(c.s)) {
+                    return true;
+                }
+        }
+        return false;
+    }
+
     public boolean isUnset() {
         return type == DataTypes.UNSET;
+    }
+
+    protected void set(Data data) {
+        if (data == null) {
+            throw new IllegalArgumentException("Null Data");
+        }
+        type = data.type;
+        b = data.b;
+        i = data.i;
+        d = data.d;
+        s = data.s;
     }
 
     public void set(boolean b) {
@@ -133,20 +174,21 @@ public class Data {
         }
 
         String val;
-        // Allow empty data segments
         if (str.length() < 3) {
+            // Allow empty data segments
             val = "";
         } else {
             // Decode from the URI encoding
             try {
                 val = URLDecoder.decode(str.substring(3), StandardCharsets.UTF_8.toString());
             } catch (UnsupportedEncodingException ex) {
-                throw new RuntimeException("Unable to encode with charset: " + StandardCharsets.UTF_8.toString());
+                throw new RuntimeException("Unable to encode with charset: " +
+                        StandardCharsets.UTF_8.toString());
             }
         }
-        // Parse using the set(String) method since that does parsing
+        // Use the set(String) method since that does parsing
         set(val);
-        // Override the type to match the original
+        // But override the type to match the original
         type = t;
     }
 
@@ -154,7 +196,7 @@ public class Data {
         char t = 'u';
         switch (type) {
             case UNSET:
-                t = 'u';
+                //t = 'u';
                 break;
             case BOOLEAN:
                 t = 'b';

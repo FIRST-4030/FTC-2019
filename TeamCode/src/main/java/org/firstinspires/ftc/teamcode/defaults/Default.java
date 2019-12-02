@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.defaults;
 import org.firstinspires.ftc.teamcode.RobotNG;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class Default {
     private final RobotNG robot;
@@ -88,6 +89,23 @@ public class Default {
         d.set(val);
     }
 
+    public Set<String> get() {
+        return current.keySet();
+    }
+
+    protected void load(String name, String serialized) {
+        if (name == null || name.isEmpty()) {
+            robot.log(this, "Null/empty name");
+            return;
+        }
+        Data d = current.get(name);
+        if (d == null) {
+            robot.log(this, "Invalid name: " + name);
+            return;
+        }
+        d.deserialize(serialized);
+    }
+
     protected Data safeGet(String name) {
         Data d = current.get(name);
         if (d == null) {
@@ -98,5 +116,15 @@ public class Default {
             robot.log(this, "Unregistered: " + name);
         }
         return d;
+    }
+
+    protected boolean isUpdated(String name) {
+        Data c = current.get(name);
+        Data o = orig.get(name);
+        if (c == null || o == null) {
+            robot.log(this, "Unregistered default: " + name);
+            return false;
+        }
+        return o.equals(c);
     }
 }
