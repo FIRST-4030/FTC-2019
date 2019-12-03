@@ -23,8 +23,8 @@ public class Drive implements CommonTask, DriveToListener {
             null, true, true);
 
     // PID Drive
-    private static final float DRIVE_TOLERANCE = 100.0f; // Permitted distance error in encoder ticks
-    private static final float DRIVE_DIFF_TOLERANCE = 1.0f; // Permitted error change rate
+    private static final float DRIVE_TOLERANCE = 10.0f; // Permitted distance error in encoder ticks
+    private static final Float DRIVE_DIFF_TOLERANCE = null; // Permitted error change rate
     public static final PIDParams DRIVE_PARAMS = new PIDParams(0.0005f, 0.0002f, 0.0f,
             null, true, true);
 
