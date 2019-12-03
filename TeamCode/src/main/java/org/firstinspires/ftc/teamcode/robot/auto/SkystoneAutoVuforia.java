@@ -348,6 +348,20 @@ public class SkystoneAutoVuforia extends OpMode {
             if (!SkystoneAutoVuforia.Vu.isStale()) {
                 SkystoneAutoVuforia.Img.savePNG("VuIMg");
                 SkystoneAutoVuforia.Img.savePNGMyVo("VulMg2");
+
+                int adj = 0;
+                if(color == Field.AllianceColor.BLUE){
+                    adj = 280;
+                }
+
+                for(int i = 0; i < SkystoneAutoVuforia.Img.getHeight() - 32; i++){
+                    for(int j = 0 + adj; j < SkystoneAutoVuforia.Img.getWidth(); j++){
+                        //first find the yellow
+                        int [] c1 = {j, i};
+                        int [] c2 = {j + 1046, i + 32};
+                        SkystoneAutoVuforia.Img.rgb(c1, c2);
+                    }
+                }
             }
             return -2;
         }else {
