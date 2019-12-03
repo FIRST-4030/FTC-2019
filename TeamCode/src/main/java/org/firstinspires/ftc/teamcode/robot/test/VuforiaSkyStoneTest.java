@@ -48,7 +48,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGR
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
-@Disabled
+//@Disabled
 @TeleOp(name = "Vuforia SkyStone Test", group = "Test")
 public class VuforiaSkyStoneTest extends LinearOpMode {
 

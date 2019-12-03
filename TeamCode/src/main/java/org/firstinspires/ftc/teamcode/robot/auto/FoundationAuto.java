@@ -126,6 +126,14 @@ public class FoundationAuto extends OpMode {
                 advance();
                 break;
 
+            case TURN_TOWARDS_FOUNDATION:
+                advance();
+                break;
+
+            case MOVE_FORWARD_TOWARDS_FOUNDATION:
+                advance();
+                break;
+
             case GRAB:
                 robot.hookRight.min();
                 robot.hookLeft.min();
@@ -133,20 +141,38 @@ public class FoundationAuto extends OpMode {
                 advance();
                 break;
 
-            case BACK_UP:
-                driver.drive = common.drive.distance(InchesToMM(-41.0f)); // FTC: Escape From the Field
+            case MOVE_BACK_TO_TURN:
                 advance();
                 break;
 
-            case LET_GO:
+            case TURN_TOWARDS_CORNER:
+                advance();
+                break;
+
+            case MOVE_INTO_CORNER:
+                advance();
+                break;
+
+            case RELEASE:
                 robot.hookRight.max();
                 robot.hookLeft.max();
                 driver.drive = common.drive.sleep(1000);
                 advance();
                 break;
 
-            case brUH:
-                //driver.drive = common.drive.time(100, 0.25f);
+            case BACK_UP_AWAY_FROM_CORNER:
+                advance();
+                break;
+
+            case TURN_PARALLEL_TO_SKYBRIDGE:
+                advance();
+                break;
+
+            case MOVE_FORWARD_TO_SKYBRIDGE:
+                advance();
+                break;
+
+            case TURN_PERPENDICULAR_TO_SKYBRIDGE:
                 advance();
                 break;
 
@@ -156,11 +182,6 @@ public class FoundationAuto extends OpMode {
                 } else {
                     driver.drive = common.drive.translate(InchesToMM(-38.0f));
                 }
-                advance();
-                break;
-
-            case broPLS:
-                driver.drive = common.drive.distance(InchesToMM(-6f));
                 advance();
                 break;
 
@@ -181,17 +202,29 @@ public class FoundationAuto extends OpMode {
 
         DRIVE_TO_FOUNDATION, // Drive towards foundation
 
+        TURN_TOWARDS_FOUNDATION, // Turn 90 degrees towards foundation
+
+        MOVE_FORWARD_TOWARDS_FOUNDATION, // Ensures that the robot is touching the foundation by running into it
+
         GRAB, // Grab foundation
 
-        BACK_UP, // Back up to wall
+        MOVE_BACK_TO_TURN, // Moves back so that there's room to turn the foundation
 
-        LET_GO, // Put the foundation down robot, it's not yours
+        TURN_TOWARDS_CORNER, // Turn 45 degrees towards corner (building site)
 
-        brUH,
+        MOVE_INTO_CORNER, // Push foundation into corner
 
-        PARK_UNDER_SKYBRIDGE, // Strafe under skybridge
+        RELEASE,
 
-        broPLS,
+        BACK_UP_AWAY_FROM_CORNER, // Backs up to previous position
+
+        TURN_PARALLEL_TO_SKYBRIDGE, // Turns robot 45 degrees so that it is parallel to the skybridge
+
+        MOVE_FORWARD_TO_SKYBRIDGE, // Move inline with skybridge section
+
+        TURN_PERPENDICULAR_TO_SKYBRIDGE, // Turns 90 degrees so it can move underneath the skybridge
+
+        PARK_UNDER_SKYBRIDGE, // Move under skybridge
 
         DONE;
 
