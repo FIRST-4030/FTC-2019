@@ -29,7 +29,7 @@ public class FoundationAuto extends OpMode {
     private AUTO_STATE state;
     private boolean gameReady = false;
     private Field.AllianceColor color = Field.AllianceColor.BLUE;
-
+    private boolean park_by_wall = true;
     @Override
     public void init() {
         telemetry.addData(">", "Init…");
@@ -122,7 +122,22 @@ public class FoundationAuto extends OpMode {
                 break;
 
             case DRIVE_TO_FOUNDATION:
-                driver.drive = common.drive.distance(InchesToMM(31.0f));
+                driver.drive = common.drive.distance(InchesToMM(48.0f));
+                advance();
+                break;
+
+            case TURN_TOWARDS_FOUNDATION:
+            case TURN_PERPENDICULAR_TO_SKYBRIDGE:
+                if(color==Field.AllianceColor.BLUE){
+                    driver.drive = common.drive.degrees(-90.0f);
+                }else{
+                    driver.drive=common.drive.degrees(90.0f);
+                }
+                advance();
+                break;
+
+            case MOVE_FORWARD_TOWARDS_FOUNDATION:
+                driver.drive = common.drive.distance(InchesToMM(7.0f));
                 advance();
                 break;
 
@@ -133,34 +148,50 @@ public class FoundationAuto extends OpMode {
                 advance();
                 break;
 
-            case BACK_UP:
-                driver.drive = common.drive.distance(InchesToMM(-41.0f)); // FTC: Escape From the Field
+            case MOVE_BACK_TO_TURN:
+                driver.drive = common.drive.distance(InchesToMM(-7.0f));
                 advance();
                 break;
 
-            case LET_GO:
+            case TURN_TOWARDS_CORNER:
+            case TURN_PARALLEL_TO_SKYBRIDGE:
+                if(color==Field.AllianceColor.BLUE){
+                    driver.drive = common.drive.degrees(-45.0f);
+                }else{
+                    driver.drive = common.drive.degrees(45.0f);
+                }
+                advance();
+                break;
+
+            case MOVE_INTO_CORNER:
+                driver.drive = common.drive.distance(InchesToMM(25.0f));
+                advance();
+                break;
+
+            case RELEASE:
                 robot.hookRight.max();
                 robot.hookLeft.max();
                 driver.drive = common.drive.sleep(1000);
                 advance();
                 break;
 
-            case brUH:
-                //driver.drive = common.drive.time(100, 0.25f);
+            case BACK_UP_AWAY_FROM_CORNER:
+                driver.drive = common.drive.distance(InchesToMM(-30.0f));
                 advance();
                 break;
+
+            case MOVE_FORWARD_TO_SKYBRIDGE:
+                if(park_by_wall){
+                    driver.drive = common.drive.distance(InchesToMM(20.0f));
+                }
+                driver.drive = common.drive.distance(InchesToMM(12.0f));
+                advance();
+                break;
+
+
 
             case PARK_UNDER_SKYBRIDGE:
-                if (color == Field.AllianceColor.BLUE) {
-                    driver.drive = common.drive.translate(InchesToMM(38.0f));
-                } else {
-                    driver.drive = common.drive.translate(InchesToMM(-38.0f));
-                }
-                advance();
-                break;
-
-            case broPLS:
-                driver.drive = common.drive.distance(InchesToMM(-6f));
+                driver.drive = common.drive.distance(InchesToMM(23.0f));
                 advance();
                 break;
 
@@ -181,17 +212,29 @@ public class FoundationAuto extends OpMode {
 
         DRIVE_TO_FOUNDATION, // Drive towards foundation
 
+        TURN_TOWARDS_FOUNDATION, // Turn 90 degrees towards foundation
+
+        MOVE_FORWARD_TOWARDS_FOUNDATION, // Ensures that the robot is touching the foundation by running into it
+
         GRAB, // Grab foundation
 
-        BACK_UP, // Back up to wall
+        MOVE_BACK_TO_TURN, // Moves back so that there's room to turn the foundation
 
-        LET_GO, // Put the foundation down robot, it's not yours
+        TURN_TOWARDS_CORNER, // Turn 45 degrees towards corner (building site)
 
-        brUH,
+        MOVE_INTO_CORNER, // Push foundation into corner
 
-        PARK_UNDER_SKYBRIDGE, // Strafe under skybridge
+        RELEASE,
 
-        broPLS,
+        BACK_UP_AWAY_FROM_CORNER, // Backs up to previous position
+
+        TURN_PARALLEL_TO_SKYBRIDGE, // Turns robot 45 degrees so that it is parallel to the skybridge
+
+        MOVE_FORWARD_TO_SKYBRIDGE, // Move inline with skybridge section
+
+        TURN_PERPENDICULAR_TO_SKYBRIDGE, // Turns 90 degrees so it can move underneath the skybridge
+
+        PARK_UNDER_SKYBRIDGE, // Move under skybridge
 
         DONE;
 

@@ -12,8 +12,8 @@ public class Arm implements CommonTask {
     private final ServoFTC upper;
 
     // Servo positions when the servo is at 90 degrees
-    private static final float LOWER_MIDPOINT = 0.5f;
-    private static final float UPPER_MIDPOINT = 0.6f;
+    private static final float LOWER_MIDPOINT = 0.55f;
+    private static final float UPPER_MIDPOINT = 0.65f;
 
     // The arm has two segments, measured from joint to joint
     // The lower segment is from the base to the middle joint

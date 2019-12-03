@@ -60,7 +60,7 @@ public class HardwareTest extends OpMode {
     @Override
     public void loop() {
         buttons.update();
-
+/*
 
         telemetry.addData("BL", robot.wheels.getEncoder(MOTOR_SIDE.LEFT, MOTOR_END.BACK));
         telemetry.addData("FL", robot.wheels.getEncoder(MOTOR_SIDE.LEFT, MOTOR_END.FRONT));
@@ -74,10 +74,11 @@ public class HardwareTest extends OpMode {
             robot.wheels.resetEncoder(MOTOR_SIDE.LEFT, MOTOR_END.FRONT);
             robot.wheels.resetEncoder(MOTOR_SIDE.RIGHT, MOTOR_END.FRONT);
         }
-        /*
+
+ */
         updateServo("LOWER", robot.lower);
         updateServo("UPPER", robot.upper);
-        */
+
         telemetry.update();
     }
 
