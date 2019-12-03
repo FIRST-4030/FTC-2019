@@ -29,7 +29,7 @@ public class FoundationAuto extends OpMode {
     private AUTO_STATE state;
     private boolean gameReady = false;
     private Field.AllianceColor color = Field.AllianceColor.BLUE;
-
+    private boolean park_by_wall = true;
     @Override
     public void init() {
         telemetry.addData(">", "Init…");
@@ -122,15 +122,22 @@ public class FoundationAuto extends OpMode {
                 break;
 
             case DRIVE_TO_FOUNDATION:
-                driver.drive = common.drive.distance(InchesToMM(31.0f));
+                driver.drive = common.drive.distance(InchesToMM(48.0f));
                 advance();
                 break;
 
             case TURN_TOWARDS_FOUNDATION:
+            case TURN_PERPENDICULAR_TO_SKYBRIDGE:
+                if(color==Field.AllianceColor.BLUE){
+                    driver.drive = common.drive.degrees(-90.0f);
+                }else{
+                    driver.drive=common.drive.degrees(90.0f);
+                }
                 advance();
                 break;
 
             case MOVE_FORWARD_TOWARDS_FOUNDATION:
+                driver.drive = common.drive.distance(InchesToMM(7.0f));
                 advance();
                 break;
 
@@ -142,14 +149,22 @@ public class FoundationAuto extends OpMode {
                 break;
 
             case MOVE_BACK_TO_TURN:
+                driver.drive = common.drive.distance(InchesToMM(-7.0f));
                 advance();
                 break;
 
             case TURN_TOWARDS_CORNER:
+            case TURN_PARALLEL_TO_SKYBRIDGE:
+                if(color==Field.AllianceColor.BLUE){
+                    driver.drive = common.drive.degrees(-45.0f);
+                }else{
+                    driver.drive = common.drive.degrees(45.0f);
+                }
                 advance();
                 break;
 
             case MOVE_INTO_CORNER:
+                driver.drive = common.drive.distance(InchesToMM(25.0f));
                 advance();
                 break;
 
@@ -161,27 +176,22 @@ public class FoundationAuto extends OpMode {
                 break;
 
             case BACK_UP_AWAY_FROM_CORNER:
-                advance();
-                break;
-
-            case TURN_PARALLEL_TO_SKYBRIDGE:
+                driver.drive = common.drive.distance(InchesToMM(-30.0f));
                 advance();
                 break;
 
             case MOVE_FORWARD_TO_SKYBRIDGE:
+                if(park_by_wall){
+                    driver.drive = common.drive.distance(InchesToMM(20.0f));
+                }
+                driver.drive = common.drive.distance(InchesToMM(12.0f));
                 advance();
                 break;
 
-            case TURN_PERPENDICULAR_TO_SKYBRIDGE:
-                advance();
-                break;
+
 
             case PARK_UNDER_SKYBRIDGE:
-                if (color == Field.AllianceColor.BLUE) {
-                    driver.drive = common.drive.translate(InchesToMM(38.0f));
-                } else {
-                    driver.drive = common.drive.translate(InchesToMM(-38.0f));
-                }
+                driver.drive = common.drive.distance(InchesToMM(23.0f));
                 advance();
                 break;
 
