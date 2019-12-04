@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.utils.Round;
 public class Distance extends Subsystem {
     private static final String P = "DRIVE_P";
     private static final String I = "DRIVE_I";
+    private static final String D = "DRIVE_D";
     private static final String INCREMENT = "DRIVE-INCREMENT";
     private static final float MIN_INCREMENT = 0.0001f;
     private static final float MAX_INCREMENT = 0.1f;
@@ -50,11 +51,14 @@ public class Distance extends Subsystem {
         buttons.spinners.add(I,
                 opmode.gamepad1, PAD_BUTTON.dpad_right, PAD_BUTTON.dpad_left,
                 INCREMENT, Drive.DRIVE_PARAMS.I);
+        buttons.spinners.add(D,
+                opmode.gamepad1, PAD_BUTTON.y, PAD_BUTTON.b,
+                INCREMENT, Drive.DRIVE_PARAMS.D);
 
         buttons.register(TINY, opmode.gamepad1, PAD_BUTTON.a);
         buttons.register(SMALL, opmode.gamepad1, PAD_BUTTON.x);
-        buttons.register(LARGE, opmode.gamepad1, PAD_BUTTON.b);
-        buttons.register(HUGE, opmode.gamepad1, PAD_BUTTON.y);
+        //buttons.register(LARGE, opmode.gamepad1, PAD_BUTTON.b);
+        //buttons.register(HUGE, opmode.gamepad1, PAD_BUTTON.y);
         buttons.register(BACK, opmode.gamepad1, PAD_BUTTON.back, BUTTON_TYPE.TOGGLE);
         buttons.register(JOYSTICK, opmode.gamepad1, PAD_BUTTON.start, BUTTON_TYPE.TOGGLE);
     }
@@ -62,12 +66,13 @@ public class Distance extends Subsystem {
     protected void unload() {
         buttons.spinners.remove(P);
         buttons.spinners.remove(I);
+        buttons.spinners.remove(D);
         buttons.spinners.remove(INCREMENT);
 
         buttons.deregister(TINY);
         buttons.deregister(SMALL);
-        buttons.deregister(LARGE);
-        buttons.deregister(HUGE);
+        //buttons.deregister(LARGE);
+        //buttons.deregister(HUGE);
         buttons.deregister(BACK);
         buttons.deregister(JOYSTICK);
     }
@@ -75,6 +80,7 @@ public class Distance extends Subsystem {
     protected void update() {
         Drive.DRIVE_PARAMS.P = buttons.spinners.getFloat(P);
         Drive.DRIVE_PARAMS.I = buttons.spinners.getFloat(I);
+        Drive.DRIVE_PARAMS.D = buttons.spinners.getFloat(D);
 
         robot.telemetry.addData("Encoder", Round.truncate(robot.wheels.getEncoder()));
 
@@ -96,14 +102,14 @@ public class Distance extends Subsystem {
         }
 
         // Process new AutoDriver commands
-        if (buttons.get(HUGE)) {
-            driver.drive = robot.common.drive.distance((int) (96 * scale));
-        } else if (buttons.get(LARGE)) {
+        /*if (buttons.get(HUGE)) {
             driver.drive = robot.common.drive.distance((int) (48 * scale));
-        } else if (buttons.get(SMALL)) {
+        } else if (buttons.get(LARGE)) {
             driver.drive = robot.common.drive.distance((int) (24 * scale));
-        } else if (buttons.get(TINY)) {
+        } else*/ if (buttons.get(SMALL)) {
             driver.drive = robot.common.drive.distance((int) (12 * scale));
+        } else if (buttons.get(TINY)) {
+            driver.drive = robot.common.drive.distance((int) (6 * scale));
         }
     }
 }

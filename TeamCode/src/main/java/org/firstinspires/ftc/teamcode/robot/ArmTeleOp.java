@@ -25,8 +25,6 @@ public class ArmTeleOp extends OpMode {
     // arm consts
     private static final float ARM_MOVEMENT_SCALE = 1.0f/16;
     private static final float ARM_ROTATION_SCALE = 1.0f/512;
-    private static final float CLAW_CLOSED = 0.0f;
-    private static final float CLAW_OPEN = 1.0f;
     private static final float ARM_HOME_X = 1.8f;
     private static final float ARM_HOME_Y = 5.9f;
 
@@ -44,12 +42,7 @@ public class ArmTeleOp extends OpMode {
     private static final float NORMAL_SPEED = 0.75f;
     private static final float SLOW_MODE = 0.25f;
 
-    //Swivel consts
-    private static final float CLAW_FORWARD = 0.5f;
-    private static final float CLAW_SIDEWAYS = 0.5f;
-
     // vars
-    private float wristRotation = 0.5f;
     private float armRotation = 0.5f;
 
     @Override
@@ -86,7 +79,7 @@ public class ArmTeleOp extends OpMode {
         // Move arm to home
         robot.common.arm.setPosition(ARM_HOME_X, ARM_HOME_Y);
         robot.rotation.setPosition(0.5f);
-        robot.swivel.setPosition(wristRotation);
+        robot.common.wrist.setAngle(0.0f);
 
         // Wait for the game to begin
         telemetry.addData(">", "Ready for game start");
@@ -138,17 +131,14 @@ public class ArmTeleOp extends OpMode {
         float dx = (float) rateX.update(-gamepad2.left_stick_y * ARM_MOVEMENT_SCALE);
         float dy = (float) rateY.update(-gamepad2.right_stick_y * ARM_MOVEMENT_SCALE);
         armRotation -= (float) rateR.update(Math.pow(gamepad2.left_stick_x, 3) * ARM_ROTATION_SCALE);
-        wristRotation -= (float) rateW.update(Math.pow(gamepad2.right_stick_x, 3) * ARM_ROTATION_SCALE);
+        float dW = (float) rateW.update(Math.pow(gamepad2.right_stick_x, 3) * ARM_ROTATION_SCALE);
 
         // cap values
         armRotation = Math.min(1.0f, armRotation);
         armRotation = Math.max(0.0f, armRotation);
-        wristRotation = Math.min(1.0f, wristRotation);
-        wristRotation = Math.max(0.0f, wristRotation);
-
 
         robot.rotation.setPosition(armRotation);
-        robot.swivel.setPosition(wristRotation);
+        robot.common.wrist.setAngleDelta(dW);
         robot.common.arm.setPositionDelta(dx, dy);
 
         if (buttons.get("HOME_ARM")) {
@@ -158,15 +148,14 @@ public class ArmTeleOp extends OpMode {
         telemetry.addData("arm x", robot.common.arm.getArmX());
         telemetry.addData("arm y", robot.common.arm.getArmY());
         telemetry.addData("arm rotation", armRotation);
+        telemetry.addData("wrist angle", robot.common.wrist.getWristAngle());
 
         // claw
         if (buttons.get("CLAW")) {
-            robot.claw.setPosition(CLAW_CLOSED);
+            robot.common.claw.close();
         } else {
-            robot.claw.setPosition(CLAW_OPEN);
+            robot.common.claw.open();
         }
-
-
     }
 
     public void stop() {

@@ -14,6 +14,8 @@ public class Common {
     private final Robot robot;
     public final Drive drive;
     public Arm arm;
+    public Wrist wrist;
+    public Claw claw;
 
     public Common(Robot r) {
         if (r == null) {
@@ -24,7 +26,12 @@ public class Common {
         switch (robot.bot) {
             case ARM:
                 arm = new Arm(robot);
+                wrist = new Wrist(robot, robot.wrist);
+                claw = new Claw(robot, robot.claw);
                 break;
+
+            case SCISSOR:
+                claw = new Claw(robot, robot.claw);
         }
 
         this.drive = new Drive(robot);

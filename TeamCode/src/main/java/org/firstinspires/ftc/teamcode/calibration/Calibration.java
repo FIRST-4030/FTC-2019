@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.robot.calibration.*;
 import java.util.Vector;
 
 @TeleOp(name = "Calibration", group = "Test")
-@Disabled
 public class Calibration extends OpMode {
     private static final String NEXT_SUBSYSTEM = "NEXT_SUBSYSTEM";
 
@@ -30,7 +29,7 @@ public class Calibration extends OpMode {
         buttons = new ButtonHandler(robot);
 
         // Our master switch
-        buttons.register(NEXT_SUBSYSTEM, gamepad1, PAD_BUTTON.guide);
+        buttons.register(NEXT_SUBSYSTEM, gamepad1, PAD_BUTTON.start);
 
         // Manual registration of subsystems
         // These subsystems will change year-to-year but the framework is bot-agnostic
