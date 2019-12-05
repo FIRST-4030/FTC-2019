@@ -26,7 +26,7 @@ public class Common {
         switch (robot.bot) {
             case ARM:
                 arm = new Arm(robot);
-                wrist = new Wrist(robot, robot.wrist);
+                wrist = new Wrist(robot, robot.wrist, 0.2f);
                 claw = new Claw(robot, robot.claw);
                 break;
 

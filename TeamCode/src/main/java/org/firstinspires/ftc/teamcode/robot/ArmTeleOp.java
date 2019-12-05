@@ -33,10 +33,10 @@ public class ArmTeleOp extends OpMode {
     private RateLimit rateY;
     private RateLimit rateR;
     private RateLimit rateW;
-    private static final double MAX_ARM_RATE_X = 1.0d; // In inches per second
-    private static final double MAX_ARM_RATE_Y = 1.0d; // In inches per second
-    private static final double MAX_ARM_RATE_R = 0.25d; // In servo position per second
-    private static final double MAX_ARM_RATE_W = 0.25d; // In servo position per second
+    private static final double MAX_ARM_RATE_X = 1.5d; // In inches per second
+    private static final double MAX_ARM_RATE_Y = 1.5d; // In inches per second
+    private static final double MAX_ARM_RATE_R = 0.125d; // In servo position per second
+    private static final double MAX_ARM_RATE_W = 30.0d; // In degrees per second
 
     // other consts
     private static final float NORMAL_SPEED = 0.75f;
@@ -131,7 +131,7 @@ public class ArmTeleOp extends OpMode {
         float dx = (float) rateX.update(-gamepad2.left_stick_y * ARM_MOVEMENT_SCALE);
         float dy = (float) rateY.update(-gamepad2.right_stick_y * ARM_MOVEMENT_SCALE);
         armRotation -= (float) rateR.update(Math.pow(gamepad2.left_stick_x, 3) * ARM_ROTATION_SCALE);
-        float dW = (float) rateW.update(Math.pow(gamepad2.right_stick_x, 3) * ARM_ROTATION_SCALE);
+        float dW = (float) rateW.update(Math.pow(gamepad2.right_stick_x, 3) * 8);
 
         // cap values
         armRotation = Math.min(1.0f, armRotation);

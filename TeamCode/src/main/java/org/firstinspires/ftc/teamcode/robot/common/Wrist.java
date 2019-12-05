@@ -7,6 +7,7 @@ public class Wrist implements CommonTask {
 
     private final Robot robot;
     public final ServoFTC wristServo;
+    private final float offset;
 
     // Servo positions when the claw is perpendicular/parallel to the arm
     private float perpendicular;
@@ -21,12 +22,14 @@ public class Wrist implements CommonTask {
      *
      * @param robot Robot
      * @param wristServo Servo that acts as the arm's "wrist"
+     * @param offset
      * @param perpendicular Servo position when the claw is perpendicular to the arm
      * @param parallel Servo position when the claw is parallel to the arm
      */
-    public Wrist(Robot robot, ServoFTC wristServo, float perpendicular, float parallel){
+    public Wrist(Robot robot, ServoFTC wristServo, float offset, float perpendicular, float parallel){
         this.robot = robot;
         this.wristServo = wristServo;
+        this.offset = offset;
         this.perpendicular = perpendicular;
         this.parallel = parallel;
 
@@ -41,8 +44,8 @@ public class Wrist implements CommonTask {
      * @param robot Robot
      * @param wristServo Servo that acts as the arm's "wrist"
      */
-    public Wrist(Robot robot, ServoFTC wristServo) {
-        this(robot, wristServo, wristServo.getMin(), wristServo.getMax());
+    public Wrist(Robot robot, ServoFTC wristServo, float offset) {
+        this(robot, wristServo, offset, wristServo.getMin(), wristServo.getMax());
     }
 
     /**
@@ -65,7 +68,7 @@ public class Wrist implements CommonTask {
         }
 
         // Move servo
-        wristServo.setPosition(wristServoPos);
+        wristServo.setPosition(wristServoPos + offset);
     }
 
     public void setAngleDelta(float degrees) {
