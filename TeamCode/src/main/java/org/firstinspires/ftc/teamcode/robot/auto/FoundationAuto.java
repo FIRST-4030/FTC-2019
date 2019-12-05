@@ -122,7 +122,7 @@ public class FoundationAuto extends OpMode {
                 break;
 
             case DRIVE_TO_FOUNDATION:
-                driver.drive = common.drive.distance(InchesToMM(48.0f));
+                driver.drive = common.drive.distance(InchesToMM(36.0f));
                 advance();
                 break;
 
@@ -149,7 +149,7 @@ public class FoundationAuto extends OpMode {
                 break;
 
             case MOVE_BACK_TO_TURN:
-                driver.drive = common.drive.distance(InchesToMM(-7.0f));
+                driver.drive = common.drive.distance(InchesToMM(-4.0f));
                 advance();
                 break;
 
