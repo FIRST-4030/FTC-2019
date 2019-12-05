@@ -24,17 +24,12 @@ public class VuforiaTest extends OpMode {
 
     @Override
     public void init() {
-        telemetry.addData(">", "Waiting for robot…");
-        telemetry.update();
 
         // Init the robot
         robot = new Robot(hardwareMap, telemetry);
         buttons = new ButtonHandler(robot);
         buttons.register("CAPTURE", gamepad1, PAD_BUTTON.a);
 
-        // Init vuforia
-        telemetry.addData(">", "Starting Vuforia…");
-        telemetry.update();
         robot.vuforia.init();
 
         // Wait for the game to begin
@@ -100,5 +95,16 @@ public class VuforiaTest extends OpMode {
         telemetry.addData("Image", lastImage);
         telemetry.addData("Target (" + lastTarget + ")", lastDistance + "mm @ " + lastBearing + "°");
         telemetry.update();
+
+        if(!robot.vuforia.isStale()){
+            robot.vuforia.capture();
+            ImageFTC image = robot.vuforia.getImage();
+            int height = image.getHeight();
+            int width = image.getWidth();
+
+            for(int i = 0; i < height; i++){
+
+            }
+        }
     }
 }

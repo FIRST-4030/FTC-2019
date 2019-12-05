@@ -118,4 +118,25 @@ public class ImageFTC {
                 (int) (rgb[BLUE] / numPixels)
         );
     }
+
+    public int hsl(int[] c1, int[] c2){
+        int temp = this.rgb(c1, c2);
+        int red = Color.red(temp);
+        int green = Color.green(temp);
+        int blue = Color.blue(temp);
+        return -2;
+    }
+
+    public int getLightness (int r, int g, int b) {
+        float lightness = (((float) r + (float) g + (float) b)/3.0f)/255.0f;
+        return Math.round(lightness * 100.0f);
+    }
+
+    public int getSaturation(int r, int g, int b){
+        float r2 = (float) r;
+        float g2 = (float) g;
+        float b2 = (float) b;
+        float saturation = 1 - ((3/(r + b + g))*Math.min(Math.min(r, g), b));
+        return Math.round(saturation);
+    }
 }

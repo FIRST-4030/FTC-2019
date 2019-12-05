@@ -157,20 +157,20 @@ public class SkystoneAuto extends OpMode {
                 break;
 
             case MOVE_OUT:
-                driver.drive = common.drive.distance(InchesToMM(-24.0f));
+                driver.drive = common.drive.distance(InchesToMM(-18.0f));
                 advance();
                 break;
 
             case SPIN:
                 if (color == Field.AllianceColor.RED)
-                    driver.drive = common.drive.degrees(-90.0f);
-                else
                     driver.drive = common.drive.degrees(90.0f);
+                else
+                    driver.drive = common.drive.degrees(-90.0f);
                 advance();
                 break;
 
             case ALIGN_WITH_SKYSTONE:
-                driver.drive = common.drive.distance(InchesToMM(18.0f + SkystoneOffset));
+                driver.drive = common.drive.distance(InchesToMM(24.0f + SkystoneOffset));
                 advance();
                 break;
 
@@ -192,6 +192,8 @@ public class SkystoneAuto extends OpMode {
             case MOVE_FORWARD:
                 robot.collectorLeft.setPower(0);
                 robot.collectorRight.setPower(0);
+                robot.claw.setPosition(CLAW_CLOSED);
+                driver.drive = common.drive.sleep(1000);
                 driver.drive = common.drive.distance(InchesToMM(18.0f));
                 advance();
                 break;
@@ -208,7 +210,9 @@ public class SkystoneAuto extends OpMode {
                 break;
 
             case LOOK_AT_BRIDGE:
-                driver.drive = common.drive.degrees(-45.0f);
+                float deg = 45;
+                if (color == Field.AllianceColor.BLUE) deg *= -1;
+                driver.drive = common.drive.degrees(deg);
                 advance();
                 break;
 
@@ -218,7 +222,6 @@ public class SkystoneAuto extends OpMode {
                 break;
 
             case YEET_SKYSTONE:
-                robot.claw.setPosition(CLAW_CLOSED);
                 driver.drive = common.drive.sleep(1000);
                 robot.flipper.setPosition(ARM_OUT);
                 driver.drive = common.drive.sleep(3000);
