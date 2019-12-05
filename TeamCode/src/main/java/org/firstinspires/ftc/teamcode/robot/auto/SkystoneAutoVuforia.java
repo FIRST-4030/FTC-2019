@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.vuforia.ImageFTC;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Skystone Side (Vuforia", group = "Scissor")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Skystone Side (Vuforia)", group = "Scissor")
 public class SkystoneAutoVuforia extends OpMode {
 
     // Devices and subsystems
