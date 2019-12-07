@@ -235,7 +235,9 @@ public class SkystoneAutoVuforia extends OpMode {
                 driver.drive = common.drive.distance(InchesToMM(-12));
                 */
             case DONE:
+                //System.out.println("!!!!!!!!!DONE!!!!!!!!!!!!!!DONE!!!!!!!!!!!!!!");
                 driver.done = true;
+                telemetry.addData("DONE STATE", driver.done);
                 break;
         }
 
@@ -337,6 +339,7 @@ public class SkystoneAutoVuforia extends OpMode {
     }
 
     public int setSkystonePlacement(){
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! THE FUNCTION RAN !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         SkystoneAutoVuforia.Vu = new VuforiaFTC(hardwareMap, telemetry, BOT.SCISSOR);
         SkystoneAutoVuforia.Vu.init();
         SkystoneAutoVuforia.Vu.start();
@@ -344,10 +347,13 @@ public class SkystoneAutoVuforia extends OpMode {
         SkystoneAutoVuforia.Vu.enableCapture();
 
         if(SkystoneAutoVuforia.Vu.capturing()) {
+            System.out.println("!!!!!!!!!!!!!!!! IF FUNCITON TRUE");
             SkystoneAutoVuforia.Vu.capture();
-            SkystoneAutoVuforia.Img = SkystoneAutoVuforia.Vu.getImage();
+            SkystoneAutoVuforia.Img = new ImageFTC(SkystoneAutoVuforia.Vu.getImage().getBitmap());
+            System.out.println("IMG!!!!!!!" + SkystoneAutoVuforia.Vu.getImage());
 
-            if (!SkystoneAutoVuforia.Vu.isStale()) {
+            if (SkystoneAutoVuforia.Vu.isStale()) {
+                System.out.println("!!!!!!!!!!!!!!!!! SECOND IF STATEMENT PASSED");
                 SkystoneAutoVuforia.Img.savePNG("VuIMg");
                 SkystoneAutoVuforia.Img.savePNGMyVo("VulMg2");
 
@@ -359,25 +365,31 @@ public class SkystoneAutoVuforia extends OpMode {
                 int[] startOfYellow = {-1,-1,-1};
                 OOF:
                 for(int i = SkystoneAutoVuforia.Img.getHeight() ; i > 32 ; i--){
+                    System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! FIRST LOOP RAN" + i);
                     for(int j = 0 + adj; j < SkystoneAutoVuforia.Img.getWidth(); j++){
                         //first find the yellow
                         int [] c1 = {j, i};
                         int [] c2 = {j + 1046, i - 32};
                         int[] areaColor = SkystoneAutoVuforia.Img.hsl(c1, c2);
-                        telemetry.addData("Color of area being measured h/s/l", areaColor);
+                        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Color of area being measured h/s/l" + areaColor);
                         if( areaColor[1] > 50){
                             startOfYellow = areaColor;
                             break OOF;
                         }
                     }
                 }
+                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 System.out.println(startOfYellow);
+            }else{
+                System.out.println("!!!!!!!!!!!!!!!!!!!! SECOND IF STATEMENT NOT PASSED");
             }
-            SkystoneAutoVuforia.Vu.clearImage();
 
             SkystoneAutoVuforia.Vu.stop();
             return -2;
         }else {
+            System.out.println("!!!!!!!!!!!!!!!! IF FUNCITON FALSE");
+            System.out.println(SkystoneAutoVuforia.Vu.capturing());
+
             SkystoneAutoVuforia.Vu.clearImage();
             SkystoneAutoVuforia.Vu.stop();
             return -2;

@@ -244,7 +244,9 @@ public class VuforiaFTC {
      * Grab the next available frame, if capture is enabled, optionally saving to disk
      */
     public void capture(final String filename) {
+        System.out.print("CAPTURE FUNCTION RAN!!!!!!!");
         if (!capturing()) {
+            System.out.print("CAPTURE EXCEPTION IF STATEMENT CODE RAN !!!!!!!!!!!!!!!");
             return;
         }
 
@@ -254,12 +256,14 @@ public class VuforiaFTC {
         vuforia.getFrameOnce(Continuation.create(ThreadPool.getDefault(), new Consumer<Frame>() {
             @Override
             public void accept(Frame frame) {
+                System.out.println("!!!!!!!!!!!!!! FRAME ACCEPTED !!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 Bitmap bitmap = vuforia.convertFrameToBitmap(frame);
                 if (bitmap == null) {
                     telemetry.log().add(this.getClass().getSimpleName() + ": No frame captured");
                     return;
                 }
                 image = new ImageFTC(bitmap);
+                System.out.println(image + "!!!!!!!!!!!!!!!!!!!!!!!! THE IMAGE IN THE VUFORIA FILE");
                 if (filename != null) {
                     if (!image.savePNG(filename)) {
                         telemetry.log().add(this.getClass().getSimpleName() + ": Unable to save file: " + filename);
