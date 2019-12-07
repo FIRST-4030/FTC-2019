@@ -165,10 +165,11 @@ public class SkystoneAutoVuforia extends OpMode {
 
             case LOCATE_SKYSTONE:
                 skystonePlacement = setSkystonePlacement();
-                skystonePlacement = 0;
+                //skystonePlacement = 0;
                 SkystoneOffset = 8 * skystonePlacement;
                 advance();
                 break;
+                /*
 
             case ALIGN_WITH_SKYSTONE:
                 driver.drive = common.drive.distance(InchesToMM(18.0f + SkystoneOffset));
@@ -232,7 +233,7 @@ public class SkystoneAutoVuforia extends OpMode {
 
             case PARK:
                 driver.drive = common.drive.distance(InchesToMM(-12));
-
+                */
             case DONE:
                 driver.done = true;
                 break;
@@ -253,7 +254,7 @@ public class SkystoneAutoVuforia extends OpMode {
         SPIN,
 
         LOCATE_SKYSTONE,
-
+        /*
         ALIGN_WITH_SKYSTONE, // Camera exactly 2 feet ahead of stone
 
         LOOK_AT_SKYSTONE,
@@ -271,6 +272,7 @@ public class SkystoneAutoVuforia extends OpMode {
         YEET_SKYSTONE,
 
         PARK,
+         */
 
         DONE;
 
@@ -344,7 +346,7 @@ public class SkystoneAutoVuforia extends OpMode {
         if(SkystoneAutoVuforia.Vu.capturing()) {
             SkystoneAutoVuforia.Vu.capture();
             SkystoneAutoVuforia.Img = SkystoneAutoVuforia.Vu.getImage();
-            SkystoneAutoVuforia.Vu.stop();
+
             if (!SkystoneAutoVuforia.Vu.isStale()) {
                 SkystoneAutoVuforia.Img.savePNG("VuIMg");
                 SkystoneAutoVuforia.Img.savePNGMyVo("VulMg2");
@@ -354,17 +356,30 @@ public class SkystoneAutoVuforia extends OpMode {
                     adj = 280;
                 }
 
-                for(int i = 0; i < SkystoneAutoVuforia.Img.getHeight() - 32; i++){
+                int[] startOfYellow = {-1,-1,-1};
+                OOF:
+                for(int i = SkystoneAutoVuforia.Img.getHeight() ; i > 32 ; i--){
                     for(int j = 0 + adj; j < SkystoneAutoVuforia.Img.getWidth(); j++){
                         //first find the yellow
                         int [] c1 = {j, i};
-                        int [] c2 = {j + 1046, i + 32};
-                        SkystoneAutoVuforia.Img.rgb(c1, c2);
+                        int [] c2 = {j + 1046, i - 32};
+                        int[] areaColor = SkystoneAutoVuforia.Img.hsl(c1, c2);
+                        telemetry.addData("Color of area being measured h/s/l", areaColor);
+                        if( areaColor[1] > 50){
+                            startOfYellow = areaColor;
+                            break OOF;
+                        }
                     }
                 }
+                System.out.println(startOfYellow);
             }
+            SkystoneAutoVuforia.Vu.clearImage();
+
+            SkystoneAutoVuforia.Vu.stop();
             return -2;
         }else {
+            SkystoneAutoVuforia.Vu.clearImage();
+            SkystoneAutoVuforia.Vu.stop();
             return -2;
         }
     }
