@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.driveto.AutoDriver;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.vuforia.ImageFTC;
 
-@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Cmd Motion", group = "Test")
 public class CmdMotionTest extends OpMode {
 
@@ -33,7 +32,7 @@ public class CmdMotionTest extends OpMode {
     private int lastDistance = 0;
     private String lastImage = "<None>";
     private String lastTarget = "<None>";
-    private AutoDriver driver = null;
+    private AutoDriver driver = new AutoDriver();
 
     private boolean droved = false;
 
@@ -45,14 +44,12 @@ public class CmdMotionTest extends OpMode {
 
         // Init the common tasks elements
         robot = new Robot(hardwareMap, telemetry);
-        robot.wheels.setTeleop(true);
+        //robot.wheels.setTeleop(true);
 
         // Register buttons
         buttons = new ButtonHandler(robot);
         buttons.register("CAPTURE", gamepad1, PAD_BUTTON.a);
         buttons.register("CLAW", gamepad2, PAD_BUTTON.left_bumper, BUTTON_TYPE.TOGGLE);
-        buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.left_bumper, BUTTON_TYPE.TOGGLE);
-        buttons.register("oh god oh fuck", gamepad1, PAD_BUTTON.back, BUTTON_TYPE.TOGGLE);
 
         // Disable teleop motion controls if we're in AUTO mode
         robot.wheels.setTeleop(!AUTO);
@@ -64,6 +61,11 @@ public class CmdMotionTest extends OpMode {
 
     @Override
     public void init_loop() {
+        telemetry.addData("Gyro", robot.gyro.isReady() ? "Ready" : "Calibrating…");
+        if (robot.gyro.isReady()) {
+            telemetry.addData(">", "Ready for game start");
+        }
+        telemetry.update();
     }
 
     @Override
@@ -71,15 +73,15 @@ public class CmdMotionTest extends OpMode {
         telemetry.clearAll();
 
         // Start Vuforia tracking and enable capture
-        robot.vuforia.start();
-        robot.vuforia.enableCapture();
+        //robot.vuforia.start();
+        //robot.vuforia.enableCapture();
     }
 
     @Override
     public void loop() {
         // Update buttons, location, and target info
         buttons.update();
-        robot.vuforia.track();
+        /*robot.vuforia.track();
 
         // Capture
         if (buttons.get("CAPTURE")) {
@@ -115,15 +117,15 @@ public class CmdMotionTest extends OpMode {
             lastTarget = target;
             lastBearing = bearing;
             lastDistance = distance;
-        }
+        }*/
 
         // Move the robot
         driveBase();
         auxiliary();
 
-        robot.vuforia.display(telemetry);
-        telemetry.addData("Image", lastImage);
-        telemetry.addData("Target (" + lastTarget + ")", lastDistance + "mm @ " + lastBearing + "°");
+        //robot.vuforia.display(telemetry);
+        //telemetry.addData("Image", lastImage);
+        //telemetry.addData("Target (" + lastTarget + ")", lastDistance + "mm @ " + lastBearing + "°");
         telemetry.update();
     }
 
@@ -156,9 +158,9 @@ public class CmdMotionTest extends OpMode {
             // TODO: Test and calibrate these
             // Last year's auto:
             // https://github.com/FIRST-4030/FTC-2018/blob/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/robot/auto/RuckusAutoTheBetterOne.java
-            driver.drive = robot.common.drive.distance(1000);
+            //driver.drive = robot.common.drive.distance(1000);
+            driver.drive = robot.common.drive.translate(1000);
             droved = true;
-            //robot.common.drive.degrees(90);
         }
 
         // This is automatically skipped when setTelop() is false

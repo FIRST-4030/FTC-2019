@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.utils.Round;
 public class Turns extends Subsystem {
     private static final String P = "TURN_P";
     private static final String I = "TURN_I";
+    private static final String D = "TURN_D";
     private static final String INCREMENT = "TURN-INCREMENT";
     private static final float MIN_INCREMENT = 0.001f;
     private static final float MAX_INCREMENT = 0.1f;
@@ -49,6 +50,9 @@ public class Turns extends Subsystem {
         buttons.spinners.add(I,
                 opmode.gamepad1, PAD_BUTTON.dpad_right, PAD_BUTTON.dpad_left,
                 INCREMENT, Drive.TURN_PARAMS.I);
+        buttons.spinners.add(D,
+                opmode.gamepad1, PAD_BUTTON.y, PAD_BUTTON.b,
+                INCREMENT, Drive.DRIVE_PARAMS.D);
 
         buttons.register(JOYSTICK, opmode.gamepad1, PAD_BUTTON.right_trigger);
         buttons.register(CCW, opmode.gamepad1, PAD_BUTTON.left_stick_button);
@@ -62,6 +66,7 @@ public class Turns extends Subsystem {
     protected void unload() {
         buttons.spinners.remove(P);
         buttons.spinners.remove(I);
+        buttons.spinners.remove(D);
         buttons.spinners.remove(INCREMENT);
 
         buttons.deregister(JOYSTICK);
@@ -76,6 +81,7 @@ public class Turns extends Subsystem {
     protected void update() {
         Drive.TURN_PARAMS.P = buttons.spinners.getFloat(P);
         Drive.TURN_PARAMS.I = buttons.spinners.getFloat(I);
+        Drive.TURN_PARAMS.D = buttons.spinners.getFloat(D);
         double angle = Math.toDegrees(Math.atan2(opmode.gamepad1.left_stick_y, opmode.gamepad1.left_stick_x));
 
         robot.telemetry.addData("Joystick", Round.truncate(angle));
@@ -102,6 +108,13 @@ public class Turns extends Subsystem {
             driver.drive = robot.common.drive.heading(180);
         } else if (buttons.get(ANGLE_270)) {
             driver.drive = robot.common.drive.heading(270);
+        }
+    }
+
+    @Override
+    protected void stop() {
+        if (driver != null) {
+            driver.stop();
         }
     }
 }

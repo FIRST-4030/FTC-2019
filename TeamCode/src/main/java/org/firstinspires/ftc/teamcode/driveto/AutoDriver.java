@@ -18,4 +18,9 @@ public class AutoDriver {
         interval = 0;
         return (drive != null || timer > time);
     }
+
+    public void stop() {
+        drive.stop();
+        drive = null;
+    }
 }

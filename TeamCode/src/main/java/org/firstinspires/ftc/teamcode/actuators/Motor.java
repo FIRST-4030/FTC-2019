@@ -51,10 +51,10 @@ public class Motor implements Available {
         if (!isAvailable()) {
             return;
         }
-        if (isPositionPID()) {
-            telemetry.log().add(this.getClass().getSimpleName() + ": Position PID active");
-            return;
-        }
+        //if (isPositionPID()) {
+        //    telemetry.log().add(this.getClass().getSimpleName() + ": Position PID active");
+        //    return;
+        //}
         motor.setPower(power);
     }
 

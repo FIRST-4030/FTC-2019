@@ -19,6 +19,8 @@ abstract public class Subsystem {
 
     protected abstract void update();
 
+    protected abstract void stop();
+
     public Subsystem(OpMode opmode, Robot robot, ButtonHandler buttons) {
         this.opmode = opmode;
         this.robot = robot;

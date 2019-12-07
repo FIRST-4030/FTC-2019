@@ -17,16 +17,16 @@ public class Drive implements CommonTask, DriveToListener {
 
     // PID Turns
     private static final float TURN_TOLERANCE = 1.5f; // Permitted heading error in degrees
-    private static final float TURN_DIFF_TOLERANCE = 0.001f; // Permitted error change rate
+    private static final float TURN_DIFF_TOLERANCE = 0.0001f; // Permitted error change rate
     private static final int TURN_TIMEOUT = (int) (DriveTo.TIMEOUT_DEFAULT * 1.5);
-    public static final PIDParams TURN_PARAMS = new PIDParams(0.011f, 0.003f, 0.0f,
+    public static final PIDParams TURN_PARAMS = new PIDParams(0.014f, 0.0f, 0.0f,
             null, true, true);
 
     // PID Drive
-    private static final float DRIVE_TOLERANCE = 100.0f; // Permitted distance error in encoder ticks
-    private static final float DRIVE_DIFF_TOLERANCE = 1.0f; // Permitted error change rate
-    public static final PIDParams DRIVE_PARAMS = new PIDParams(0.0005f, 0.0002f, 0.0f,
-            null, true, true);
+    private static final float DRIVE_TOLERANCE = 20.0f; // Permitted distance error in encoder ticks
+    private static final float DRIVE_DIFF_TOLERANCE = 0.1f; // Permitted error change rate
+    public static final PIDParams DRIVE_PARAMS = new PIDParams(0.00194f, 0.00029f, 0.7392f,
+            2000.0f, true, true);
 
     // Straight drive speed -- Forward is toward the hooks, motor positive, ticks increasing
     public final static float SPEED_FORWARD = 1.0f;
@@ -96,7 +96,7 @@ public class Drive implements CommonTask, DriveToListener {
         robot.wheels.setTeleop(false);
 
         DriveToParams param = new DriveToParams(this, SENSOR_TYPE.DRIVE_ENCODER);
-        int target = (int) ((float) millimeters * robot.wheels.getTicksPerMM()) + robot.wheels.getEncoder();
+        int target = (int) ((float) millimeters * robot.wheels.getTranslationTicksPerMM()) + robot.wheels.getEncoder();
         param.translationPid(target, DRIVE_PARAMS, DRIVE_TOLERANCE, DRIVE_DIFF_TOLERANCE);
         return new DriveTo(new DriveToParams[]{param});
     }
@@ -117,6 +117,9 @@ public class Drive implements CommonTask, DriveToListener {
         DriveToParams param = new DriveToParams(this, SENSOR_TYPE.DRIVE_ENCODER);
         int target = (int) ((float) millimeters * robot.wheels.getTicksPerMM()) + robot.wheels.getEncoder();
         param.pid(target, DRIVE_PARAMS, DRIVE_TOLERANCE, DRIVE_DIFF_TOLERANCE);
+
+        param.timeout = DriveTo.TIMEOUT_DEFAULT;
+
         return new DriveTo(new DriveToParams[]{param});
     }
 
@@ -139,6 +142,13 @@ public class Drive implements CommonTask, DriveToListener {
 
     @Override
     public void driveToStop(DriveToParams param) {
+        if (DEBUG && param.comparator.pid()) {
+            robot.telemetry.log().add("T(" + Round.truncate(param.pid.target) +
+                    ") | E/A/D\t | " + Round.truncate(param.pid.error) +
+                    "\t | " + Round.truncate(param.pid.accumulated) +
+                    "\t | " + Round.truncate(param.pid.differential) +
+                    "\t | (" + Round.truncate(param.pid.output()) + ")");
+        }
         switch ((SENSOR_TYPE) param.reference) {
             case DRIVE_ENCODER:
             case REVHUB_ENCODER:
@@ -159,10 +169,10 @@ public class Drive implements CommonTask, DriveToListener {
         float value;
         switch ((SENSOR_TYPE) param.reference) {
             case DRIVE_ENCODER:
-                value = robot.wheels.onTarget() ? 1.0f : 0.0f;
+                value = robot.wheels.getEncoder();
                 break;
             case REVHUB_ENCODER:
-                value = robot.wheels.getEncoder();
+                value = robot.wheels.onTarget() ? 1.0f : 0.0f;
                 break;
             case GYROSCOPE:
                 value = robot.gyro.getHeading();
@@ -183,10 +193,10 @@ public class Drive implements CommonTask, DriveToListener {
         float speed;
         if (DEBUG && param.comparator.pid()) {
             robot.telemetry.log().add("T(" + Round.truncate(param.pid.target) +
-                    ") E/A/D\t" + Round.truncate(param.pid.error) +
-                    "\t" + Round.truncate(param.pid.accumulated) +
-                    "\t" + Round.truncate(param.pid.differential) +
-                    "\t(" + Round.truncate(param.pid.output()) + ")");
+                    ") | E/A/D\t | " + Round.truncate(param.pid.error) +
+                    "\t | " + Round.truncate(param.pid.accumulated) +
+                    "\t | " + Round.truncate(param.pid.differential) +
+                    "\t | (" + Round.truncate(param.pid.output()) + ")");
         }
         switch ((SENSOR_TYPE) param.reference) {
             case REVHUB_ENCODER:
@@ -195,6 +205,7 @@ public class Drive implements CommonTask, DriveToListener {
                     robot.wheels.setTarget(param.timeout);
                 }
                 robot.wheels.setSpeed(param.limitRange);
+                break;
             case DRIVE_ENCODER:
                 speed = param.pid.output();
                 switch (param.comparator) {

@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.vuforia.ImageFTC;
 
-@Disabled
+//@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Vuforia Test", group = "Test")
 public class VuforiaTest extends OpMode {
 
@@ -29,6 +29,8 @@ public class VuforiaTest extends OpMode {
         robot = new Robot(hardwareMap, telemetry);
         buttons = new ButtonHandler(robot);
         buttons.register("CAPTURE", gamepad1, PAD_BUTTON.a);
+
+        robot.vuforia.init();
 
         // Wait for the game to begin
         telemetry.addData(">", "Ready for game start");
@@ -93,5 +95,16 @@ public class VuforiaTest extends OpMode {
         telemetry.addData("Image", lastImage);
         telemetry.addData("Target (" + lastTarget + ")", lastDistance + "mm @ " + lastBearing + "°");
         telemetry.update();
+
+        if(!robot.vuforia.isStale()){
+            robot.vuforia.capture();
+            ImageFTC image = robot.vuforia.getImage();
+            int height = image.getHeight();
+            int width = image.getWidth();
+
+            for(int i = 0; i < height; i++){
+
+            }
+        }
     }
 }

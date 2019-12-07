@@ -18,10 +18,11 @@ import org.firstinspires.ftc.teamcode.wheels.Wheels;
 public class WheelsConfigs extends Configs {
     private final static float DERATE = 1.0f;
     private final static float WC_MAX_RATE = 2.50f * DERATE;
-    private final static float WC_TICKS_PER_MM = 1.504f;
+    private final static float WC_TICKS_PER_MM = 1.308f;
 
     private final static float M_MAX_RATE = WC_MAX_RATE;
     private final static float M_TICKS_PER_MM = WC_TICKS_PER_MM;
+    private final static float M_TRANSLATION_TICKS_PER_MM = 2.0f;
 
     public WheelsConfigs(HardwareMap map, Telemetry telemetry, BOT bot) {
         super(map, telemetry, bot);
@@ -52,27 +53,26 @@ public class WheelsConfigs extends Configs {
             case SCISSOR:
                 motors = new WheelMotor[4];
                 motors[0] = new WheelMotor("FL", MOTOR_SIDE.LEFT, MOTOR_END.FRONT, false,
-                        M_TICKS_PER_MM);
+                        M_TICKS_PER_MM, M_TRANSLATION_TICKS_PER_MM);
                 motors[1] = new WheelMotor("BL", MOTOR_SIDE.LEFT, MOTOR_END.BACK, false,
-                        M_TICKS_PER_MM);
+                        M_TICKS_PER_MM, M_TRANSLATION_TICKS_PER_MM);
                 motors[2] = new WheelMotor("FR", MOTOR_SIDE.RIGHT, MOTOR_END.FRONT, true,
-                        M_TICKS_PER_MM);
+                        M_TICKS_PER_MM, M_TRANSLATION_TICKS_PER_MM);
                 motors[3] = new WheelMotor("BR", MOTOR_SIDE.RIGHT, MOTOR_END.BACK, true,
-                        M_TICKS_PER_MM);
-                config = new WheelsConfig(DRIVE_TYPE.MECANUM, motors, true, DcMotor.RunMode.RUN_USING_ENCODER);
+                        M_TICKS_PER_MM, M_TRANSLATION_TICKS_PER_MM);
+                config = new WheelsConfig(DRIVE_TYPE.MECANUM, motors, true, DcMotor.RunMode.RUN_TO_POSITION);
                 break;
 
             case ARM:
-
                 motors = new WheelMotor[4];
                 motors[0] = new WheelMotor("L1", MOTOR_SIDE.LEFT, MOTOR_END.FRONT, true,
-                        M_TICKS_PER_MM);
+                        WC_TICKS_PER_MM);
                 motors[1] = new WheelMotor("L2", MOTOR_SIDE.LEFT, MOTOR_END.BACK, true,
-                        M_TICKS_PER_MM);
+                        WC_TICKS_PER_MM);
                 motors[2] = new WheelMotor("R1", MOTOR_SIDE.RIGHT, MOTOR_END.FRONT, false,
-                        M_TICKS_PER_MM);
+                        WC_TICKS_PER_MM);
                 motors[3] = new WheelMotor("R2", MOTOR_SIDE.RIGHT, MOTOR_END.BACK, false,
-                        M_TICKS_PER_MM);
+                        WC_TICKS_PER_MM);
                 config = new WheelsConfig(DRIVE_TYPE.TANK, motors, true, DcMotor.RunMode.RUN_USING_ENCODER);
                 break;
         }
