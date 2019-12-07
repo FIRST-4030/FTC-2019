@@ -39,9 +39,9 @@ public class PIDParams {
                      boolean resetAccumulatorOnErrorSignChange,
                      boolean resetAccumulatorOnTargetSignChange) {
         this(p, i, d, 0, 1,
-                null,
-                false,
-                true);
+                maxAccumulator,
+                resetAccumulatorOnErrorSignChange,
+                resetAccumulatorOnTargetSignChange);
     }
 
     public PIDParams(float p, float i, float d, int min, int max,
