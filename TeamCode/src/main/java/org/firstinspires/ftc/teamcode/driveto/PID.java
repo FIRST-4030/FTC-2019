@@ -76,8 +76,8 @@ public class PID {
         float acc = accumulated + (err / dt);
         // Limit the accumulator to avoid wind-up errors
         if (params.maxAccumulator != null) {
-            if (Math.abs(accumulated) > params.maxAccumulator) {
-                accumulated = Math.copySign(params.maxAccumulator, accumulated);
+            if (Math.abs(acc) > params.maxAccumulator) {
+                acc = Math.copySign(params.maxAccumulator, acc);
             }
         }
         // Reset the accumulator when the error sign changes, if requested
