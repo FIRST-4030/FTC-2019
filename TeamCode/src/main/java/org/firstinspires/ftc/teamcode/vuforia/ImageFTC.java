@@ -119,24 +119,56 @@ public class ImageFTC {
         );
     }
 
-    public int hsl(int[] c1, int[] c2){
+    public int[] hsl(int[] c1, int[] c2){
         int temp = this.rgb(c1, c2);
         int red = Color.red(temp);
         int green = Color.green(temp);
         int blue = Color.blue(temp);
-        return -2;
+
+        double triangle = (Math.max(Math.max(red, green), blue)) - Math.min(Math.min(red, green), blue);
+
+        int l = getLightness(red, green, blue);
+        int s = getSaturation(red, green, blue, triangle, l);
+        int h = getHue(red, green, blue, triangle);
+        int[] hsl = {h, s, l};
+        return hsl;
     }
 
-    public int getLightness (int r, int g, int b) {
-        float lightness = (((float) r + (float) g + (float) b)/3.0f)/255.0f;
+    public int getLightness (int red, int green, int blue) {
+        float lightness = ((Math.max(Math.max(red, green), blue)) + (Math.min(Math.min(red, green), blue)))/2;
         return Math.round(lightness * 100.0f);
     }
 
-    public int getSaturation(int r, int g, int b){
+    public int getSaturation(int r, int g, int b, double triangle, int l){
         float r2 = (float) r;
         float g2 = (float) g;
         float b2 = (float) b;
-        float saturation = 1 - ((3/(r + b + g))*Math.min(Math.min(r, g), b));
-        return Math.round(saturation);
+        float saturation = 0;
+        if (triangle == 0){
+            saturation = 0;
+        }else {
+            saturation = (float)triangle /( 1 - Math.abs((2*l) - 1));
+        }
+        return Math.round(saturation * 100);
+    }
+
+    public int getHue(int r, int g, int b, double triangle){
+        int cMax = Math.max(r, Math.max(g, b));
+        float hue  = 0.0f;
+
+        float r1 = r/255;
+        float b1 = b/255;
+        float g1 = g/255;
+
+        if(triangle == 0) {
+            hue = 0;
+        }else if(cMax == r) {
+            hue = 60 * (((g1 - b1) / (float) triangle) % 6);
+        }else if(cMax == g){
+            hue = 60 * (((b1 - r1) / (float) triangle) + 2);
+        }else{
+            hue = 60 * (((r1 - g1) / (float) triangle) + 4);
+        }
+        return Math.round(hue);
     }
 }
