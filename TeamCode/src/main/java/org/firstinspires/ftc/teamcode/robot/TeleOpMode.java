@@ -33,7 +33,7 @@ public class TeleOpMode extends OpMode {
     private static final float CAP_DOWN = 0.75f;
 
     private static final float ARM_SPEED = 0.02f;
-    private static final float ARM_HOME = 0.1f;
+    private static final float ARM_HOME = 0.05f;
     private static final float ARM_OUT = 0.65f;
 
     private static final float COLLECT_SPEED = 0.9f;
@@ -70,6 +70,7 @@ public class TeleOpMode extends OpMode {
         buttons.register("ARM_TO_1", gamepad2, PAD_BUTTON.right_bumper);
         buttons.register("ARM_TO_0", gamepad2, PAD_BUTTON.left_bumper);
         buttons.register("GRAB", gamepad2, PAD_BUTTON.x, BUTTON_TYPE.TOGGLE);
+        buttons.register("GRAB_WIDE", gamepad2, PAD_BUTTON.x);
         buttons.register("CAPSTONE2", gamepad2, PAD_BUTTON.y);
         buttons.getListener("ARM_TO_0").setLongHeldTimeout(0);
         buttons.getListener("ARM_TO_1").setLongHeldTimeout(0);
@@ -129,9 +130,10 @@ public class TeleOpMode extends OpMode {
             robot.collectorLeft.setPower(COLLECT_SPEED);
             robot.collectorRight.setPower(COLLECT_SPEED);
         } else {
-            robot.collectorLeft.setPower(0.0f);
-            robot.collectorRight.setPower(0.0f);
+            robot.collectorLeft.setPower(gamepad1.left_trigger-gamepad1.right_trigger);
+            robot.collectorRight.setPower(gamepad1.left_trigger-gamepad1.right_trigger);
         }
+
 
         // Swingy arm
         if (buttons.autokey("ARM_TO_0")) {
@@ -159,7 +161,7 @@ public class TeleOpMode extends OpMode {
         // CLAW
         if (buttons.get("GRAB")) {
             //Ensures the arm doesn't open wide enough to get stuck in the robot
-            if (robot.flipper.getPosition() > BIG_MIN_POS) {
+            if (robot.flipper.getPosition() > BIG_MIN_POS && buttons.get("GRAB_WIDE")) {
                 robot.claw.setPosition(BIG_OPEN);
             } else {
                 robot.claw.setPosition(SMALL_OPEN);

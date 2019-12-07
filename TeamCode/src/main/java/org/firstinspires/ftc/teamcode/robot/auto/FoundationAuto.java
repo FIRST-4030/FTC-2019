@@ -127,11 +127,10 @@ public class FoundationAuto extends OpMode {
                 break;
 
             case TURN_TOWARDS_FOUNDATION:
-            case TURN_PERPENDICULAR_TO_SKYBRIDGE:
                 if(color==Field.AllianceColor.BLUE){
-                    driver.drive = common.drive.degrees(-90.0f);
+                    driver.drive = common.drive.heading(255.0f);
                 }else{
-                    driver.drive=common.drive.degrees(90.0f);
+                    driver.drive=common.drive.heading(90.0f);
                 }
                 advance();
                 break;
@@ -154,11 +153,10 @@ public class FoundationAuto extends OpMode {
                 break;
 
             case TURN_TOWARDS_CORNER:
-            case TURN_PARALLEL_TO_SKYBRIDGE:
                 if(color==Field.AllianceColor.BLUE){
-                    driver.drive = common.drive.degrees(-45.0f);
+                    driver.drive = common.drive.heading(200.0f);
                 }else{
-                    driver.drive = common.drive.degrees(45.0f);
+                    driver.drive = common.drive.heading(135.0f);
                 }
                 advance();
                 break;
@@ -180,6 +178,15 @@ public class FoundationAuto extends OpMode {
                 advance();
                 break;
 
+            case TURN_PARALLEL_TO_SKYBRIDGE:
+                if(color==Field.AllianceColor.BLUE){
+                    driver.drive = common.drive.heading(180.0f);
+                }else{
+                    driver.drive = common.drive.heading(180.0f);
+                }
+                advance();
+                break;
+
             case MOVE_FORWARD_TO_SKYBRIDGE:
                 if(park_by_wall){
                     driver.drive = common.drive.distance(InchesToMM(20.0f));
@@ -188,7 +195,14 @@ public class FoundationAuto extends OpMode {
                 advance();
                 break;
 
-
+            case TURN_PERPENDICULAR_TO_SKYBRIDGE:
+                if(color==Field.AllianceColor.BLUE){
+                    driver.drive = common.drive.heading(90.0f);
+                }else{
+                    driver.drive=common.drive.heading(270.0f);
+                }
+                advance();
+                break;
 
             case PARK_UNDER_SKYBRIDGE:
                 driver.drive = common.drive.distance(InchesToMM(23.0f));

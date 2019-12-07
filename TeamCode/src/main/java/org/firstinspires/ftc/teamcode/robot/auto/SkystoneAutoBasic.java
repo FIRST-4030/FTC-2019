@@ -81,7 +81,7 @@ public class SkystoneAutoBasic extends OpMode {
         buttons.register("TOWARDS_WALL", gamepad1, PAD_BUTTON.dpad_down);
         buttons.register("CYCLE_SKYSTONE", gamepad1, PAD_BUTTON.x, BUTTON_TYPE.SINGLE_PRESS);
 
-        robot.claw.setPosition(SMALL_OPEN);
+        robot.claw.setPosition(.6f);
     }
 
     @Override
@@ -151,6 +151,19 @@ public class SkystoneAutoBasic extends OpMode {
                 advance();
                 break;
 
+            case CHOOSE_SIDE:
+                if (!stopByWall) driver.drive = common.drive.distance(InchesToMM(35.0f));
+                advance();
+                break;
+
+            case TURN:
+                if (!stopByWall) {
+                    if (color == Field.AllianceColor.BLUE) driver.drive = common.drive.heading(270);
+                    else driver.drive = common.drive.heading(90);
+                }
+                advance();
+                break;
+
             case MOVE:
                 driver.drive = common.drive.distance(InchesToMM(24.0f));
                 advance();
@@ -171,6 +184,10 @@ public class SkystoneAutoBasic extends OpMode {
      */
     enum AUTO_STATE implements OrderedEnum {
         INIT, // Initialization
+
+        CHOOSE_SIDE,
+
+        TURN,
 
         MOVE,
 

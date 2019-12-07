@@ -124,28 +124,42 @@ public class FallbackFoundationAuto extends OpMode {
                 break;
 
             case DRIVE_TO_FOUNDATION:
-                driver.drive = common.drive.distance(InchesToMM(18.0f));
+                driver.drive = common.drive.distance(InchesToMM(40.0f));
                 advance();
                 break;
 
             case INCH:
-                driver.drive = common.drive.distance(InchesToMM(6.0f));
+                //driver.drive = common.drive.distance(InchesToMM(8.0f));
                 advance();
                 break;
 
             case GRAB:
                 robot.hookRight.min();
                 robot.hookLeft.min();
-                driver.drive = common.drive.sleep(1000);
+                driver.drive = common.drive.sleep(500);
                 advance();
                 break;
 
             case MOVE_BACK_TO_TURN:
-                driver.drive = common.drive.distance(InchesToMM(-12.0f));
+                driver.drive = common.drive.distance(InchesToMM(-18.0f));
                 advance();
                 break;
 
             case TURN_TOWARDS_CORNER:
+                if(color==Field.AllianceColor.BLUE){
+                    driver.drive = common.drive.heading(335.0f);
+                }else{
+                    driver.drive = common.drive.heading(25.0f);
+                }
+                advance();
+                break;
+
+            case MOVE_AGAIN:
+                driver.drive = common.drive.distance(InchesToMM(-12.0f));
+                advance();
+                break;
+
+            case TURN_AGAIN:
                 if(color==Field.AllianceColor.BLUE){
                     driver.drive = common.drive.heading(270.0f);
                 }else{
@@ -154,45 +168,44 @@ public class FallbackFoundationAuto extends OpMode {
                 advance();
                 break;
 
-
             case MOVE_INTO_CORNER:
-                driver.drive = common.drive.distance(InchesToMM(10.0f));
+                driver.drive = common.drive.distance(InchesToMM(12.0f));
                 advance();
                 break;
 
             case CAP_OUT:
                 robot.flipper.setPosition(0.85f);
-                driver.drive = common.drive.sleep(2000);
-                advance ();
+                driver.drive = common.drive.sleep(1000);
+                advance();
                 break;
 
             case CAP_RELEASE:
                 robot.claw.setPosition(0.35f);
-                driver.drive = common.drive.sleep(1000);
-                advance ();
+                driver.drive = common.drive.sleep(300);
+                advance();
                 break;
 
             case ARM_IN:
                 robot.flipper.setPosition(0.1f);
-                driver.drive = common.drive.sleep(2000);
-                advance ();
+                driver.drive = common.drive.sleep(1000);
+                advance();
                 break;
 
             case RELEASE_FOUNDATION:
                 robot.hookRight.max();
                 robot.hookLeft.max();
-                driver.drive = common.drive.sleep(1000);
+                driver.drive = common.drive.sleep(300);
                 advance();
                 break;
 
             case BACK_UP_AWAY_FROM_CORNER:
-                driver.drive = common.drive.distance(InchesToMM(-30.0f));
+                driver.drive = common.drive.distance(InchesToMM(-40.0f));
                 advance();
                 break;
 
             case PARK_UNDER_SKYBRIDGE:
 
-                driver.drive = common.drive.translate(InchesToMM(-10.0f));
+                //driver.drive = common.drive.heading(0);
                 advance();
                 break;
 
@@ -221,13 +234,18 @@ public class FallbackFoundationAuto extends OpMode {
 
         TURN_TOWARDS_CORNER, // Turn 90 degrees towards corner (building site)
 
-        MOVE_INTO_CORNER, // Push foundation into corner
-
         CAP_OUT,
 
         CAP_RELEASE,
 
         ARM_IN,
+
+        MOVE_AGAIN,
+
+        TURN_AGAIN,
+
+        MOVE_INTO_CORNER, // Push foundation into corner
+
 
         RELEASE_FOUNDATION,
 

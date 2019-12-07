@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.auto;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.buttons.BUTTON_TYPE;
@@ -82,6 +84,9 @@ public class SkystoneAuto extends OpMode {
         buttons.register("CYCLE_SKYSTONE", gamepad1, PAD_BUTTON.x, BUTTON_TYPE.SINGLE_PRESS);
 
         robot.claw.setPosition(SMALL_OPEN);
+
+        getSkystonePosition();
+        telemetry.update();
     }
 
     @Override
@@ -352,9 +357,14 @@ public class SkystoneAuto extends OpMode {
         int h = img.getHeight();
         int w = img.getWidth();
         int y = h;
-        while (img.rgb(w/2, y) < 50  ) {
-
+        while (Color.green(img.rgb(w/2, y)) < 50) {
+            y --;
         }
+        y -= 50;
+        int g0 = Color.green(img.rgb(w/4, y));
+        int g1 = Color.green(img.rgb(w/2, y));
+        int g2 = Color.green(img.rgb(2*w/4, y));
+        telemetry.addData("-1,0,1", g0 + "," + g1 + "," + g2);
         return pos;
     }
 
