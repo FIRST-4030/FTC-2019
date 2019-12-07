@@ -110,4 +110,11 @@ public class Turns extends Subsystem {
             driver.drive = robot.common.drive.heading(270);
         }
     }
+
+    @Override
+    protected void stop() {
+        if (driver != null) {
+            driver.stop();
+        }
+    }
 }

@@ -61,6 +61,7 @@ public class Distance extends Subsystem {
         //buttons.register(HUGE, opmode.gamepad1, PAD_BUTTON.y);
         buttons.register(BACK, opmode.gamepad1, PAD_BUTTON.back, BUTTON_TYPE.TOGGLE);
         buttons.register(JOYSTICK, opmode.gamepad1, PAD_BUTTON.start, BUTTON_TYPE.TOGGLE);
+        buttons.register("REV24", opmode.gamepad2, PAD_BUTTON.y);
     }
 
     protected void unload() {
@@ -107,9 +108,18 @@ public class Distance extends Subsystem {
         } else if (buttons.get(LARGE)) {
             driver.drive = robot.common.drive.distance((int) (24 * scale));
         } else*/ if (buttons.get(SMALL)) {
-            driver.drive = robot.common.drive.distance((int) (12 * scale));
+            driver.drive = robot.common.drive.distance((int) (48 * scale));
         } else if (buttons.get(TINY)) {
-            driver.drive = robot.common.drive.distance((int) (6 * scale));
+            driver.drive = robot.common.drive.distance((int) (12 * scale));
+        } else if (buttons.get("REV24")) {
+            driver.drive = robot.common.drive.distance((int) (24 * scale));
+        }
+    }
+
+    @Override
+    protected void stop() {
+        if (driver != null) {
+            driver.stop();
         }
     }
 }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.driveto;
 
+import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.utils.Heading;
 
 public class PID {
@@ -81,7 +82,8 @@ public class PID {
             }
         }
         // Reset the accumulator when the error sign changes, if requested
-        if (params.resetAccumulatorOnErrorSignChange && Math.signum(err) != Math.signum(error)) {
+        if (params.resetAccumulatorOnErrorSignChange &&
+                (error > 0 && err < 0) || (error < 0 && err > 0)) {
             acc = 0;
         }
 

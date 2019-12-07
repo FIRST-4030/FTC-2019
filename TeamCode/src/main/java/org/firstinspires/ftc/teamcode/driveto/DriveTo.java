@@ -40,6 +40,13 @@ public class DriveTo {
         return false;
     }
 
+    public void stop() {
+        for (DriveToParams param : params) {
+            param.parent.driveToStop(param);
+        }
+        done = true;
+    }
+
     public void drive() {
         if (!isStarted()) {
             this.started = System.currentTimeMillis();
@@ -51,10 +58,7 @@ public class DriveTo {
         }
 
         if (stop) {
-            for (DriveToParams param : params) {
-                param.parent.driveToStop(param);
-            }
-            done = true;
+           stop();
         } else {
             done = false;
             for (DriveToParams param : params) {
@@ -132,8 +136,8 @@ public class DriveTo {
                 case PID:
                 case ROTATION_PID:
                     if (Math.abs(param.pid.error) < param.limitRange &&
-                            (param.diffRange == null ||
-                                    Math.abs(param.pid.differential) < param.diffRange)) {
+                       (param.diffRange == null || Math.abs(param.pid.differential) < param.diffRange)) {
+
                         onTarget = true;
                     }
                     break;
