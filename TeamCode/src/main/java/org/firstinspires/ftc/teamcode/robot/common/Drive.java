@@ -19,13 +19,13 @@ public class Drive implements CommonTask, DriveToListener {
     private static final float TURN_TOLERANCE = 1.5f; // Permitted heading error in degrees
     private static final float TURN_DIFF_TOLERANCE = 0.0001f; // Permitted error change rate
     private static final int TURN_TIMEOUT = (int) (DriveTo.TIMEOUT_DEFAULT * 1.5);
-    public static final PIDParams TURN_PARAMS = new PIDParams(0.014f, 0.0f, 0.0f,
-            null, true, true);
+    public static final PIDParams TURN_PARAMS = new PIDParams(0.012f, 0.02015f, 0.75f,
+            40.0f, true, true);
 
     // PID Drive
     private static final float DRIVE_TOLERANCE = 20.0f; // Permitted distance error in encoder ticks
     private static final float DRIVE_DIFF_TOLERANCE = 0.1f; // Permitted error change rate
-    public static final PIDParams DRIVE_PARAMS = new PIDParams(0.00193f, 0.00028f, 0.75f,
+    public static final PIDParams DRIVE_PARAMS = new PIDParams(0.00183f, 0.00028f, 0.754f,
             2000.0f, true, true);
 
     // Straight drive speed -- Forward is toward the hooks, motor positive, ticks increasing
