@@ -119,7 +119,6 @@ public class TeleOpMode extends OpMode {
     }
 
     //moves everything
-
     private void auxiliary() {
         // LIFT
         robot.lift.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
@@ -134,19 +133,21 @@ public class TeleOpMode extends OpMode {
             robot.collectorRight.setPower(gamepad1.left_trigger-gamepad1.right_trigger);
         }
 
-
         // Swingy arm
         if (buttons.autokey("ARM_TO_0")) {
             armPos -= ARM_SPEED;
         }
+
         //Automatically spams the Arm buttons at regular intervals.
         if (buttons.autokey("ARM_TO_1")) {
             armPos += ARM_SPEED;
         }
+
         //Homes arm inside the robot
         if (buttons.get("ARM_RESET")) {
             armPos = ARM_HOME;
         }
+
         //Quickly moves arm into a decent position for collecting
         if (buttons.get("ARM_OUT")) {
             armPos = ARM_OUT;

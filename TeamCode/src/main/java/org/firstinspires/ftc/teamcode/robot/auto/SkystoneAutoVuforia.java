@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot.auto;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.buttons.BUTTON_TYPE;
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Skystone Side (Vuforia)", group = "Scissor")
+@Disabled
 public class SkystoneAutoVuforia extends OpMode {
 
     // Devices and subsystems

@@ -128,11 +128,6 @@ public class FallbackFoundationAuto extends OpMode {
                 advance();
                 break;
 
-            case INCH:
-                //driver.drive = common.drive.distance(InchesToMM(8.0f));
-                advance();
-                break;
-
             case GRAB:
                 robot.hookRight.min();
                 robot.hookLeft.min();
@@ -203,12 +198,6 @@ public class FallbackFoundationAuto extends OpMode {
                 advance();
                 break;
 
-            case PARK_UNDER_SKYBRIDGE:
-
-                //driver.drive = common.drive.heading(0);
-                advance();
-                break;
-
             case DONE:
                 driver.done = true;
                 break;
@@ -225,8 +214,6 @@ public class FallbackFoundationAuto extends OpMode {
         INIT, // Initialization
 
         DRIVE_TO_FOUNDATION, // Drive towards foundation
-
-        INCH,
 
         GRAB, // Grab foundation
 
@@ -246,14 +233,9 @@ public class FallbackFoundationAuto extends OpMode {
 
         MOVE_INTO_CORNER, // Push foundation into corner
 
-
         RELEASE_FOUNDATION,
 
         BACK_UP_AWAY_FROM_CORNER, // Backs up to previous position
-
-
-
-        PARK_UNDER_SKYBRIDGE, // Move under skybridge
 
         DONE;
 

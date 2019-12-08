@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robot.auto;
 
 import android.graphics.Color;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.buttons.BUTTON_TYPE;
@@ -20,6 +21,7 @@ import org.firstinspires.ftc.teamcode.vuforia.ImageFTC;
 
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Skystone Side (WIP)", group = "Scissor")
+@Disabled
 public class SkystoneAuto extends OpMode {
 
     // Devices and subsystems

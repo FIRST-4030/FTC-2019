@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.vuforia.ImageFTC;
 
 //@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Vuforia Test", group = "Test")
+@Disabled
 public class VuforiaTest extends OpMode {
 
     // Devices and subsystems

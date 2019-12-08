@@ -50,6 +50,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 
 //@Disabled
 @TeleOp(name = "Vuforia SkyStone Test", group = "Test")
+@Disabled
 public class VuforiaSkyStoneTest extends LinearOpMode {
 
     // Support copy-pasta
