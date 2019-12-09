@@ -18,7 +18,6 @@
             <Servo name="Capstone" port="1" />
             <Servo name="Claw" port="2" />
             <LynxEmbeddedIMU name="imu 1" port="0" bus="0" />
-            <LynxColorSensor name="Load" port="0" bus="1" />
         </LynxModule>
     </LynxUsbDevice>
 </Robot>

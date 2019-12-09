@@ -40,10 +40,10 @@ public class ServoConfigs extends Configs {
                         config = new ServoConfig("Capstone");
                         break;
                     case LEFT_HOOK:
-                        config = new ServoConfig("Left Hook", true, 0.25f, 0.8f);
+                        config = new ServoConfig("Left Hook", true, 0.2f, 0.8f);
                         break;
                     case RIGHT_HOOK:
-                        config = new ServoConfig("Right Hook", false, 0.55f, 1.0f);
+                        config = new ServoConfig("Right Hook", false, 0.5f, 1.0f);
                 }
                 break;
 

@@ -160,7 +160,7 @@ public class TeleOpMode extends OpMode {
         telemetry.addData("Arm Pos", robot.flipper.getPosition());
 
         // CLAW
-        if (buttons.get("GRAB")) {
+        if (!buttons.get("GRAB")) {
             //Ensures the arm doesn't open wide enough to get stuck in the robot
             if (robot.flipper.getPosition() > BIG_MIN_POS && buttons.get("GRAB_WIDE")) {
                 robot.claw.setPosition(BIG_OPEN);

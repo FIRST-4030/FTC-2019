@@ -102,7 +102,7 @@ public class FallbackFoundationAuto extends OpMode {
         driver = common.drive.loop(driver);
 
         // Debug feedback
-        telemetry.addData("State", state);
+        telemetry.addData("State", state.prev()); // Prev because it prints the wrong one otherwise
         telemetry.addData("Running", driver.isRunning(time));
         telemetry.addData("Gyro", Round.truncate(robot.gyro.getHeading()));
         telemetry.addData("Encoder", robot.wheels.getEncoder());
@@ -128,6 +128,11 @@ public class FallbackFoundationAuto extends OpMode {
                 advance();
                 break;
 
+            case INCH:
+                driver.drive = common.drive.distance(InchesToMM(1.0f));
+                advance();
+                break;
+
             case GRAB:
                 robot.hookRight.min();
                 robot.hookLeft.min();
@@ -136,7 +141,7 @@ public class FallbackFoundationAuto extends OpMode {
                 break;
 
             case MOVE_BACK_TO_TURN:
-                driver.drive = common.drive.distance(InchesToMM(-18.0f));
+                driver.drive = common.drive.distance(InchesToMM(-30.0f));
                 advance();
                 break;
 
@@ -214,6 +219,8 @@ public class FallbackFoundationAuto extends OpMode {
         INIT, // Initialization
 
         DRIVE_TO_FOUNDATION, // Drive towards foundation
+
+        INCH,
 
         GRAB, // Grab foundation
 
