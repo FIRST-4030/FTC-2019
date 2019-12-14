@@ -7,11 +7,15 @@ import org.firstinspires.ftc.teamcode.actuators.Motor;
 import org.firstinspires.ftc.teamcode.actuators.ServoFTC;
 import org.firstinspires.ftc.teamcode.config.BOT;
 import org.firstinspires.ftc.teamcode.robot.common.Common;
+import org.firstinspires.ftc.teamcode.robot.config.DistanceConfigs;
 import org.firstinspires.ftc.teamcode.robot.config.GyroConfigs;
 import org.firstinspires.ftc.teamcode.robot.config.MotorConfigs;
 import org.firstinspires.ftc.teamcode.robot.config.ServoConfigs;
 import org.firstinspires.ftc.teamcode.robot.config.WheelsConfigs;
 import org.firstinspires.ftc.teamcode.sensors.color_range.ColorRange;
+import org.firstinspires.ftc.teamcode.sensors.distance.DISTANCE_TYPES;
+import org.firstinspires.ftc.teamcode.sensors.distance.Distance;
+import org.firstinspires.ftc.teamcode.sensors.distance.RevDistance;
 import org.firstinspires.ftc.teamcode.sensors.gyro.Gyro;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 import org.firstinspires.ftc.teamcode.wheels.Wheels;
@@ -44,6 +48,7 @@ public class Robot {
     public ServoFTC upper;
     public ServoFTC rotation;
     public ServoFTC wrist;
+    public Distance distanceTest;
 
 
     public Robot(HardwareMap map, Telemetry telemetry) {
@@ -66,6 +71,7 @@ public class Robot {
         ServoConfigs servos = new ServoConfigs(map, telemetry, bot);
         //SwitchConfigs switches = new SwitchConfigs(map, telemetry, bot);
         // TODO: Disabled until we can test
+        DistanceConfigs distances = new DistanceConfigs(map, telemetry, bot);
         //ColorRangeConfigs colors = new ColorRangeConfigs(map, telemetry, bot);
 
         // Shared
@@ -93,6 +99,7 @@ public class Robot {
                 rotation = servos.init(SERVOS.ROTATION);
                 claw = servos.init(SERVOS.CLAW);
                 wrist = servos.init(SERVOS.WRIST);
+                distanceTest = distances.init(DISTANCE_SENSORS.TEST);
         }
 
 

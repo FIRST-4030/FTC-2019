@@ -112,6 +112,9 @@ public class ArmTeleOp extends OpMode {
         }
         telemetry.addData("Loop Frequency", lastLoops);
 
+        // Show distance sensor data
+        telemetry.addData("Distance Sensor", robot.distanceTest.distance());
+
         telemetry.update();
     }
 
