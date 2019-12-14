@@ -33,7 +33,7 @@ public class RevDistance implements Distance {
 
     @Override
     public double distanceMM() {
-        double mm = 0;
+        double mm = DistanceUnit.infinity;
         if (isAvailable()) {
             mm = distanceSensor.getDistance(DistanceUnit.MM);
         }
@@ -42,7 +42,7 @@ public class RevDistance implements Distance {
 
     @Override
     public double distanceIn() {
-        double in = 0;
+        double in = DistanceUnit.infinity;
         if (isAvailable()) {
             in = distanceSensor.getDistance(DistanceUnit.INCH);
         }
