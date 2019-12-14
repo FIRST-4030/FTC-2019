@@ -2,9 +2,13 @@ package org.firstinspires.ftc.teamcode.sensors.distance;
 
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+// This class implements a REV-31-1505 distance sensor from REV Robotics.
+// A new class will need to be created for any other distance sensor.
+// To make a new distance sensor, copy this class and change the constants
+// in the bottom few methods that determine minDistance, maxDistance and field of view
 
 public class RevDistance implements Distance {
     private DistanceSensor distanceSensor;
@@ -27,39 +31,30 @@ public class RevDistance implements Distance {
         return (distanceSensor != null);
     }
 
+    public double distance(DistanceUnit units) {
+        double measured = DistanceUnit.infinity;
+        if (isAvailable()) {
+            measured = distanceSensor.getDistance(units);
+        }
+        return measured;
+    }
+
     public double distance() {
-        return distanceMM();
-    }
-
-    @Override
-    public double distanceMM() {
-        double mm = DistanceUnit.infinity;
-        if (isAvailable()) {
-            mm = distanceSensor.getDistance(DistanceUnit.MM);
-        }
-        return mm;
-    }
-
-    @Override
-    public double distanceIn() {
-        double in = DistanceUnit.infinity;
-        if (isAvailable()) {
-            in = distanceSensor.getDistance(DistanceUnit.INCH);
-        }
-        return in;
-    }
-
-    public int get() {
-        return (int) distance();
+        return distance(DistanceUnit.MM);
     }
 
     @Override
     public double minDistance() {
-        return 0.0;
+        return 0.0;     // millimeters
     }
 
     @Override
     public double maxDistance() {
-        return 200.0;
+        return 2000.0;  // millimeters
+    }
+
+    @Override
+    public double fieldOfView() {
+        return 25.0;    // degrees
     }
 }
