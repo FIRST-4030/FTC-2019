@@ -61,6 +61,7 @@ public class TeleOpMode extends OpMode {
         buttons = new ButtonHandler(robot);
         buttons.register("COLLECT", gamepad1, PAD_BUTTON.a, BUTTON_TYPE.TOGGLE);
         buttons.register("FOUNDATION_HOOK", gamepad1, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
+        buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
         buttons.register("CAPSTONE1", gamepad1, PAD_BUTTON.x);
         buttons.register("CAPSTONE3", gamepad1, PAD_BUTTON.left_bumper);
 
@@ -189,6 +190,15 @@ public class TeleOpMode extends OpMode {
             robot.hookLeft.max();
             robot.hookRight.max();
 
+            robot.wheels.setSpeedScale(NORMAL_SPEED);
+            telemetry.addLine("normal mode");
+        }
+
+        //SLOW MODE
+        if (buttons.get("SLOW_MODE")) {
+            robot.wheels.setSpeedScale(SLOW_MODE);
+            telemetry.addLine("slow mode");
+        } else {
             robot.wheels.setSpeedScale(NORMAL_SPEED);
             telemetry.addLine("normal mode");
         }
