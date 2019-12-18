@@ -181,7 +181,7 @@ public class FallbackFoundationAuto extends OpMode {
                 break;
 
             case BACK_UP_AWAY_FROM_CORNER:
-                driver.drive = common.drive.distance(InchesToMM(-40.0f));
+                driver.drive = common.drive.distance(InchesToMM(-45.0f));
                 advance();
                 break;
 
