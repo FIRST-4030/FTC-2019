@@ -141,25 +141,11 @@ public class FallbackFoundationAuto extends OpMode {
                 break;
 
             case MOVE_BACK_TO_TURN:
-                driver.drive = common.drive.distance(InchesToMM(-30.0f));
+                driver.drive = common.drive.distance(InchesToMM(-40.0f));
                 advance();
                 break;
 
             case TURN_TOWARDS_CORNER:
-                if(color==Field.AllianceColor.BLUE){
-                    driver.drive = common.drive.heading(335.0f);
-                }else{
-                    driver.drive = common.drive.heading(25.0f);
-                }
-                advance();
-                break;
-
-            case MOVE_AGAIN:
-                driver.drive = common.drive.distance(InchesToMM(-12.0f));
-                advance();
-                break;
-
-            case TURN_AGAIN:
                 if(color==Field.AllianceColor.BLUE){
                     driver.drive = common.drive.heading(270.0f);
                 }else{
@@ -167,6 +153,7 @@ public class FallbackFoundationAuto extends OpMode {
                 }
                 advance();
                 break;
+
 
             case MOVE_INTO_CORNER:
                 robot.hookRight.max();
@@ -229,9 +216,6 @@ public class FallbackFoundationAuto extends OpMode {
 
         ARM_IN,
 
-        MOVE_AGAIN,
-
-        TURN_AGAIN,
 
         MOVE_INTO_CORNER, // Push foundation into corner
 
