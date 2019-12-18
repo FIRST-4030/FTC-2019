@@ -169,6 +169,8 @@ public class FallbackFoundationAuto extends OpMode {
                 break;
 
             case MOVE_INTO_CORNER:
+                robot.hookRight.max();
+                robot.hookLeft.max();
                 driver.drive = common.drive.distance(InchesToMM(12.0f));
                 advance();
                 break;
@@ -186,15 +188,8 @@ public class FallbackFoundationAuto extends OpMode {
                 break;
 
             case ARM_IN:
-                robot.flipper.setPosition(0.1f);
+                robot.flipper.setPosition(0.0f);
                 driver.drive = common.drive.sleep(1000);
-                advance();
-                break;
-
-            case RELEASE_FOUNDATION:
-                robot.hookRight.max();
-                robot.hookLeft.max();
-                driver.drive = common.drive.sleep(300);
                 advance();
                 break;
 
@@ -239,8 +234,6 @@ public class FallbackFoundationAuto extends OpMode {
         TURN_AGAIN,
 
         MOVE_INTO_CORNER, // Push foundation into corner
-
-        RELEASE_FOUNDATION,
 
         BACK_UP_AWAY_FROM_CORNER, // Backs up to previous position
 

@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.config.BOT;
 import org.firstinspires.ftc.teamcode.utils.RateLimit;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp - Arm", group = "Arm")
-@Disabled
+
 public class ArmTeleOp extends OpMode {
 
     // Devices and subsystems
