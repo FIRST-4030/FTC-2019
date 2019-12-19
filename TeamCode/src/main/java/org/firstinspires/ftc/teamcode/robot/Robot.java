@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.sensors.distance.RevDistance;
 import org.firstinspires.ftc.teamcode.sensors.gyro.Gyro;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 import org.firstinspires.ftc.teamcode.wheels.Wheels;
-
+//tim is a massive dummy -the robot
 public class Robot {
     public static Robot robot = null;
     public final Common common;
@@ -36,7 +36,6 @@ public class Robot {
     // Scissor
     public Motor collectorLeft;
     public Motor collectorRight;
-    public ColorRange loadSensor;
     public Motor lift;
     public ServoFTC flipper;
     public ServoFTC hookLeft;
@@ -48,7 +47,6 @@ public class Robot {
     public ServoFTC upper;
     public ServoFTC rotation;
     public ServoFTC wrist;
-    public Distance distanceTest;
 
 
     public Robot(HardwareMap map, Telemetry telemetry) {
@@ -99,7 +97,6 @@ public class Robot {
                 rotation = servos.init(SERVOS.ROTATION);
                 claw = servos.init(SERVOS.CLAW);
                 wrist = servos.init(SERVOS.WRIST);
-                distanceTest = distances.init(DISTANCE_SENSORS.TEST);
         }
 
 

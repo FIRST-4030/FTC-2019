@@ -22,6 +22,7 @@ public class TeleOpMode extends OpMode {
 
     // Consts
     private static final float SLOW_MODE = 0.7f;
+    private static final float MED_SPEED = 0.9f;
     private static final float NORMAL_SPEED = 1.0f;
 
     private static final float CLAW_CLOSED = 0.6f;
@@ -110,7 +111,7 @@ public class TeleOpMode extends OpMode {
             lastLoops = loops;
             loops = 0;
         }
-        telemetry.addData("Loop Frequency", lastLoops);
+        //telemetry.addData("Loop Frequency", lastLoops);
 
         telemetry.update();
     }
@@ -185,20 +186,17 @@ public class TeleOpMode extends OpMode {
             robot.hookRight.min();
 
             robot.wheels.setSpeedScale(SLOW_MODE);
-            telemetry.addLine("slow mode");
+            telemetry.addLine("slow mode w/ hooks");
+        } else if (buttons.get("SLOW_MODE")) {
+            robot.hookLeft.max();
+            robot.hookRight.max();
+
+            robot.wheels.setSpeedScale(MED_SPEED);
+            telemetry.addLine("medium mode");
         } else {
             robot.hookLeft.max();
             robot.hookRight.max();
 
-            robot.wheels.setSpeedScale(NORMAL_SPEED);
-            telemetry.addLine("normal mode");
-        }
-
-        //SLOW MODE
-        if (buttons.get("SLOW_MODE")) {
-            robot.wheels.setSpeedScale(SLOW_MODE);
-            telemetry.addLine("slow mode");
-        } else {
             robot.wheels.setSpeedScale(NORMAL_SPEED);
             telemetry.addLine("normal mode");
         }

@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.config.BOT;
 import org.firstinspires.ftc.teamcode.utils.RateLimit;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp - Arm", group = "Arm")
-
 public class ArmTeleOp extends OpMode {
 
     // Devices and subsystems
@@ -111,9 +110,6 @@ public class ArmTeleOp extends OpMode {
             loops = 0;
         }
         telemetry.addData("Loop Frequency", lastLoops);
-
-        // Show distance sensor data
-        telemetry.addData("Distance Sensor", robot.distanceTest.distance());
 
         telemetry.update();
     }
