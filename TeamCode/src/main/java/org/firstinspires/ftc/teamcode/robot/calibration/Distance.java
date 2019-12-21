@@ -17,7 +17,7 @@ public class Distance extends Subsystem {
     private static final String I = "DRIVE_I";
     private static final String D = "DRIVE_D";
     private static final String INCREMENT = "DRIVE-INCREMENT";
-    private static final float MIN_INCREMENT = 0.0001f;
+    private static final float MIN_INCREMENT = 0.00001f;
     private static final float MAX_INCREMENT = 0.1f;
 
     private static final String JOYSTICK = "JOYSTICK";
@@ -40,8 +40,7 @@ public class Distance extends Subsystem {
     protected void load() {
         buttons.spinners.add(INCREMENT,
                 opmode.gamepad1, PAD_BUTTON.right_bumper, PAD_BUTTON.left_bumper,
-                Round.magnitudeValue(Drive.DRIVE_PARAMS.P / 100.0d),
-                Round.magnitudeValue(Drive.DRIVE_PARAMS.I / 10.0d));
+                MIN_INCREMENT, 0.0f);
         buttons.spinners.setLimit(INCREMENT, MIN_INCREMENT, false);
         buttons.spinners.setLimit(INCREMENT, MAX_INCREMENT, true);
 
@@ -107,7 +106,7 @@ public class Distance extends Subsystem {
             driver.drive = robot.common.drive.distance((int) (48 * scale));
         } else if (buttons.get(LARGE)) {
             driver.drive = robot.common.drive.distance((int) (24 * scale));
-        } else*/ if (buttons.get(SMALL)) {
+        } else*/ if (buttons.get(LARGE)) {
             driver.drive = robot.common.drive.distance((int) (48 * scale));
         } else if (buttons.get(TINY)) {
             driver.drive = robot.common.drive.distance((int) (12 * scale));

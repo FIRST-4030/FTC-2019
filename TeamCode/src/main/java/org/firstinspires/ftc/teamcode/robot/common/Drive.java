@@ -15,17 +15,43 @@ import org.firstinspires.ftc.teamcode.wheels.MOTOR_SIDE;
 public class Drive implements CommonTask, DriveToListener {
     private static final boolean DEBUG = true;
 
+    /*
+    old numbas:
+    P: 0.0182
+    I: 0.00028
+    D: 0.754
+
+    quick, one oscillation:
+    P: 0.01
+    I: 0.002
+    D: 1.0
+
+    +====+
+    |TURN|
+    +====+
+
+    old numbas:
+    P: 0.012
+    I: 0.02015
+    D: 0.75
+
+    wow!
+    P: 0.017
+    I: 0.01
+    D: 2.0
+    */
+
+
     // PID Turns
-    private static final float TURN_TOLERANCE = 1.5f; // Permitted heading error in degrees
-    private static final float TURN_DIFF_TOLERANCE = 0.0001f; // Permitted error change rate
-    private static final int TURN_TIMEOUT = (int) (DriveTo.TIMEOUT_DEFAULT * 1.5);
-    public static final PIDParams TURN_PARAMS = new PIDParams(0.012f, 0.02015f, 0.75f,
+    private static final float TURN_TOLERANCE = 5.0f; // Permitted heading error in degrees
+    private static final float TURN_DIFF_TOLERANCE = 0.001f; // Permitted error change rate
+    public static final PIDParams TURN_PARAMS = new PIDParams(0.017f, 0.01f, 2.0f,
             40.0f, true, true);
 
     // PID Drive
     private static final float DRIVE_TOLERANCE = 20.0f; // Permitted distance error in encoder ticks
     private static final float DRIVE_DIFF_TOLERANCE = 0.1f; // Permitted error change rate
-    public static final PIDParams DRIVE_PARAMS = new PIDParams(0.00183f, 0.00028f, 0.754f,
+    public static final PIDParams DRIVE_PARAMS = new PIDParams(0.01f, 0.002f, 1.0f,
             2000.0f, true, true);
 
     // Straight drive speed -- Forward is toward the hooks, motor positive, ticks increasing
@@ -132,7 +158,6 @@ public class Drive implements CommonTask, DriveToListener {
         float tolerance = TURN_TOLERANCE;
         float diffTolerance = TURN_DIFF_TOLERANCE;
         param.rotationPid(heading, params, tolerance, diffTolerance);
-        param.timeout = TURN_TIMEOUT; // Allow extra time for turns to settle (we expect them to overshoot)
         return new DriveTo(new DriveToParams[]{param});
     }
 

@@ -8,11 +8,12 @@ import org.firstinspires.ftc.teamcode.buttons.ButtonHandler;
 import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
 import org.firstinspires.ftc.teamcode.config.BOT;
 import org.firstinspires.ftc.teamcode.driveto.AutoDriver;
+import org.firstinspires.ftc.teamcode.driveto.PIDParams;
 import org.firstinspires.ftc.teamcode.robot.Robot;
+import org.firstinspires.ftc.teamcode.robot.common.Drive;
 import org.firstinspires.ftc.teamcode.vuforia.ImageFTC;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Cmd Motion", group = "Test")
-@Disabled
 public class CmdMotionTest extends OpMode {
 
     private static final boolean AUTO = true;
@@ -160,7 +161,7 @@ public class CmdMotionTest extends OpMode {
             // Last year's auto:
             // https://github.com/FIRST-4030/FTC-2018/blob/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/robot/auto/RuckusAutoTheBetterOne.java
             //driver.drive = robot.common.drive.distance(1000);
-            driver.drive = robot.common.drive.translate(1000);
+            driver.drive = robot.common.drive.heading(180);
             droved = true;
         }
 

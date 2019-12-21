@@ -52,7 +52,7 @@ public class SpinnerHandler {
         // Special handling for doubles, to avoid runaway approximations
         switch (spinner.type) {
             case DOUBLE:
-                value = ((Double) (Round.truncate((Double) spinner.value, 5))).toString();
+                value = ((Double) (Round.truncate((Double) spinner.value, 6))).toString();
                 break;
         }
         robot.telemetry.addData(label, value);
