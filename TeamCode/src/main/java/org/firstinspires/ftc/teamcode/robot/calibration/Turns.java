@@ -51,7 +51,7 @@ public class Turns extends Subsystem {
                 INCREMENT, Drive.TURN_PARAMS.I);
         buttons.spinners.add(D,
                 opmode.gamepad1, PAD_BUTTON.y, PAD_BUTTON.b,
-                INCREMENT, Drive.DRIVE_PARAMS.D);
+                INCREMENT, Drive.TURN_PARAMS.D);
 
         buttons.register(JOYSTICK, opmode.gamepad1, PAD_BUTTON.right_trigger);
         buttons.register(CCW, opmode.gamepad1, PAD_BUTTON.left_stick_button);
