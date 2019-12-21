@@ -212,7 +212,7 @@ public class SkystoneAuto extends OpMode {
 
 
             case MOVE_OUT:
-                driver.drive = common.drive.distance(InchesToMM(-20.0f));
+                driver.drive = common.drive.distance(InchesToMM(-18.0f));
                 advance();
                 break;
 
@@ -248,12 +248,12 @@ public class SkystoneAuto extends OpMode {
                 break;
 
             case ALIGN_WITH_SKYSTONE:
-                driver.drive = common.drive.translate(InchesToMM(-8.0f * (float)skystonePlacement + 8.0f));
+                driver.drive = common.drive.heading(-15.0f * (float)skystonePlacement + 180.0f);
                 advance();
                 break;
 
             case MOVE_TO_SKYSTONE:
-                driver.drive = common.drive.distance(InchesToMM(25.0f));
+                driver.drive = common.drive.distance(InchesToMM(15.0f));
                 advance();
                 break;
 
@@ -264,15 +264,19 @@ public class SkystoneAuto extends OpMode {
                 break;
 
             case BACK_UP:
-                driver.drive = common.drive.distance(InchesToMM(-10.0f));
+                driver.drive = common.drive.distance(InchesToMM(-15.0f));
+                advance();
+                break;
+
+            case STRAIGHTEN:
+                driver.drive = common.drive.heading(180.0f);
                 advance();
                 break;
 
 
             case CHOOSE_SIDE:
                 if (stopByWall) {
-                    if (color == Field.AllianceColor.BLUE) driver.drive = common.drive.distance(InchesToMM(-25.0f));
-                    else driver.drive = common.drive.distance(InchesToMM(-25.0f));
+                    driver.drive = common.drive.distance(InchesToMM(-25.0f));
                 }
                 advance();
                 break;
@@ -295,7 +299,7 @@ public class SkystoneAuto extends OpMode {
                 break;
 
             case PARK:
-                driver.drive = common.drive.distance(InchesToMM(-24.0f));
+                driver.drive = common.drive.distance(InchesToMM(-15.0f));
 
             case DONE:
                 targetsSkyStone.deactivate();
@@ -330,6 +334,8 @@ public class SkystoneAuto extends OpMode {
         EAT_SKYSTONE,
 
         BACK_UP,
+
+        STRAIGHTEN,
 
         LOOK_AT_BRIDGE,
 

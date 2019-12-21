@@ -29,11 +29,13 @@ public class FallbackFoundationAuto extends OpMode {
     private AUTO_STATE state;
     private boolean gameReady = false;
     private Field.AllianceColor color = Field.AllianceColor.BLUE;
-    private boolean park_by_wall = true;
+    private boolean stopByWall = true;
     @Override
     public void init() {
         telemetry.addData(">", "Init…");
         telemetry.update();
+
+
 
         // Init the common tasks elements
         robot = new Robot(hardwareMap, telemetry);
@@ -56,8 +58,11 @@ public class FallbackFoundationAuto extends OpMode {
         // Register buttons
         buttons = new ButtonHandler(robot);
         buttons.register("SELECT_SIDE", gamepad1, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
+        buttons.register("AWAY_FROM_WALL", gamepad1, PAD_BUTTON.dpad_up);
+        buttons.register("TOWARDS_WALL", gamepad1, PAD_BUTTON.dpad_down);
 
         robot.claw.setPosition(.6f);
+        robot.wheels.setSpeedScale(1.0f);
     }
 
     @Override
@@ -124,16 +129,18 @@ public class FallbackFoundationAuto extends OpMode {
                 break;
 
             case DRIVE_TO_FOUNDATION:
-                driver.drive = common.drive.distance(InchesToMM(40.0f));
+                driver.drive = common.drive.distance(InchesToMM(23.0f));
                 advance();
                 break;
 
             case INCH:
-                driver.drive = common.drive.distance(InchesToMM(1.0f));
+                robot.wheels.setSpeedScale(0.2f);
+                driver.drive = common.drive.distance(InchesToMM(6.0f));
                 advance();
                 break;
 
             case GRAB:
+                robot.wheels.setSpeedScale(1.0f);
                 robot.hookRight.min();
                 robot.hookLeft.min();
                 driver.drive = common.drive.sleep(500);
@@ -141,15 +148,15 @@ public class FallbackFoundationAuto extends OpMode {
                 break;
 
             case MOVE_BACK_TO_TURN:
-                driver.drive = common.drive.distance(InchesToMM(-40.0f));
+                driver.drive = common.drive.distance(InchesToMM(-20.0f));
                 advance();
                 break;
 
             case TURN_TOWARDS_CORNER:
                 if(color==Field.AllianceColor.BLUE){
-                    driver.drive = common.drive.heading(270.0f);
+                    driver.drive = common.drive.heading(260.0f);
                 }else{
-                    driver.drive = common.drive.heading(90.0f);
+                    driver.drive = common.drive.heading(100.0f);
                 }
                 advance();
                 break;
@@ -180,8 +187,21 @@ public class FallbackFoundationAuto extends OpMode {
                 advance();
                 break;
 
+            case CHOOSE_SIDE:
+                if (stopByWall) {
+                    float deg = 35.0f;
+                    if(color==Field.AllianceColor.RED) {
+                        deg *= -1.0f;
+                    }
+
+                    driver.drive = common.drive.degrees(deg);
+
+                }
+                advance();
+                break;
+
             case BACK_UP_AWAY_FROM_CORNER:
-                driver.drive = common.drive.distance(InchesToMM(-45.0f));
+                driver.drive = common.drive.distance(InchesToMM(-35.0f));
                 advance();
                 break;
 
@@ -216,8 +236,9 @@ public class FallbackFoundationAuto extends OpMode {
 
         ARM_IN,
 
-
         MOVE_INTO_CORNER, // Push foundation into corner
+
+        CHOOSE_SIDE,
 
         BACK_UP_AWAY_FROM_CORNER, // Backs up to previous position
 
@@ -239,6 +260,11 @@ public class FallbackFoundationAuto extends OpMode {
             color = Field.AllianceColor.BLUE;
         }
         telemetry.addData("Team Color", color.toString());
+
+        if (buttons.get("AWAY_FROM_WALL")) stopByWall = false;
+        if (buttons.get("TOWARDS_WALL")) stopByWall = true;
+        telemetry.addData("Stop by wall?", stopByWall);
+
     }
 
     /**

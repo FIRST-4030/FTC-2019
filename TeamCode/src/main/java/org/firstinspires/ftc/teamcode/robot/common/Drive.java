@@ -51,7 +51,7 @@ public class Drive implements CommonTask, DriveToListener {
     // PID Drive
     private static final float DRIVE_TOLERANCE = 20.0f; // Permitted distance error in encoder ticks
     private static final float DRIVE_DIFF_TOLERANCE = 0.1f; // Permitted error change rate
-    public static final PIDParams DRIVE_PARAMS = new PIDParams(0.01f, 0.002f, 1.0f,
+    public static final PIDParams DRIVE_PARAMS = new PIDParams(0.0182f, 0.00028f, 0.754f,
             2000.0f, true, true);
 
     // Straight drive speed -- Forward is toward the hooks, motor positive, ticks increasing
