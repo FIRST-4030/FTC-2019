@@ -43,6 +43,7 @@ public class GyroConfigs extends Configs {
         switch (bot) {
             case SCISSOR:
             case ARM:
+            case TEST:
                 config = new GyroConfig(GYRO_TYPES.REV, "imu");
                 break;
         }

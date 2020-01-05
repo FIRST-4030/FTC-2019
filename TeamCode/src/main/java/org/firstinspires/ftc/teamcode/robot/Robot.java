@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.config.BOT;
 import org.firstinspires.ftc.teamcode.robot.common.Common;
 import org.firstinspires.ftc.teamcode.robot.config.DistanceConfigs;
 import org.firstinspires.ftc.teamcode.robot.config.GyroConfigs;
+import org.firstinspires.ftc.teamcode.robot.config.LEDMatrixConfigs;
 import org.firstinspires.ftc.teamcode.robot.config.MotorConfigs;
 import org.firstinspires.ftc.teamcode.robot.config.ServoConfigs;
 import org.firstinspires.ftc.teamcode.robot.config.WheelsConfigs;
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.teamcode.sensors.distance.DISTANCE_TYPES;
 import org.firstinspires.ftc.teamcode.sensors.distance.Distance;
 import org.firstinspires.ftc.teamcode.sensors.distance.RevDistance;
 import org.firstinspires.ftc.teamcode.sensors.gyro.Gyro;
+import org.firstinspires.ftc.teamcode.sensors.led_matrix.LEDMatrix;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 import org.firstinspires.ftc.teamcode.wheels.Wheels;
 //tim is a massive dummy -the robot
@@ -48,6 +50,9 @@ public class Robot {
     public ServoFTC rotation;
     public ServoFTC wrist;
 
+    // Test
+    public LEDMatrix matrix;
+
 
     public Robot(HardwareMap map, Telemetry telemetry) {
         this(map, telemetry, null);
@@ -68,9 +73,9 @@ public class Robot {
         //PIDMotorConfigs pids = new PIDMotorConfigs(map, telemetry, bot);
         ServoConfigs servos = new ServoConfigs(map, telemetry, bot);
         //SwitchConfigs switches = new SwitchConfigs(map, telemetry, bot);
-        // TODO: Disabled until we can test
         DistanceConfigs distances = new DistanceConfigs(map, telemetry, bot);
         //ColorRangeConfigs colors = new ColorRangeConfigs(map, telemetry, bot);
+        LEDMatrixConfigs ledMatrices = new LEDMatrixConfigs(map, telemetry, bot);
 
         // Shared
         this.wheels = wheels.init();
@@ -97,6 +102,9 @@ public class Robot {
                 rotation = servos.init(SERVOS.ROTATION);
                 claw = servos.init(SERVOS.CLAW);
                 wrist = servos.init(SERVOS.WRIST);
+
+            case TEST:
+                matrix = ledMatrices.init(LED_MATRICIES.TEST);
         }
 
 
