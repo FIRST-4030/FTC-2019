@@ -243,24 +243,23 @@ public class SkystoneAuto extends OpMode {
 
 
             case SPIN1:
+                driver.drive = common.drive.heading(90.0f);
+                advance();
+                break;
+
+            case MOVE:
+                driver.drive = common.drive.distance(InchesToMM(8.0f * (float)skystonePlacement));
+                advance();
+                break;
+
+            case SPIN2:
                 driver.drive = common.drive.heading(180.0f);
                 advance();
                 break;
 
 
             case ALIGN_WITH_SKYSTONE:
-                switch (skystonePlacement){
-                    case -1:
-                        driver.drive = common.drive.heading(220.0f);
-                        break;
-                    case 0:
-                        driver.drive = common.drive.heading(205.0f);
-                        break;
-                    case 1:
-                        driver.drive = common.drive.heading(180.0f);
-                        break;
-            }
-                driver.drive = common.drive.heading(-12.0f * (float) skystonePlacement + 205.0f);
+                driver.drive = common.drive.heading(205.0f);
                 advance();
                 break;
 
@@ -357,6 +356,10 @@ public class SkystoneAuto extends OpMode {
         LOCATE_SKYSTONE,
 
         SPIN1,
+
+        MOVE,
+
+        SPIN2,
 
         ALIGN_WITH_SKYSTONE, // Camera exactly 2 feet ahead of stone
 
