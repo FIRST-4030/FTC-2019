@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.utils.Available;
 
 public class ServoFTC implements Available {
     private Servo servo;
-    private static final float ABS_MIN = 0.2f;
+    private static final float ABS_MIN = 0.0f;
     private final static float ABS_MAX = 1.0f;
     private float min = ABS_MIN;
     private float max = ABS_MAX;
