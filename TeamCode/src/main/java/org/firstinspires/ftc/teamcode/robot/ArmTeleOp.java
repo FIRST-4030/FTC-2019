@@ -15,15 +15,14 @@ public class ArmTeleOp extends OpMode {
     // Devices and subsystems
     private Robot robot = null;
     private ButtonHandler buttons;
-    private int loops = 0;
-    private int lastLoops = 0;
-    private int lastCountTime = 0;
 
     // arm consts
     private static final float ARM_MOVEMENT_SCALE = 1.0f/16;
     private static final float ARM_ROTATION_SCALE = 1.0f/512;
-    private static final float ARM_HOME_X = 1.8f;
-    private static final float ARM_HOME_Y = 5.9f;
+    private static final float WRIST_ROTATION_SCALE = 1.0f/512;
+    private static final float ARM_HOME_X = 2.6f;
+    private static final float ARM_HOME_Y = 7.2f;
+    private static final float ARM_HOME_R = 0.4f;
 
     // Arm rate limiting
     private RateLimit rateX;
@@ -33,14 +32,15 @@ public class ArmTeleOp extends OpMode {
     private static final double MAX_ARM_RATE_X = 1.5d; // In inches per second
     private static final double MAX_ARM_RATE_Y = 1.5d; // In inches per second
     private static final double MAX_ARM_RATE_R = 0.125d; // In servo position per second
-    private static final double MAX_ARM_RATE_W = 30.0d; // In degrees per second
+    private static final double MAX_ARM_RATE_W = 0.1d; // In servo position per second
 
     // other consts
     private static final float NORMAL_SPEED = 0.75f;
     private static final float SLOW_MODE = 0.25f;
 
     // vars
-    private float armRotation = 0.5f;
+    private float armRotation = ARM_HOME_R;
+    private float wristRotation = 0.2f;
 
     @Override
     public void init() {
@@ -75,8 +75,8 @@ public class ArmTeleOp extends OpMode {
 
         // Move arm to home
         robot.common.arm.setPosition(ARM_HOME_X, ARM_HOME_Y);
-        robot.rotation.setPosition(0.5f);
-        robot.common.wrist.setAngle(0.0f);
+        robot.rotation.setPosition(ARM_HOME_R);
+        robot.wrist.setPosition(wristRotation);
 
         // Wait for the game to begin
         telemetry.addData(">", "Ready for game start");
@@ -93,23 +93,12 @@ public class ArmTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        // update loop counter
-        loops++;
-
         // Update buttons
         buttons.update();
 
         // Move the robot
         driveBase();
         auxiliary();
-
-        // hurts
-        if (time >= lastCountTime + 1) {
-            lastCountTime = (int) time;
-            lastLoops = loops;
-            loops = 0;
-        }
-        telemetry.addData("Loop Frequency", lastLoops);
 
         telemetry.update();
     }
@@ -128,24 +117,27 @@ public class ArmTeleOp extends OpMode {
         float dx = (float) rateX.update(-gamepad2.left_stick_y * ARM_MOVEMENT_SCALE);
         float dy = (float) rateY.update(-gamepad2.right_stick_y * ARM_MOVEMENT_SCALE);
         armRotation -= (float) rateR.update(Math.pow(gamepad2.left_stick_x, 3) * ARM_ROTATION_SCALE);
-        float dW = (float) rateW.update(Math.pow(gamepad2.right_stick_x, 3) * 8);
+        wristRotation -= (float) rateW.update(Math.pow(gamepad2.right_stick_x, 3) * WRIST_ROTATION_SCALE);
 
         // cap values
         armRotation = Math.min(1.0f, armRotation);
         armRotation = Math.max(0.0f, armRotation);
+        wristRotation = Math.min(0.55f, wristRotation);
+        wristRotation = Math.max(0.2f, wristRotation);
 
         robot.rotation.setPosition(armRotation);
-        robot.common.wrist.setAngleDelta(dW);
+        robot.wrist.setPosition(wristRotation);
         robot.common.arm.setPositionDelta(dx, dy);
 
         if (buttons.get("HOME_ARM")) {
             robot.common.arm.setPosition(ARM_HOME_X, ARM_HOME_Y);
+            robot.rotation.setPosition(ARM_HOME_R);
         }
 
         telemetry.addData("arm x", robot.common.arm.getArmX());
         telemetry.addData("arm y", robot.common.arm.getArmY());
         telemetry.addData("arm rotation", armRotation);
-        telemetry.addData("wrist angle", robot.common.wrist.getWristAngle());
+        telemetry.addData("wrist angle", wristRotation);
 
         // claw
         if (buttons.get("CLAW")) {

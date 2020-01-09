@@ -100,7 +100,7 @@ public class HT16K33 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
             temp[i] = (byte) (Integer.reverse(displayBuffer[i]) >> 24);
         }
 
-        deviceClient.write(DISPLAY_DATA, displayBuffer);
+        deviceClient.write(DISPLAY_DATA, temp);
     }
 
     /**

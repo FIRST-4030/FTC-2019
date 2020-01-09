@@ -102,9 +102,11 @@ public class Robot {
                 rotation = servos.init(SERVOS.ROTATION);
                 claw = servos.init(SERVOS.CLAW);
                 wrist = servos.init(SERVOS.WRIST);
+                break;
 
             case TEST:
                 matrix = ledMatrices.init(LED_MATRICIES.TEST);
+                break;
         }
 
 
