@@ -37,7 +37,7 @@ public class TeleOpMode extends OpMode {
     private static final float ARM_HOME = 0.02f;
     private static final float ARM_OUT = 0.65f;
 
-    private static final float COLLECT_SPEED = 0.9f;
+    private static final float COLLECT_SPEED = 0.45f;
 
 
 
@@ -64,7 +64,6 @@ public class TeleOpMode extends OpMode {
         buttons.register("FOUNDATION_HOOK", gamepad1, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
         buttons.register("CAPSTONE1", gamepad1, PAD_BUTTON.x);
-        buttons.register("CAPSTONE3", gamepad1, PAD_BUTTON.left_bumper);
 
         //game pad two controls the arm, aka everything else
         buttons.register("ARM_RESET", gamepad2, PAD_BUTTON.b, BUTTON_TYPE.SINGLE_PRESS);
@@ -131,8 +130,8 @@ public class TeleOpMode extends OpMode {
             robot.collectorLeft.setPower(COLLECT_SPEED);
             robot.collectorRight.setPower(COLLECT_SPEED);
         } else {
-            robot.collectorLeft.setPower(gamepad1.left_trigger-gamepad1.right_trigger);
-            robot.collectorRight.setPower(gamepad1.left_trigger-gamepad1.right_trigger);
+            robot.collectorLeft.setPower((gamepad1.left_trigger-gamepad1.right_trigger) * COLLECT_SPEED);
+            robot.collectorRight.setPower((gamepad1.left_trigger-gamepad1.right_trigger) * COLLECT_SPEED);
         }
 
         // Swingy arm
@@ -174,10 +173,10 @@ public class TeleOpMode extends OpMode {
         }
 
         // Capstone thingy
-        if (buttons.held("CAPSTONE1") && buttons.held("CAPSTONE2") && buttons.held("CAPSTONE3")) {
-            robot.capstone.setPosition(CAP_DOWN);
+        if (buttons.held("CAPSTONE1") && buttons.held("CAPSTONE2")) {
+            robot.capstone.min();
         } else {
-            robot.capstone.setPosition(CAP_UP);
+            robot.capstone.max();
         }
 
         // Foundation hooks + Slowmode

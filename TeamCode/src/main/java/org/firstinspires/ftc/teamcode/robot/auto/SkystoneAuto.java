@@ -182,6 +182,8 @@ public class SkystoneAuto extends OpMode {
                 break;
             }
         }
+
+        robot.capstone.setPosition(0.35f);
         float y = 0;
         // Provide feedback as to where the robot is located (if we know).
         if (targetVisible) {
@@ -212,7 +214,7 @@ public class SkystoneAuto extends OpMode {
 
 
             case MOVE_OUT:
-                driver.drive = common.drive.distance(InchesToMM(-14.0f));
+                driver.drive = common.drive.distance(InchesToMM(-12.0f));
                 advance();
                 break;
 
@@ -248,7 +250,7 @@ public class SkystoneAuto extends OpMode {
                 break;
 
             case MOVE:
-                driver.drive = common.drive.distance(InchesToMM(8.0f * (float)skystonePlacement));
+                driver.drive = common.drive.distance(InchesToMM(8.0f * ((float)skystonePlacement - 1.0f)));
                 advance();
                 break;
 
@@ -302,8 +304,6 @@ public class SkystoneAuto extends OpMode {
             case CHOOSE_SIDE:
                 if (stopByWall) {
                     driver.drive = common.drive.distance(InchesToMM(-15.0f));
-                } else {
-                    driver.drive = common.drive.distance(InchesToMM(10.0f));
                 }
                 advance();
                 break;
@@ -316,7 +316,7 @@ public class SkystoneAuto extends OpMode {
                 break;
 
             case CROSS_BRIDGE:
-                driver.drive = common.drive.distance(InchesToMM(45.0f));
+                driver.drive = common.drive.distance(InchesToMM(45.0f - (8.0f * (float)skystonePlacement)));
                 advance();
                 break;
 
