@@ -22,14 +22,14 @@ public class TestTeleOp extends OpMode {
     private AutoDriver driver = new AutoDriver();
 
     private byte[] FUCK = {
-            (byte) 0b10000001, (byte) 0b00000000,
-            (byte) 0b00000000, (byte) 0b00000000,
-            (byte) 0b00000000, (byte) 0b00000000,
-            (byte) 0b00000000, (byte) 0b00000000,
-            (byte) 0b00000000, (byte) 0b00000000,
-            (byte) 0b00000000, (byte) 0b00000000,
-            (byte) 0b00000000, (byte) 0b00000000,
-            (byte) 0b10000001, (byte) 0b00000000
+            (byte) 0b11111111, (byte) 0b00011000,
+            (byte) 0b10000001, (byte) 0b00011000,
+            (byte) 0b10000001, (byte) 0b00011000,
+            (byte) 0b10000001, (byte) 0b11111111,
+            (byte) 0b10000001, (byte) 0b11111111,
+            (byte) 0b10000001, (byte) 0b00011000,
+            (byte) 0b10000001, (byte) 0b00011000,
+            (byte) 0b11111111, (byte) 0b00011000
     };
 
     @Override
@@ -51,7 +51,7 @@ public class TestTeleOp extends OpMode {
         }
 
         // make the brightness bearable
-        robot.matrix.setBrightness(2);
+        robot.matrix.setBrightness(16);
         robot.matrix.setBlinking(BLINKING_MODE.OFF);
         robot.matrix.setDisplayBuffer(FUCK);
         robot.matrix.write();
