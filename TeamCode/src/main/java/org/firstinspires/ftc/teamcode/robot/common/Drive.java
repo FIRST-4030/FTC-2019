@@ -43,7 +43,7 @@ public class Drive implements CommonTask, DriveToListener {
 
 
     // PID Turns
-    private static final float TURN_TOLERANCE = 5.0f; // Permitted heading error in degrees
+    private static final float TURN_TOLERANCE = 3.0f; // Permitted heading error in degrees
     private static final float TURN_DIFF_TOLERANCE = 0.001f; // Permitted error change rate
     public static final PIDParams TURN_PARAMS = new PIDParams(0.017f, 0.01f, 2.0f,
             40.0f, true, true);

@@ -129,7 +129,7 @@ public class FallbackFoundationAuto extends OpMode {
                 break;
 
             case DRIVE_TO_FOUNDATION:
-                driver.drive = common.drive.distance(InchesToMM(23.0f));
+                driver.drive = common.drive.distance(InchesToMM(26.0f));
                 advance();
                 break;
 
