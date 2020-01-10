@@ -13,12 +13,10 @@ import org.firstinspires.ftc.teamcode.robot.common.Common;
 import org.firstinspires.ftc.teamcode.utils.OrderedEnum;
 import org.firstinspires.ftc.teamcode.utils.OrderedEnumHelper;
 import org.firstinspires.ftc.teamcode.utils.Round;
-import org.firstinspires.ftc.teamcode.vuforia.ImageFTC;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 
-
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Skystone Side (Fallback)", group = "Scissor")
-public class SkystoneAutoBasic extends OpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Grab Foundation (Old Capstone)", group = "Scissor")
+public class FallbackFoundationAutoWithOldCap extends OpMode {
 
     // Devices and subsystems
     private Robot robot = null;
@@ -26,31 +24,18 @@ public class SkystoneAutoBasic extends OpMode {
     private VuforiaFTC vuforia = null;
     private ButtonHandler buttons;
     private AutoDriver driver = new AutoDriver();
-    private static VuforiaFTC Vu = null;
-    private static ImageFTC Img = null;
 
     // Runtime vars
     private AUTO_STATE state;
     private boolean gameReady = false;
     private Field.AllianceColor color = Field.AllianceColor.BLUE;
     private boolean stopByWall = true;
-    private int skystonePlacement = 0;
-
-
-    //Consts
-    private static final float COLLECT_SPEED = 0.9f;
-
-    private static final float ARM_HOME = 0.1f;
-    private static final float ARM_OUT = 0.65f;
-    private static final float CLAW_CLOSED = 0.6f;
-    private static final float SMALL_OPEN = 0.35f;
-
-
-
     @Override
     public void init() {
         telemetry.addData(">", "Init…");
         telemetry.update();
+
+
 
         // Init the common tasks elements
         robot = new Robot(hardwareMap, telemetry);
@@ -64,14 +49,10 @@ public class SkystoneAutoBasic extends OpMode {
         }
 
         // Init the camera system
-        vuforia.start();
-        vuforia.init();
-        vuforia.enableCapture();
-
-
+        //vuforia.start();
+        //vuforia.enableCapture();
 
         // TODO: figure out what to do with this
-        // TODO: Note: not to do Coded later in file
         //initTfod();
 
         // Register buttons
@@ -79,10 +60,10 @@ public class SkystoneAutoBasic extends OpMode {
         buttons.register("SELECT_SIDE", gamepad1, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
         buttons.register("AWAY_FROM_WALL", gamepad1, PAD_BUTTON.dpad_up);
         buttons.register("TOWARDS_WALL", gamepad1, PAD_BUTTON.dpad_down);
-        buttons.register("CYCLE_SKYSTONE", gamepad1, PAD_BUTTON.x, BUTTON_TYPE.SINGLE_PRESS);
 
         robot.claw.setPosition(.6f);
         robot.capstone.setPosition(0.35f);
+        robot.wheels.setSpeedScale(1.0f);
     }
 
     @Override
@@ -99,10 +80,6 @@ public class SkystoneAutoBasic extends OpMode {
         telemetry.addData("\t\t\t", "");
         telemetry.addData("Gyro", robot.gyro.isReady() ? "Ready" : "Calibrating…");
 
-        //Skystone Placement
-        telemetry.addData("\t\t\t", "");
-        telemetry.addData("Skystone:", "" + skystonePlacement);
-
         // Update
         telemetry.update();
     }
@@ -118,7 +95,6 @@ public class SkystoneAutoBasic extends OpMode {
 
         // Set initial state
         state = AUTO_STATE.values()[0];
-        robot.capstone.setPosition(0.4f);
 
         //robot.vuforia.start();
         //robot.vuforia.enableCapture();
@@ -130,9 +106,9 @@ public class SkystoneAutoBasic extends OpMode {
     public void loop() {
         // Handle AutoDriver driving
         driver = common.drive.loop(driver);
-        float SkystoneOffset = 0;
+
         // Debug feedback
-        telemetry.addData("State", state);
+        telemetry.addData("State", state.prev()); // Prev because it prints the wrong one otherwise
         telemetry.addData("Running", driver.isRunning(time));
         telemetry.addData("Gyro", Round.truncate(robot.gyro.getHeading()));
         telemetry.addData("Encoder", robot.wheels.getEncoder());
@@ -150,27 +126,87 @@ public class SkystoneAutoBasic extends OpMode {
                 driver.done = false;
                 robot.hookRight.max();
                 robot.hookLeft.max();
+
                 advance();
                 break;
 
-            case CHOOSE_SIDE:
-                if (!stopByWall) driver.drive = common.drive.distance(InchesToMM(35.0f));
+            case DRIVE_TO_FOUNDATION:
+                driver.drive = common.drive.distance(InchesToMM(26.0f));
                 advance();
                 break;
 
-            case TURN:
-                if (!stopByWall) {
-                    if (color == Field.AllianceColor.BLUE) driver.drive = common.drive.heading(270);
-                    else driver.drive = common.drive.heading(90);
+            case INCH:
+                robot.wheels.setSpeedScale(0.2f);
+                driver.drive = common.drive.distance(InchesToMM(6.0f));
+                advance();
+                break;
+
+            case GRAB:
+                robot.wheels.setSpeedScale(1.0f);
+                robot.hookRight.min();
+                robot.hookLeft.min();
+                driver.drive = common.drive.sleep(500);
+                advance();
+                break;
+
+            case MOVE_BACK_TO_TURN:
+                driver.drive = common.drive.distance(InchesToMM(-20.0f));
+                advance();
+                break;
+
+            case TURN_TOWARDS_CORNER:
+                if(color==Field.AllianceColor.BLUE){
+                    driver.drive = common.drive.heading(260.0f);
+                }else{
+                    driver.drive = common.drive.heading(100.0f);
                 }
                 advance();
                 break;
 
-            case MOVE:
-                driver.drive = common.drive.distance(InchesToMM(24.0f));
+
+            case MOVE_INTO_CORNER:
+                robot.hookRight.max();
+                robot.hookLeft.max();
+                driver.drive = common.drive.distance(InchesToMM(12.0f));
                 advance();
                 break;
 
+            case CAP_OUT:
+                robot.flipper.setPosition(0.85f);
+                driver.drive = common.drive.sleep(1000);
+                advance();
+                break;
+
+            case CAP_RELEASE:
+                robot.claw.setPosition(0.35f);
+                driver.drive = common.drive.sleep(300);
+                advance();
+                break;
+
+            case ARM_IN:
+                robot.flipper.setPosition(0.0f);
+                driver.drive = common.drive.sleep(1000);
+                advance();
+                break;
+
+
+            case CHOOSE_SIDE:
+                if (stopByWall) {
+                    float dist = 35.0f;
+                    if(color==Field.AllianceColor.BLUE) {
+                        dist *= -1.0f;
+                    }
+
+                    driver.drive = common.drive.translate(InchesToMM(dist));
+
+                }
+                advance();
+                break;
+
+            case BACK_UP_AWAY_FROM_CORNER:
+                driver.drive = common.drive.distance(InchesToMM(-35.0f));
+                advance();
+                break;
 
             case DONE:
                 driver.done = true;
@@ -187,11 +223,27 @@ public class SkystoneAutoBasic extends OpMode {
     enum AUTO_STATE implements OrderedEnum {
         INIT, // Initialization
 
+        DRIVE_TO_FOUNDATION, // Drive towards foundation
+
+        INCH,
+
+        GRAB, // Grab foundation
+
+        MOVE_BACK_TO_TURN, // Moves back so that there's room to turn the foundation
+
+        TURN_TOWARDS_CORNER, // Turn 90 degrees towards corner (building site)
+
+        CAP_OUT,
+
+        CAP_RELEASE,
+
+        ARM_IN,
+
+        MOVE_INTO_CORNER, // Push foundation into corner
+
         CHOOSE_SIDE,
 
-        TURN,
-
-        MOVE,
+        BACK_UP_AWAY_FROM_CORNER, // Backs up to previous position
 
         DONE;
 
@@ -216,10 +268,6 @@ public class SkystoneAutoBasic extends OpMode {
         if (buttons.get("TOWARDS_WALL")) stopByWall = true;
         telemetry.addData("Stop by wall?", stopByWall);
 
-        if (buttons.get("CYCLE_SKYSTONE")){
-            skystonePlacement ++;
-            if (skystonePlacement == 2) skystonePlacement = -1;
-        }
     }
 
     /**
@@ -254,20 +302,4 @@ public class SkystoneAutoBasic extends OpMode {
     private void advance() {
         state = state.next();
     }
-
-    private int getSkystonePosition (){
-        int pos = 0;
-        vuforia.capture();
-        ImageFTC img = vuforia.getImage();
-        int h = img.getHeight();
-        int w = img.getWidth();
-        int y = h;
-        while (img.rgb(w/2, y) < 50  ) {
-
-        }
-        return pos;
-    }
-
-
-
 }

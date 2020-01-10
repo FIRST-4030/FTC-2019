@@ -261,7 +261,7 @@ public class SkystoneAuto extends OpMode {
 
 
             case ALIGN_WITH_SKYSTONE:
-                driver.drive = common.drive.heading(205.0f);
+                driver.drive = common.drive.heading(190.0f);
                 advance();
                 break;
 

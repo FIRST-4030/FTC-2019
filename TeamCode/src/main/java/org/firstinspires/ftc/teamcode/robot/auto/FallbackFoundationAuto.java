@@ -62,6 +62,7 @@ public class FallbackFoundationAuto extends OpMode {
         buttons.register("TOWARDS_WALL", gamepad1, PAD_BUTTON.dpad_down);
 
         robot.claw.setPosition(.6f);
+        robot.capstone.setPosition(0.35f);
         robot.wheels.setSpeedScale(1.0f);
     }
 
@@ -125,6 +126,19 @@ public class FallbackFoundationAuto extends OpMode {
                 driver.done = false;
                 robot.hookRight.max();
                 robot.hookLeft.max();
+
+                advance();
+                break;
+
+
+            case STRAFE:
+                if(color==Field.AllianceColor.BLUE) driver.drive = common.drive.translate(InchesToMM(-12.0f));
+                else driver.drive = common.drive.translate(InchesToMM(12.0f));
+                advance();
+                break;
+
+            case STRAIGHTEN:
+                driver.drive = common.drive.heading(0);
                 advance();
                 break;
 
@@ -168,7 +182,7 @@ public class FallbackFoundationAuto extends OpMode {
                 driver.drive = common.drive.distance(InchesToMM(12.0f));
                 advance();
                 break;
-
+/*
             case CAP_OUT:
                 robot.flipper.setPosition(0.85f);
                 driver.drive = common.drive.sleep(1000);
@@ -186,15 +200,16 @@ public class FallbackFoundationAuto extends OpMode {
                 driver.drive = common.drive.sleep(1000);
                 advance();
                 break;
+                */
 
             case CHOOSE_SIDE:
                 if (stopByWall) {
-                    float deg = 35.0f;
-                    if(color==Field.AllianceColor.RED) {
-                        deg *= -1.0f;
+                    float dist = 35.0f;
+                    if(color==Field.AllianceColor.BLUE) {
+                        dist *= -1.0f;
                     }
 
-                    driver.drive = common.drive.degrees(deg);
+                    driver.drive = common.drive.translate(InchesToMM(dist));
 
                 }
                 advance();
@@ -220,6 +235,10 @@ public class FallbackFoundationAuto extends OpMode {
     enum AUTO_STATE implements OrderedEnum {
         INIT, // Initialization
 
+        STRAFE,
+
+        STRAIGHTEN,
+
         DRIVE_TO_FOUNDATION, // Drive towards foundation
 
         INCH,
@@ -230,11 +249,11 @@ public class FallbackFoundationAuto extends OpMode {
 
         TURN_TOWARDS_CORNER, // Turn 90 degrees towards corner (building site)
 
-        CAP_OUT,
+        //CAP_OUT,
 
-        CAP_RELEASE,
+        //CAP_RELEASE,
 
-        ARM_IN,
+        //ARM_IN,
 
         MOVE_INTO_CORNER, // Push foundation into corner
 

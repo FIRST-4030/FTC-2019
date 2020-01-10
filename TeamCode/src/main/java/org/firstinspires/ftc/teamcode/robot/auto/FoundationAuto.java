@@ -47,7 +47,7 @@ public class FoundationAuto extends OpMode {
             telemetry.log().add("Opmode not compatible with bot " + robot.bot);
             requestOpModeStop();
         }
-        robot.capstone.setPosition(0.5f);
+        robot.capstone.setPosition(0.4f);
 
         // Init the camera system
         //vuforia.start();
