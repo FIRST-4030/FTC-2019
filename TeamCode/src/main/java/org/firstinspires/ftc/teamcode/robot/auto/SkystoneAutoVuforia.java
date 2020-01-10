@@ -83,6 +83,7 @@ public class SkystoneAutoVuforia extends OpMode {
         buttons.register("CYCLE_SKYSTONE", gamepad1, PAD_BUTTON.x, BUTTON_TYPE.SINGLE_PRESS);
 
         robot.claw.setPosition(SMALL_OPEN);
+        robot.capstone.setPosition(0.5f);
     }
 
     @Override
@@ -149,6 +150,7 @@ public class SkystoneAutoVuforia extends OpMode {
                 driver.done = false;
                 robot.hookRight.max();
                 robot.hookLeft.max();
+                robot.capstone.max();
                 advance();
                 break;
 

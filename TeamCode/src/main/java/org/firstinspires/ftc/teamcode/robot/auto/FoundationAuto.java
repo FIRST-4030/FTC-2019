@@ -47,6 +47,7 @@ public class FoundationAuto extends OpMode {
             telemetry.log().add("Opmode not compatible with bot " + robot.bot);
             requestOpModeStop();
         }
+        robot.capstone.setPosition(0.5f);
 
         // Init the camera system
         //vuforia.start();
@@ -120,6 +121,7 @@ public class FoundationAuto extends OpMode {
                 driver.done = false;
                 robot.hookRight.max();
                 robot.hookLeft.max();
+                robot.capstone.max();
                 advance();
                 break;
 
