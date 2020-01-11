@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.utils.OrderedEnumHelper;
 import org.firstinspires.ftc.teamcode.utils.Round;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Grab Foundation (Fallback", group = "Scissor")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Grab Foundation", group = "Scissor")
 public class FallbackFoundationAuto extends OpMode {
 
     // Devices and subsystems
@@ -30,11 +30,11 @@ public class FallbackFoundationAuto extends OpMode {
     private boolean gameReady = false;
     private Field.AllianceColor color = Field.AllianceColor.BLUE;
     private boolean stopByWall = true;
+
     @Override
     public void init() {
         telemetry.addData(">", "Init…");
         telemetry.update();
-
 
 
         // Init the common tasks elements
@@ -130,10 +130,13 @@ public class FallbackFoundationAuto extends OpMode {
                 advance();
                 break;
 
-
             case STRAFE:
-                if(color==Field.AllianceColor.BLUE) driver.drive = common.drive.translate(InchesToMM(-12.0f));
-                else driver.drive = common.drive.translate(InchesToMM(12.0f));
+                if (color == Field.AllianceColor.BLUE) {
+                    driver.drive = common.drive.translate(InchesToMM(-12.0f));
+                } else {
+                    driver.drive = common.drive.translate(InchesToMM(12.0f));
+                }
+
                 advance();
                 break;
 
@@ -143,7 +146,7 @@ public class FallbackFoundationAuto extends OpMode {
                 break;
 
             case DRIVE_TO_FOUNDATION:
-                driver.drive = common.drive.distance(InchesToMM(26.0f));
+                driver.drive = common.drive.distance(InchesToMM(25.0f));
                 advance();
                 break;
 
@@ -167,9 +170,9 @@ public class FallbackFoundationAuto extends OpMode {
                 break;
 
             case TURN_TOWARDS_CORNER:
-                if(color==Field.AllianceColor.BLUE){
+                if (color == Field.AllianceColor.BLUE) {
                     driver.drive = common.drive.heading(260.0f);
-                }else{
+                } else {
                     driver.drive = common.drive.heading(100.0f);
                 }
                 advance();
@@ -205,12 +208,27 @@ public class FallbackFoundationAuto extends OpMode {
             case CHOOSE_SIDE:
                 if (stopByWall) {
                     float dist = 35.0f;
-                    if(color==Field.AllianceColor.BLUE) {
+                    if (color == Field.AllianceColor.BLUE) {
                         dist *= -1.0f;
                     }
 
                     driver.drive = common.drive.translate(InchesToMM(dist));
+                } else {
+                    float dist = -18.0f;
+                    if (color == Field.AllianceColor.BLUE) {
+                        dist *= -1.0f;
+                    }
 
+                    driver.drive = common.drive.translate(InchesToMM(dist));
+                }
+                advance();
+                break;
+
+            case FIX_ORIENTATION:
+                if (color == Field.AllianceColor.BLUE) {
+                    driver.drive = common.drive.heading(270.0f);
+                } else {
+                    driver.drive = common.drive.heading(90.0f);
                 }
                 advance();
                 break;
@@ -259,18 +277,25 @@ public class FallbackFoundationAuto extends OpMode {
 
         CHOOSE_SIDE,
 
+        FIX_ORIENTATION,
+
         BACK_UP_AWAY_FROM_CORNER, // Backs up to previous position
 
         DONE;
 
-        public AUTO_STATE prev() { return OrderedEnumHelper.prev(this); }
-        public AUTO_STATE next() { return OrderedEnumHelper.next(this); }
+        public AUTO_STATE prev() {
+            return OrderedEnumHelper.prev(this);
+        }
+
+        public AUTO_STATE next() {
+            return OrderedEnumHelper.next(this);
+        }
     }
 
     /**
      * Sets config booleans according to user input
      */
-    private void userSettings(){
+    private void userSettings() {
         buttons.update();
 
         if (buttons.get("SELECT_SIDE")) {

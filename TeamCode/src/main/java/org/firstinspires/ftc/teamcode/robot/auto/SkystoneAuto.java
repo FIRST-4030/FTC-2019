@@ -214,7 +214,7 @@ public class SkystoneAuto extends OpMode {
 
 
             case MOVE_OUT:
-                driver.drive = common.drive.distance(InchesToMM(-12.0f));
+                driver.drive = common.drive.distance(InchesToMM(-12.25f));
                 advance();
                 break;
 
@@ -250,7 +250,8 @@ public class SkystoneAuto extends OpMode {
                 break;
 
             case MOVE:
-                driver.drive = common.drive.distance(InchesToMM(8.0f * ((float)skystonePlacement - 1.0f)));
+
+                driver.drive = common.drive.distance(InchesToMM(7.5f * ((float)skystonePlacement - 1.0f)));
                 advance();
                 break;
 
@@ -260,22 +261,16 @@ public class SkystoneAuto extends OpMode {
                 break;
 
 
-            case ALIGN_WITH_SKYSTONE:
-                driver.drive = common.drive.heading(190.0f);
-                advance();
-                break;
+
 
             case MOVE_TO_SKYSTONE:
 
-                if (skystonePlacement == 0) {
-                    driver.drive = common.drive.distance(InchesToMM(15.0f));
-                } else
-                    driver.drive = common.drive.distance(InchesToMM(15.0f));
+                    driver.drive = common.drive.distance(InchesToMM(13.0f));
                 advance();
                 break;
 
             case INCH:
-                driver.drive = common.drive.distance(InchesToMM(4.0f));
+                driver.drive = common.drive.distance(InchesToMM(3.0f));
                 advance();
                 break;
 
@@ -316,7 +311,7 @@ public class SkystoneAuto extends OpMode {
                 break;
 
             case CROSS_BRIDGE:
-                driver.drive = common.drive.distance(InchesToMM(45.0f - (8.0f * (float)skystonePlacement)));
+                driver.drive = common.drive.distance(InchesToMM(55.0f - (7.0f * (float)skystonePlacement)));
                 advance();
                 break;
 
@@ -361,7 +356,6 @@ public class SkystoneAuto extends OpMode {
 
         SPIN2,
 
-        ALIGN_WITH_SKYSTONE, // Camera exactly 2 feet ahead of stone
 
         MOVE_TO_SKYSTONE,
 
@@ -397,11 +391,9 @@ public class SkystoneAuto extends OpMode {
     private void userSettings(){
         buttons.update();
 
-        if (buttons.get("SELECT_SIDE")) {
-            color = Field.AllianceColor.RED;
-        } else {
+
             color = Field.AllianceColor.BLUE;
-        }
+
         telemetry.addData("Team Color", color.toString());
 
         if (buttons.get("AWAY_FROM_WALL")) stopByWall = false;
