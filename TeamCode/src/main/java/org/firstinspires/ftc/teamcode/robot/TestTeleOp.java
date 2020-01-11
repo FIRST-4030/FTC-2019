@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.robot.common.Common;
 import org.firstinspires.ftc.teamcode.sensors.led_matrix.driver.BLINKING_MODE;
 import org.firstinspires.ftc.teamcode.utils.RateLimit;
 
+@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp - Test", group = "Test")
 public class TestTeleOp extends OpMode {
 

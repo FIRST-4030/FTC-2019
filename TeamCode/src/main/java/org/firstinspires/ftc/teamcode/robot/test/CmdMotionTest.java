@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.common.Drive;
 import org.firstinspires.ftc.teamcode.vuforia.ImageFTC;
 
+@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Cmd Motion", group = "Test")
 public class CmdMotionTest extends OpMode {
 
