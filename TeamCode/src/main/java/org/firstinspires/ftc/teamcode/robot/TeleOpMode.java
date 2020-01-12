@@ -19,6 +19,7 @@ public class TeleOpMode extends OpMode {
 
     // Changies
     private float armPos = ARM_HOME;
+    private boolean initCapstone = false;
 
     // Consts
     private static final float SLOW_MODE = 0.7f;
@@ -38,7 +39,6 @@ public class TeleOpMode extends OpMode {
     private static final float ARM_OUT = 0.65f;
 
     private static final float COLLECT_SPEED = 0.45f;
-
 
 
     @Override
@@ -64,6 +64,7 @@ public class TeleOpMode extends OpMode {
         buttons.register("FOUNDATION_HOOK", gamepad1, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
         buttons.register("CAPSTONE1", gamepad1, PAD_BUTTON.x);
+        buttons.register("CAPSTONE_INIT", gamepad1, PAD_BUTTON.dpad_up, BUTTON_TYPE.SINGLE_PRESS);
 
         //game pad two controls the arm, aka everything else
         buttons.register("ARM_RESET", gamepad2, PAD_BUTTON.b, BUTTON_TYPE.SINGLE_PRESS);
@@ -111,7 +112,7 @@ public class TeleOpMode extends OpMode {
             loops = 0;
         }
         //telemetry.addData("Loop Frequency", lastLoops);
-
+        telemetry.addData("Capstone Init", initCapstone);
         telemetry.update();
     }
 
@@ -130,28 +131,32 @@ public class TeleOpMode extends OpMode {
             robot.collectorLeft.setPower(COLLECT_SPEED);
             robot.collectorRight.setPower(COLLECT_SPEED);
         } else {
-            robot.collectorLeft.setPower((gamepad1.left_trigger-gamepad1.right_trigger) * COLLECT_SPEED);
-            robot.collectorRight.setPower((gamepad1.left_trigger-gamepad1.right_trigger) * COLLECT_SPEED);
+            robot.collectorLeft.setPower((gamepad1.left_trigger - gamepad1.right_trigger) * COLLECT_SPEED);
+            robot.collectorRight.setPower((gamepad1.left_trigger - gamepad1.right_trigger) * COLLECT_SPEED);
         }
 
         // Swingy arm
         if (buttons.autokey("ARM_TO_0")) {
             armPos -= ARM_SPEED;
+            initCapstone = true;
         }
 
         //Automatically spams the Arm buttons at regular intervals.
         if (buttons.autokey("ARM_TO_1")) {
             armPos += ARM_SPEED;
+            initCapstone = true;
         }
 
         //Homes arm inside the robot
         if (buttons.get("ARM_RESET")) {
             armPos = ARM_HOME;
+            initCapstone = true;
         }
 
         //Quickly moves arm into a decent position for collecting
         if (buttons.get("ARM_OUT")) {
             armPos = ARM_OUT;
+            initCapstone = true;
         }
 
         // Arm limits
@@ -173,10 +178,12 @@ public class TeleOpMode extends OpMode {
         }
 
         // Capstone thingy
+        if (buttons.get("CAPSTONE_INIT")) initCapstone = true;
+
         if (buttons.held("CAPSTONE1") && buttons.held("CAPSTONE2")) {
             robot.capstone.min();
         } else {
-            robot.capstone.max();
+            if (initCapstone) robot.capstone.max();
         }
 
         // Foundation hooks + Slowmode
