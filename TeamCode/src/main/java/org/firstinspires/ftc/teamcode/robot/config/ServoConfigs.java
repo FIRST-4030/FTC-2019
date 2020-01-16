@@ -34,7 +34,7 @@ public class ServoConfigs extends Configs {
                         config = new ServoConfig("Claw");
                         break;
                     case FLIPPER:
-                        config = new ServoConfig("Flipper");
+                        config = new ServoConfig("Flipper", false, 0.0f, 1.0f);
                         break;
                     case CAPSTONE:
                         config = new ServoConfig("Capstone",  false, 0.0f, 0.9f);

@@ -13,38 +13,35 @@ public class TeleOpMode extends OpMode {
     // Devices and subsystems
     private Robot robot = null;
     private ButtonHandler buttons;
-    private int loops = 0;
-    private int lastLoops = 0;
-    private int lastCountTime = 0;
 
     // Changies
     private float armPos = ARM_HOME;
     private boolean initCapstone = false;
 
-    // Consts
+    // Drive Speeds
     private static final float SLOW_MODE = 0.7f;
     private static final float MED_SPEED = 0.9f;
     private static final float NORMAL_SPEED = 1.0f;
 
+    // Claw positions
     private static final float CLAW_CLOSED = 0.6f;
-    private static final float SMALL_OPEN = 0.35f;
-    private static final float BIG_OPEN = 0.0f;
-    private static final float BIG_MIN_POS = 0.6f;
+    private static final float SMALL_OPEN = 0.35f; // Open pos inside robot
+    private static final float BIG_OPEN = 0.0f; // Open pos outside robot
+    private static final float BIG_MIN_POS = 0.6f; // If arm > this, claw can be fully open
 
-    private static final float CAP_UP = 0.0f;
-    private static final float CAP_DOWN = 0.75f;
-
-    private static final float ARM_SPEED = 0.02f;
+    // Flipper arm speeds and position
+    private static final float ARM_SPEED = 0.02f; // Pos increases by this per loop (abt 150 Hz)
     private static final float ARM_HOME = 0.02f;
     private static final float ARM_OUT = 0.65f;
 
+    // Collector speed multiplier
     private static final float COLLECT_SPEED = 0.45f;
 
 
     @Override
     public void init() {
         // Placate drivers
-        telemetry.addData(">", "NOT READY");
+        telemetry.addLine("> NOT READY");
         telemetry.update();
 
         // Init the common tasks elements
@@ -53,12 +50,13 @@ public class TeleOpMode extends OpMode {
 
         // Check robot
         if (robot.bot != BOT.SCISSOR) {
+            // Usually this message doesn't appear, but the opmode won't run
             telemetry.log().add("Opmode not compatible with bot " + robot.bot);
             requestOpModeStop();
         }
 
         // Register buttons
-        //game pad one controls movement
+        // Gamepad one controls movement, collector, and foundation hooks
         buttons = new ButtonHandler(robot);
         buttons.register("COLLECT", gamepad1, PAD_BUTTON.a, BUTTON_TYPE.TOGGLE);
         buttons.register("FOUNDATION_HOOK", gamepad1, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
@@ -66,7 +64,7 @@ public class TeleOpMode extends OpMode {
         buttons.register("CAPSTONE1", gamepad1, PAD_BUTTON.x);
         buttons.register("CAPSTONE_INIT", gamepad1, PAD_BUTTON.dpad_up, BUTTON_TYPE.SINGLE_PRESS);
 
-        //game pad two controls the arm, aka everything else
+        // Gamepad two controls lift and all of its parts
         buttons.register("ARM_RESET", gamepad2, PAD_BUTTON.b, BUTTON_TYPE.SINGLE_PRESS);
         buttons.register("ARM_OUT", gamepad2, PAD_BUTTON.a, BUTTON_TYPE.SINGLE_PRESS);
         buttons.register("ARM_TO_1", gamepad2, PAD_BUTTON.right_bumper);
@@ -79,25 +77,20 @@ public class TeleOpMode extends OpMode {
         buttons.getListener("ARM_TO_0").setAutokeyTimeout(0);
         buttons.getListener("ARM_TO_1").setAutokeyTimeout(0);
 
+        // Move things to default positions
+        robot.flipper.setPosition(ARM_HOME);
+        robot.claw.setPosition(SMALL_OPEN);
+        robot.hookLeft.max();
+        robot.hookRight.max();
+        robot.wheels.setSpeedScale(NORMAL_SPEED);
 
         // Wait for the game to begin
-        telemetry.addData(">", "Ready for game start");
+        telemetry.addLine("> Ready for game start");
         telemetry.update();
     }
 
     @Override
-    public void init_loop() {
-    }
-
-    @Override
-    public void start() {
-    }
-
-    @Override
     public void loop() {
-        // update loop counter
-        loops++;
-
         // Update buttons
         buttons.update();
 
@@ -105,28 +98,35 @@ public class TeleOpMode extends OpMode {
         driveBase();
         auxiliary();
 
-        // Loops per second
-        if (time >= lastCountTime + 1) {
-            lastCountTime = (int) time;
-            lastLoops = loops;
-            loops = 0;
-        }
-        //telemetry.addData("Loop Frequency", lastLoops);
+        // Update telemetry
         telemetry.addData("Capstone Init", initCapstone);
         telemetry.update();
     }
 
+    /**
+     * Runs drive base related functions
+     */
     private void driveBase() {
         robot.wheels.loop(gamepad1);
     }
 
-    //moves everything
+    /**
+     * Runs pretty much everything that isn't wheels
+     */
     private void auxiliary() {
+
+        // ====
         // LIFT
+        // ====
+        // Capstone safety
+        if (gamepad2.right_trigger > 0.0f || gamepad1.right_trigger > 0.0f) initCapstone = true;
+
         robot.lift.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
 
 
-        // Stone Collector
+        // =========
+        // COLLECTOR
+        // =========
         if (buttons.get("COLLECT")) {
             robot.collectorLeft.setPower(COLLECT_SPEED);
             robot.collectorRight.setPower(COLLECT_SPEED);
@@ -135,37 +135,44 @@ public class TeleOpMode extends OpMode {
             robot.collectorRight.setPower((gamepad1.left_trigger - gamepad1.right_trigger) * COLLECT_SPEED);
         }
 
-        // Swingy arm
+
+        // =============
+        // FLIPPER / ARM
+        // =============
+        // Manual "analog" movement
         if (buttons.autokey("ARM_TO_0")) {
             armPos -= ARM_SPEED;
-            initCapstone = true;
+            initCapstone = true; // Capstone safety
         }
-
-        //Automatically spams the Arm buttons at regular intervals.
         if (buttons.autokey("ARM_TO_1")) {
             armPos += ARM_SPEED;
-            initCapstone = true;
+            initCapstone = true; // Capstone safety
         }
 
         //Homes arm inside the robot
         if (buttons.get("ARM_RESET")) {
             armPos = ARM_HOME;
-            initCapstone = true;
+            initCapstone = true; // Capstone safety
         }
 
         //Quickly moves arm into a decent position for collecting
         if (buttons.get("ARM_OUT")) {
-            armPos = ARM_OUT;
-            initCapstone = true;
+            // This will break the capstone system if it isn't initialized
+            if (initCapstone) armPos = ARM_OUT;
         }
 
-        // Arm limits
-        if (armPos > 1.0f) armPos = 1.0f;
-        if (armPos < 0.0f) armPos = 0.0f;
+        // Limit arm position
+        armPos = Math.max(armPos, robot.flipper.getMax());
+        armPos = Math.max(armPos, robot.flipper.getMin());
+
+        // Move arm
         robot.flipper.setPosition(armPos);
         telemetry.addData("Arm Pos", robot.flipper.getPosition());
 
+
+        // ====
         // CLAW
+        // ====
         if (!buttons.get("GRAB")) {
             //Ensures the arm doesn't open wide enough to get stuck in the robot
             if (robot.flipper.getPosition() > BIG_MIN_POS && buttons.get("GRAB_WIDE")) {
@@ -177,16 +184,24 @@ public class TeleOpMode extends OpMode {
             robot.claw.setPosition(CLAW_CLOSED);
         }
 
-        // Capstone thingy
-        if (buttons.get("CAPSTONE_INIT")) initCapstone = true;
 
+        // ========
+        // CAPSTONE
+        // ========
+        // initCapstone should be set to true whenever anything involving the lift or arm is used
+        if (buttons.get("CAPSTONE_INIT")) initCapstone = true; // Capstone safety
+
+        // Nuclear launch codes
         if (buttons.held("CAPSTONE1") && buttons.held("CAPSTONE2")) {
             robot.capstone.min();
         } else {
             if (initCapstone) robot.capstone.max();
         }
 
-        // Foundation hooks + Slowmode
+
+        // ===========================
+        // FOUNDATION HOOKS / SLOWMODE
+        // ===========================
         if (buttons.get("FOUNDATION_HOOK")) {
             robot.hookLeft.min();
             robot.hookRight.min();
@@ -206,8 +221,5 @@ public class TeleOpMode extends OpMode {
             robot.wheels.setSpeedScale(NORMAL_SPEED);
             telemetry.addLine("normal mode");
         }
-    }
-
-    public void stop() {
     }
 }

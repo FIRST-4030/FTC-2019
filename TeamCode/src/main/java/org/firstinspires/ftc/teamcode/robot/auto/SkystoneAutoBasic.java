@@ -36,20 +36,9 @@ public class SkystoneAutoBasic extends OpMode {
     private boolean stopByWall = true;
     private int skystonePlacement = 0;
 
-
-    //Consts
-    private static final float COLLECT_SPEED = 0.9f;
-
-    private static final float ARM_HOME = 0.1f;
-    private static final float ARM_OUT = 0.65f;
-    private static final float CLAW_CLOSED = 0.6f;
-    private static final float SMALL_OPEN = 0.35f;
-
-
-
     @Override
     public void init() {
-        telemetry.addData(">", "Init…");
+        telemetry.addLine("Init…");
         telemetry.update();
 
         // Init the common tasks elements
@@ -68,12 +57,6 @@ public class SkystoneAutoBasic extends OpMode {
         vuforia.init();
         vuforia.enableCapture();
 
-
-
-        // TODO: figure out what to do with this
-        // TODO: Note: not to do Coded later in file
-        //initTfod();
-
         // Register buttons
         buttons = new ButtonHandler(robot);
         buttons.register("SELECT_SIDE", gamepad1, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
@@ -81,8 +64,13 @@ public class SkystoneAutoBasic extends OpMode {
         buttons.register("TOWARDS_WALL", gamepad1, PAD_BUTTON.dpad_down);
         buttons.register("CYCLE_SKYSTONE", gamepad1, PAD_BUTTON.x, BUTTON_TYPE.SINGLE_PRESS);
 
-        robot.claw.setPosition(.6f);
-        robot.capstone.setPosition(0.35f);
+        // Move things to default positions
+        robot.claw.setPosition(0.6f);
+        robot.capstone.setPosition(0.4f);
+        robot.hookRight.max();
+        robot.hookLeft.max();
+
+        telemetry.update();
     }
 
     @Override
@@ -92,16 +80,13 @@ public class SkystoneAutoBasic extends OpMode {
 
         // Overall ready status
         gameReady = (robot.gyro.isReady());
-        telemetry.addData("\t\t\t", "");
-        telemetry.addData(">", gameReady ? "Ready for game start" : "NOT READY");
+        telemetry.addLine(gameReady ? "READY" : "NOT READY");
 
         // Detailed feedback
-        telemetry.addData("\t\t\t", "");
         telemetry.addData("Gyro", robot.gyro.isReady() ? "Ready" : "Calibrating…");
 
         //Skystone Placement
-        telemetry.addData("\t\t\t", "");
-        telemetry.addData("Skystone:", "" + skystonePlacement);
+        telemetry.addData("Skystone", "" + skystonePlacement);
 
         // Update
         telemetry.update();
@@ -113,12 +98,11 @@ public class SkystoneAutoBasic extends OpMode {
 
         // Log if we didn't exit init as expected
         if (!gameReady) {
-            telemetry.log().add("Started before ready");
+            telemetry.log().add("! STARTED BEFORE READY !");
         }
 
         // Set initial state
         state = AUTO_STATE.values()[0];
-        robot.capstone.setPosition(0.4f);
 
         //robot.vuforia.start();
         //robot.vuforia.enableCapture();
@@ -148,8 +132,6 @@ public class SkystoneAutoBasic extends OpMode {
         switch (state) {
             case INIT:
                 driver.done = false;
-                robot.hookRight.max();
-                robot.hookLeft.max();
                 advance();
                 break;
 
@@ -195,14 +177,19 @@ public class SkystoneAutoBasic extends OpMode {
 
         DONE;
 
-        public AUTO_STATE prev() { return OrderedEnumHelper.prev(this); }
-        public AUTO_STATE next() { return OrderedEnumHelper.next(this); }
+        public AUTO_STATE prev() {
+            return OrderedEnumHelper.prev(this);
+        }
+
+        public AUTO_STATE next() {
+            return OrderedEnumHelper.next(this);
+        }
     }
 
     /**
      * Sets config booleans according to user input
      */
-    private void userSettings(){
+    private void userSettings() {
         buttons.update();
 
         if (buttons.get("SELECT_SIDE")) {
@@ -216,8 +203,8 @@ public class SkystoneAutoBasic extends OpMode {
         if (buttons.get("TOWARDS_WALL")) stopByWall = true;
         telemetry.addData("Stop by wall?", stopByWall);
 
-        if (buttons.get("CYCLE_SKYSTONE")){
-            skystonePlacement ++;
+        if (buttons.get("CYCLE_SKYSTONE")) {
+            skystonePlacement++;
             if (skystonePlacement == 2) skystonePlacement = -1;
         }
     }
@@ -255,19 +242,18 @@ public class SkystoneAutoBasic extends OpMode {
         state = state.next();
     }
 
-    private int getSkystonePosition (){
+    private int getSkystonePosition() {
         int pos = 0;
         vuforia.capture();
         ImageFTC img = vuforia.getImage();
         int h = img.getHeight();
         int w = img.getWidth();
         int y = h;
-        while (img.rgb(w/2, y) < 50  ) {
+        while (img.rgb(w / 2, y) < 50) {
 
         }
         return pos;
     }
-
 
 
 }
