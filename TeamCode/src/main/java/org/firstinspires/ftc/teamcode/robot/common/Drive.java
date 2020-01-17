@@ -15,49 +15,49 @@ import org.firstinspires.ftc.teamcode.wheels.MOTOR_SIDE;
 public class Drive implements CommonTask, DriveToListener {
     private static final boolean DEBUG = true;
 
-    /*
-    old numbas:
-    P: 0.0182
-    I: 0.00028
-    D: 0.754
+    // ===================
+    // PID TURN PARAMETERS
+    // ===================
+    // Cutoff between short and long turns (in degrees)
+    private static final float TURN_CUTOFF = 90.0f;
 
-    quick, one oscillation:
-    P: 0.01
-    I: 0.002
-    D: 1.0
+    // Short turns
+    private static final float SHORT_TURN_TOLERANCE = 3.0f; // Permitted heading error in degrees
+    private static final float SHORT_TURN_DIFF_TOLERANCE = 0.001f; // Permitted error change rate
+    public static final PIDParams SHORT_TURN_PARAMS = new PIDParams(0.017f, 0.01f, 2.0f,
+            40.0f, true, true);
 
-    +====+
-    |TURN|
-    +====+
-
-    old numbas:
-    P: 0.012
-    I: 0.02015
-    D: 0.75
-
-    wow!
-    P: 0.017
-    I: 0.01
-    D: 2.0
-    */
-
-
-    // PID Turns
+    // Long turns
     private static final float TURN_TOLERANCE = 3.0f; // Permitted heading error in degrees
     private static final float TURN_DIFF_TOLERANCE = 0.001f; // Permitted error change rate
     public static final PIDParams TURN_PARAMS = new PIDParams(0.017f, 0.01f, 2.0f,
             40.0f, true, true);
 
-    // PID Drive
+    // ====================
+    // PID DRIVE PARAMETERS
+    // ====================
+    // Cutoff between short and long drives (in mm)
+    private static final float DRIVE_CUTOFF = 12.0f * 25.4f;
+
+    // Short drives
+    private static final float SHORT_DRIVE_TOLERANCE = 20.0f; // Permitted distance error in encoder ticks
+    private static final float SHORT_DRIVE_DIFF_TOLERANCE = 0.1f; // Permitted error change rate
+    public static final PIDParams SHORT_DRIVE_PARAMS = new PIDParams(0.0182f, 0.00028f, 0.754f,
+            2000.0f, true, true);
+
+    // Long drives
     private static final float DRIVE_TOLERANCE = 20.0f; // Permitted distance error in encoder ticks
     private static final float DRIVE_DIFF_TOLERANCE = 0.1f; // Permitted error change rate
     public static final PIDParams DRIVE_PARAMS = new PIDParams(0.0182f, 0.00028f, 0.754f,
             2000.0f, true, true);
 
-    // Straight drive speed -- Forward is toward the hooks, motor positive, ticks increasing
-    public final static float SPEED_FORWARD = 1.0f;
-    public final static float SPEED_FORWARD_SLOW = SPEED_FORWARD * 0.75f;
-    public final static float SPEED_REVERSE = -SPEED_FORWARD;
+    // ==========================
+    // PID TRANSLATION PARAMETERS
+    // ==========================
+    private static final float TRANSL_TOLERANCE = 20.0f; // Permitted distance error in encoder ticks
+    private static final float TRANSL_DIFF_TOLERANCE = 0.1f; // Permitted error change rate
+    public static final PIDParams TRANSL_PARAMS = new PIDParams(0.0182f, 0.00028f, 0.754f,
+            2000.0f, true, true);
 
     // Runtime
     private final Robot robot;
@@ -123,7 +123,7 @@ public class Drive implements CommonTask, DriveToListener {
 
         DriveToParams param = new DriveToParams(this, SENSOR_TYPE.DRIVE_ENCODER);
         int target = (int) ((float) millimeters * robot.wheels.getTranslationTicksPerMM()) + robot.wheels.getEncoder();
-        param.translationPid(target, DRIVE_PARAMS, DRIVE_TOLERANCE, DRIVE_DIFF_TOLERANCE);
+        param.translationPid(target, TRANSL_PARAMS, TRANSL_TOLERANCE, TRANSL_DIFF_TOLERANCE);
         return new DriveTo(new DriveToParams[]{param});
     }
 
@@ -142,9 +142,14 @@ public class Drive implements CommonTask, DriveToListener {
 
         DriveToParams param = new DriveToParams(this, SENSOR_TYPE.DRIVE_ENCODER);
         int target = (int) ((float) millimeters * robot.wheels.getTicksPerMM()) + robot.wheels.getEncoder();
-        param.pid(target, DRIVE_PARAMS, DRIVE_TOLERANCE, DRIVE_DIFF_TOLERANCE);
-
         param.timeout = DriveTo.TIMEOUT_DEFAULT;
+
+        // Short vs long
+        if (millimeters > DRIVE_CUTOFF) {
+            param.pid(target, DRIVE_PARAMS, DRIVE_TOLERANCE, DRIVE_DIFF_TOLERANCE);
+        } else {
+            param.pid(target, SHORT_DRIVE_PARAMS, SHORT_DRIVE_TOLERANCE, SHORT_DRIVE_DIFF_TOLERANCE);
+        }
 
         return new DriveTo(new DriveToParams[]{param});
     }
@@ -154,10 +159,14 @@ public class Drive implements CommonTask, DriveToListener {
         heading = Heading.normalize(heading);
 
         DriveToParams param = new DriveToParams(this, SENSOR_TYPE.GYROSCOPE);
-        PIDParams params = TURN_PARAMS;
-        float tolerance = TURN_TOLERANCE;
-        float diffTolerance = TURN_DIFF_TOLERANCE;
-        param.rotationPid(heading, params, tolerance, diffTolerance);
+
+        // Short vs long
+        if (heading - robot.gyro.getHeading() > TURN_CUTOFF) {
+            param.rotationPid(heading, TURN_PARAMS, TURN_TOLERANCE, TURN_DIFF_TOLERANCE);
+        } else {
+            param.rotationPid(heading, SHORT_TURN_PARAMS, SHORT_TURN_TOLERANCE, SHORT_TURN_DIFF_TOLERANCE);
+        }
+
         return new DriveTo(new DriveToParams[]{param});
     }
 
