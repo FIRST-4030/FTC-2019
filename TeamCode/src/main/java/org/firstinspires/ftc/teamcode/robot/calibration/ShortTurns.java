@@ -7,13 +7,11 @@ import org.firstinspires.ftc.teamcode.buttons.ButtonHandler;
 import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
 import org.firstinspires.ftc.teamcode.calibration.Subsystem;
 import org.firstinspires.ftc.teamcode.driveto.AutoDriver;
-import org.firstinspires.ftc.teamcode.field.Field;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.common.Drive;
-import org.firstinspires.ftc.teamcode.utils.Heading;
 import org.firstinspires.ftc.teamcode.utils.Round;
 
-public class Turns extends Subsystem {
+public class ShortTurns extends Subsystem {
     private static final String P = "TURN_P";
     private static final String I = "TURN_I";
     private static final String D = "TURN_D";
@@ -35,7 +33,7 @@ public class Turns extends Subsystem {
 
     private AutoDriver driver = new AutoDriver();
 
-    public Turns(OpMode opmode, Robot robot, ButtonHandler buttons) {
+    public ShortTurns(OpMode opmode, Robot robot, ButtonHandler buttons) {
         super(opmode, robot, buttons);
     }
 
@@ -54,13 +52,13 @@ public class Turns extends Subsystem {
         // P, I, and D values
         buttons.spinners.add(P,
                 opmode.gamepad1, PAD_BUTTON.dpad_up, PAD_BUTTON.dpad_down,
-                INCREMENT, Drive.TURN_PARAMS.P);
+                INCREMENT, Drive.SHORT_TURN_PARAMS.P);
         buttons.spinners.add(I,
                 opmode.gamepad1, PAD_BUTTON.dpad_right, PAD_BUTTON.dpad_left,
-                INCREMENT, Drive.TURN_PARAMS.I);
+                INCREMENT, Drive.SHORT_TURN_PARAMS.I);
         buttons.spinners.add(D,
                 opmode.gamepad1, PAD_BUTTON.y, PAD_BUTTON.b,
-                INCREMENT, Drive.TURN_PARAMS.D);
+                INCREMENT, Drive.SHORT_TURN_PARAMS.D);
 
         // Angles
         buttons.register(SMALL, opmode.gamepad1, PAD_BUTTON.a);
@@ -85,9 +83,9 @@ public class Turns extends Subsystem {
     }
 
     protected void update() {
-        Drive.TURN_PARAMS.P = buttons.spinners.getFloat(P);
-        Drive.TURN_PARAMS.I = buttons.spinners.getFloat(I);
-        Drive.TURN_PARAMS.D = buttons.spinners.getFloat(D);
+        Drive.SHORT_TURN_PARAMS.P = buttons.spinners.getFloat(P);
+        Drive.SHORT_TURN_PARAMS.I = buttons.spinners.getFloat(I);
+        Drive.SHORT_TURN_PARAMS.D = buttons.spinners.getFloat(D);
 
         robot.telemetry.addData("Gyro", robot.gyro.isReady() ? Round.truncate(robot.gyro.getHeading()) : "<Calibrating>");
 
@@ -110,9 +108,9 @@ public class Turns extends Subsystem {
 
         // Process new AutoDriver commands
         if (buttons.get(LARGE)) {
-            driver.drive = robot.common.drive.degrees(180 * scale);
+            driver.drive = robot.common.drive.degrees(90 * scale);
         } else if (buttons.get(SMALL)) {
-            driver.drive = robot.common.drive.degrees(135 * scale);
+            driver.drive = robot.common.drive.degrees(45 * scale);
         }
     }
 

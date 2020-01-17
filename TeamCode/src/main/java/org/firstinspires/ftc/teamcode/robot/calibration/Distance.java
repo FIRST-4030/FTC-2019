@@ -38,12 +38,14 @@ public class Distance extends Subsystem {
     }
 
     protected void load() {
+        // Value to increment by
         buttons.spinners.add(INCREMENT,
                 opmode.gamepad1, PAD_BUTTON.right_bumper, PAD_BUTTON.left_bumper,
                 MIN_INCREMENT, 0.0f);
         buttons.spinners.setLimit(INCREMENT, MIN_INCREMENT, false);
         buttons.spinners.setLimit(INCREMENT, MAX_INCREMENT, true);
 
+        // P, I, and D values
         buttons.spinners.add(P,
                 opmode.gamepad1, PAD_BUTTON.dpad_up, PAD_BUTTON.dpad_down,
                 INCREMENT, Drive.DRIVE_PARAMS.P);
@@ -54,13 +56,13 @@ public class Distance extends Subsystem {
                 opmode.gamepad1, PAD_BUTTON.y, PAD_BUTTON.b,
                 INCREMENT, Drive.DRIVE_PARAMS.D);
 
-        buttons.register(TINY, opmode.gamepad1, PAD_BUTTON.a);
+        // Distance
+        buttons.register(SMALL, opmode.gamepad1, PAD_BUTTON.a);
         buttons.register(LARGE, opmode.gamepad1, PAD_BUTTON.x);
-        //buttons.register(LARGE, opmode.gamepad1, PAD_BUTTON.b);
-        //buttons.register(HUGE, opmode.gamepad1, PAD_BUTTON.y);
         buttons.register(BACK, opmode.gamepad1, PAD_BUTTON.back, BUTTON_TYPE.TOGGLE);
+
+        // Manual control
         buttons.register(JOYSTICK, opmode.gamepad1, PAD_BUTTON.start, BUTTON_TYPE.TOGGLE);
-        buttons.register(SMALL, opmode.gamepad2, PAD_BUTTON.y);
     }
 
     protected void unload() {
@@ -69,11 +71,10 @@ public class Distance extends Subsystem {
         buttons.spinners.remove(D);
         buttons.spinners.remove(INCREMENT);
 
-        buttons.deregister(TINY);
         buttons.deregister(SMALL);
         buttons.deregister(LARGE);
-        //buttons.deregister(HUGE);
         buttons.deregister(BACK);
+
         buttons.deregister(JOYSTICK);
     }
 
@@ -102,14 +103,8 @@ public class Distance extends Subsystem {
         }
 
         // Process new AutoDriver commands
-        /*if (buttons.get(HUGE)) {
+        if (buttons.get(LARGE)) {
             driver.drive = robot.common.drive.distance((int) (48 * scale));
-        } else if (buttons.get(LARGE)) {
-            driver.drive = robot.common.drive.distance((int) (24 * scale));
-        } else*/ if (buttons.get(LARGE)) {
-            driver.drive = robot.common.drive.distance((int) (48 * scale));
-        } else if (buttons.get(TINY)) {
-            driver.drive = robot.common.drive.distance((int) (12 * scale));
         } else if (buttons.get(SMALL)) {
             driver.drive = robot.common.drive.distance((int) (24 * scale));
         }

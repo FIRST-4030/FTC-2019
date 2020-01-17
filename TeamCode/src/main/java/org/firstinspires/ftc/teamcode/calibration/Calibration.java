@@ -38,6 +38,8 @@ public class Calibration extends OpMode {
         // These subsystems will change year-to-year but the framework is bot-agnostic
         subsystems.add(new Distance(this, robot, buttons));
         subsystems.add(new Turns(this, robot, buttons));
+        subsystems.add(new ShortDistance(this, robot, buttons));
+        subsystems.add(new ShortTurns(this, robot, buttons));
     }
 
     @Override

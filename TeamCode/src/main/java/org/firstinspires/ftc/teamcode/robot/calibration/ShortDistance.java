@@ -10,32 +10,26 @@ import org.firstinspires.ftc.teamcode.driveto.AutoDriver;
 import org.firstinspires.ftc.teamcode.field.Field;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.common.Drive;
-import org.firstinspires.ftc.teamcode.utils.Heading;
 import org.firstinspires.ftc.teamcode.utils.Round;
 
-public class Turns extends Subsystem {
-    private static final String P = "TURN_P";
-    private static final String I = "TURN_I";
-    private static final String D = "TURN_D";
-    private static final String INCREMENT = "TURN-INCREMENT";
-    private static final float MIN_INCREMENT = 0.0001f;
+public class ShortDistance extends Subsystem {
+    private static final String P = "DRIVE_P";
+    private static final String I = "DRIVE_I";
+    private static final String D = "DRIVE_D";
+    private static final String INCREMENT = "DRIVE-INCREMENT";
+    private static final float MIN_INCREMENT = 0.00001f;
     private static final float MAX_INCREMENT = 0.1f;
 
     private static final String JOYSTICK = "JOYSTICK";
-    private static final String CW = "PLUS_90";
-    private static final String CCW = "MINUS_90";
-    private static final String ANGLE_0 = "0";
-    private static final String ANGLE_90 = "90";
-    private static final String ANGLE_180 = "180";
-    private static final String ANGLE_270 = "270";
-
+    private static final String TINY = "TINY";
     private static final String SMALL = "SMALL";
     private static final String LARGE = "LARGE";
+    private static final String HUGE = "HUGE";
     private static final String BACK = "BACK";
 
     private AutoDriver driver = new AutoDriver();
 
-    public Turns(OpMode opmode, Robot robot, ButtonHandler buttons) {
+    public ShortDistance(OpMode opmode, Robot robot, ButtonHandler buttons) {
         super(opmode, robot, buttons);
     }
 
@@ -54,20 +48,20 @@ public class Turns extends Subsystem {
         // P, I, and D values
         buttons.spinners.add(P,
                 opmode.gamepad1, PAD_BUTTON.dpad_up, PAD_BUTTON.dpad_down,
-                INCREMENT, Drive.TURN_PARAMS.P);
+                INCREMENT, Drive.SHORT_DRIVE_PARAMS.P);
         buttons.spinners.add(I,
                 opmode.gamepad1, PAD_BUTTON.dpad_right, PAD_BUTTON.dpad_left,
-                INCREMENT, Drive.TURN_PARAMS.I);
+                INCREMENT, Drive.SHORT_DRIVE_PARAMS.I);
         buttons.spinners.add(D,
                 opmode.gamepad1, PAD_BUTTON.y, PAD_BUTTON.b,
-                INCREMENT, Drive.TURN_PARAMS.D);
+                INCREMENT, Drive.SHORT_DRIVE_PARAMS.D);
 
-        // Angles
+        // Distance
         buttons.register(SMALL, opmode.gamepad1, PAD_BUTTON.a);
         buttons.register(LARGE, opmode.gamepad1, PAD_BUTTON.x);
         buttons.register(BACK, opmode.gamepad1, PAD_BUTTON.back, BUTTON_TYPE.TOGGLE);
 
-        // Manual Control
+        // Manual control
         buttons.register(JOYSTICK, opmode.gamepad1, PAD_BUTTON.start, BUTTON_TYPE.TOGGLE);
     }
 
@@ -85,11 +79,11 @@ public class Turns extends Subsystem {
     }
 
     protected void update() {
-        Drive.TURN_PARAMS.P = buttons.spinners.getFloat(P);
-        Drive.TURN_PARAMS.I = buttons.spinners.getFloat(I);
-        Drive.TURN_PARAMS.D = buttons.spinners.getFloat(D);
+        Drive.SHORT_DRIVE_PARAMS.P = buttons.spinners.getFloat(P);
+        Drive.SHORT_DRIVE_PARAMS.I = buttons.spinners.getFloat(I);
+        Drive.SHORT_DRIVE_PARAMS.D = buttons.spinners.getFloat(D);
 
-        robot.telemetry.addData("Gyro", robot.gyro.isReady() ? Round.truncate(robot.gyro.getHeading()) : "<Calibrating>");
+        robot.telemetry.addData("Encoder", Round.truncate(robot.wheels.getEncoder()));
 
         // Handle AutoDriver driving
         driver = robot.common.drive.loop(driver);
@@ -103,16 +97,16 @@ public class Turns extends Subsystem {
         }
 
         // Allow driving backwards in auto
-        float scale = 1;
+        float scale = Field.MM_PER_INCH;
         if (buttons.get(BACK)) {
-            scale = -1;
+            scale *= -1.0f;
         }
 
         // Process new AutoDriver commands
         if (buttons.get(LARGE)) {
-            driver.drive = robot.common.drive.degrees(180 * scale);
+            driver.drive = robot.common.drive.distance((int) (12 * scale));
         } else if (buttons.get(SMALL)) {
-            driver.drive = robot.common.drive.degrees(135 * scale);
+            driver.drive = robot.common.drive.distance((int) (6 * scale));
         }
     }
 
