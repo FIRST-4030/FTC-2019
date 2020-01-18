@@ -162,7 +162,7 @@ public class TeleOpMode extends OpMode {
         }
 
         // Limit arm position
-        armPos = Math.max(armPos, robot.flipper.getMax());
+        armPos = Math.min(armPos, robot.flipper.getMax());
         armPos = Math.max(armPos, robot.flipper.getMin());
 
         // Move arm

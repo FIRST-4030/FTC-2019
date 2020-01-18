@@ -22,15 +22,15 @@ public class Drive implements CommonTask, DriveToListener {
     private static final float TURN_CUTOFF = 90.0f;
 
     // Short turns
-    private static final float SHORT_TURN_TOLERANCE = 3.0f; // Permitted heading error in degrees
+    private static final float SHORT_TURN_TOLERANCE = 1.0f; // Permitted heading error in degrees
     private static final float SHORT_TURN_DIFF_TOLERANCE = 0.001f; // Permitted error change rate
-    public static final PIDParams SHORT_TURN_PARAMS = new PIDParams(0.017f, 0.01f, 2.0f,
+    public static final PIDParams SHORT_TURN_PARAMS = new PIDParams(0.009f, 0.01f, 2.1f,
             40.0f, true, true);
 
     // Long turns
     private static final float TURN_TOLERANCE = 3.0f; // Permitted heading error in degrees
-    private static final float TURN_DIFF_TOLERANCE = 0.001f; // Permitted error change rate
-    public static final PIDParams TURN_PARAMS = new PIDParams(0.017f, 0.01f, 2.0f,
+    private static final float TURN_DIFF_TOLERANCE = 0.01f; // Permitted error change rate
+    public static final PIDParams TURN_PARAMS = new PIDParams(0.009f, 0.012f, 2.0f,
             40.0f, true, true);
 
     // ====================
@@ -40,16 +40,16 @@ public class Drive implements CommonTask, DriveToListener {
     private static final float DRIVE_CUTOFF = 12.0f * 25.4f;
 
     // Short drives
-    private static final float SHORT_DRIVE_TOLERANCE = 20.0f; // Permitted distance error in encoder ticks
+    private static final float SHORT_DRIVE_TOLERANCE = 7.0f; // Permitted distance error in encoder ticks
     private static final float SHORT_DRIVE_DIFF_TOLERANCE = 0.1f; // Permitted error change rate
-    public static final PIDParams SHORT_DRIVE_PARAMS = new PIDParams(0.0182f, 0.00028f, 0.754f,
-            2000.0f, true, true);
+    public static final PIDParams SHORT_DRIVE_PARAMS = new PIDParams(0.002f, 0.004f, 0.8f,
+            150.0f, true, true);
 
     // Long drives
-    private static final float DRIVE_TOLERANCE = 20.0f; // Permitted distance error in encoder ticks
+    private static final float DRIVE_TOLERANCE = 15.0f; // Permitted distance error in encoder ticks
     private static final float DRIVE_DIFF_TOLERANCE = 0.1f; // Permitted error change rate
-    public static final PIDParams DRIVE_PARAMS = new PIDParams(0.0182f, 0.00028f, 0.754f,
-            2000.0f, true, true);
+    public static final PIDParams DRIVE_PARAMS = new PIDParams(0.02f, 0.00023f, 1.2f,
+            1000.0f, true, true);
 
     // ==========================
     // PID TRANSLATION PARAMETERS
