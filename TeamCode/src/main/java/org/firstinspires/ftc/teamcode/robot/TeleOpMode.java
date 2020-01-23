@@ -17,6 +17,7 @@ public class TeleOpMode extends OpMode {
     // Changies
     private float armPos = ARM_HOME;
     private boolean initCapstone = false;
+    private float CollectSpeed;
 
     // Drive Speeds
     private static final float SLOW_MODE = 0.7f;
@@ -35,7 +36,8 @@ public class TeleOpMode extends OpMode {
     private static final float ARM_OUT = 0.65f;
 
     // Collector speed multiplier
-    private static final float COLLECT_SPEED = 0.45f;
+    private static final float SLOW_COLLECT_SPEED = 0.25f;
+    private static final float SPEEDY_COLLECT_SPEED = 0.45f;
 
 
     @Override
@@ -63,6 +65,7 @@ public class TeleOpMode extends OpMode {
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
         buttons.register("CAPSTONE1", gamepad1, PAD_BUTTON.x);
         buttons.register("CAPSTONE_INIT", gamepad1, PAD_BUTTON.dpad_up, BUTTON_TYPE.SINGLE_PRESS);
+
 
         // Gamepad two controls lift and all of its parts
         buttons.register("ARM_RESET", gamepad2, PAD_BUTTON.b, BUTTON_TYPE.SINGLE_PRESS);
@@ -127,13 +130,15 @@ public class TeleOpMode extends OpMode {
         // =========
         // COLLECTOR
         // =========
-        if (buttons.get("COLLECT")) {
-            robot.collectorLeft.setPower(COLLECT_SPEED);
-            robot.collectorRight.setPower(COLLECT_SPEED);
-        } else {
-            robot.collectorLeft.setPower((gamepad1.left_trigger - gamepad1.right_trigger) * COLLECT_SPEED);
-            robot.collectorRight.setPower((gamepad1.left_trigger - gamepad1.right_trigger) * COLLECT_SPEED);
-        }
+
+            if (buttons.get("COLLECT")) {
+                CollectSpeed = SPEEDY_COLLECT_SPEED;
+            } else {
+                CollectSpeed = SLOW_COLLECT_SPEED;
+            }
+            robot.collectorLeft.setPower((gamepad1.left_trigger - gamepad1.right_trigger) * CollectSpeed);
+            robot.collectorRight.setPower((gamepad1.left_trigger - gamepad1.right_trigger) * CollectSpeed);
+
 
 
         // =============

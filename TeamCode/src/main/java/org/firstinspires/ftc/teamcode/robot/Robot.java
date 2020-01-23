@@ -43,6 +43,7 @@ public class Robot {
     public ServoFTC hookLeft;
     public ServoFTC hookRight;
     public ServoFTC capstone;
+    public ServoFTC curtain;
 
     // Arm
     public ServoFTC lower;
@@ -94,6 +95,7 @@ public class Robot {
                 hookLeft = servos.init(SERVOS.LEFT_HOOK);
                 hookRight = servos.init(SERVOS.RIGHT_HOOK);
                 capstone = servos.init(SERVOS.CAPSTONE);
+
                 break;
 
             case ARM:

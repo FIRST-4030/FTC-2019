@@ -195,21 +195,9 @@ public class SkystoneAuto extends OpMode {
                 advance();
                 break;
 
-            case MOVE_OUT:
-                driver.drive = common.drive.distance(InchesToMM(-12.25f));
-                advance();
-                break;
 
-            case INCH2:
-                driver.drive = common.drive.heading(0);
-                advance();
-                break;
 
-            case WAIT:
-                driver.drive = common.drive.sleep(3000);
-                advance();
-                break;
-
+/*
             case LOCATE_SKYSTONE:
                 // 1: Bridge
                 // 0: Middle
@@ -224,34 +212,24 @@ public class SkystoneAuto extends OpMode {
 
                 advance();
                 break;
+*/
 
-            case SPIN1:
-                driver.drive = common.drive.heading(90.0f);
-                advance();
-                break;
 
-            case MOVE:
-                driver.drive = common.drive.distance(InchesToMM(7.5f * ((float) skystonePlacement - 1.0f)));
-                advance();
-                break;
 
-            case SPIN2:
-                driver.drive = common.drive.heading(180.0f);
-                advance();
-                break;
+
 
             case MOVE_TO_SKYSTONE:
-                driver.drive = common.drive.distance(InchesToMM(13.0f));
+                driver.drive = common.drive.distance(InchesToMM(24.0f));
                 advance();
                 break;
 
             case INCH:
-                driver.drive = common.drive.distance(InchesToMM(3.0f));
+                driver.drive = common.drive.distance(InchesToMM(6.0f));
                 advance();
                 break;
 
             case BACK:
-                driver.drive = common.drive.distance(InchesToMM(-1.2f));
+                driver.drive = common.drive.distance(InchesToMM(-3.2f));
                 advance();
                 break;
 
@@ -261,32 +239,28 @@ public class SkystoneAuto extends OpMode {
                 advance();
                 break;
 
-            case BACK_UP:
-                driver.drive = common.drive.distance(InchesToMM(-7.0f));
-                advance();
-                break;
 
-            case STRAIGHTEN:
-                if (skystonePlacement != 0) driver.drive = common.drive.heading(180.0f);
-                advance();
-                break;
+
+
 
             case CHOOSE_SIDE:
                 if (stopByWall) {
-                    driver.drive = common.drive.distance(InchesToMM(-15.0f));
+                    driver.drive = common.drive.distance(InchesToMM(-29.0f));
+                } else {
+                    driver.drive = common.drive.distance(InchesToMM(-7.0f));
                 }
                 advance();
                 break;
 
             case LOOK_AT_BRIDGE:
-                float deg = 90;
-                if (color == Field.AllianceColor.RED) deg += 180;
+                float deg = 265;
+                if (color == Field.AllianceColor.RED) deg = 95;
                 driver.drive = common.drive.heading(deg);
                 advance();
                 break;
 
             case CROSS_BRIDGE:
-                driver.drive = common.drive.distance(InchesToMM(55.0f - (7.0f * (float) skystonePlacement)));
+                driver.drive = common.drive.distance(InchesToMM(43.0f));
                 advance();
                 break;
 
@@ -296,8 +270,80 @@ public class SkystoneAuto extends OpMode {
                 advance();
                 break;
 
+            case CROSS_BRIDGE_AGAIN:
+                driver.drive = common.drive.distance(InchesToMM(-57.0f));
+                advance();
+                break;
+
+
+            case LOOK_AT_STONE:
+                deg = 3;
+                if (color == Field.AllianceColor.RED) deg = 357;
+                driver.drive = common.drive.heading(deg);
+                advance();
+                break;
+
+            case DRIVE_TO_STONE:
+                if (stopByWall) {
+                    driver.drive = common.drive.distance(InchesToMM(14.0f));
+                } else {
+                    //driver.drive = common.drive.distance(InchesToMM(18.0f));
+                }
+
+                advance();
+                break;
+
+
+
+
+            case INCH2:
+                driver.drive = common.drive.distance(InchesToMM(6.5f));
+                advance();
+                break;
+
+            case BACK2:
+                driver.drive = common.drive.distance(InchesToMM(-3.2f));
+                advance();
+                break;
+
+            case EAT_SKYSTONE2:
+                robot.hookLeft.min();
+                driver.drive = common.drive.sleep(700);
+                advance();
+                break;
+
+
+
+
+            case CHOOSE_SIDE2:
+                if (stopByWall) {
+                    driver.drive = common.drive.distance(InchesToMM(-26.0f));
+                } else {
+                    driver.drive = common.drive.distance(InchesToMM(-7.0f));
+                }
+                advance();
+                break;
+
+            case LOOK_AT_BRIDGE2:
+                deg = 265;
+                if (color == Field.AllianceColor.RED) deg = 95;
+                driver.drive = common.drive.heading(deg);
+                advance();
+                break;
+
+            case CROSS_BRIDGE2:
+                driver.drive = common.drive.distance(InchesToMM(51.0f));
+                advance();
+                break;
+
+            case YEET_SKYSTONE2:
+                robot.hookLeft.max();
+                driver.drive = common.drive.sleep(500);
+                advance();
+                break;
+
             case PARK:
-                driver.drive = common.drive.distance(InchesToMM(-15.0f));
+                driver.drive = common.drive.distance(InchesToMM(-14.0f));
                 advance();
                 break;
 
@@ -317,31 +363,16 @@ public class SkystoneAuto extends OpMode {
     enum AUTO_STATE implements OrderedEnum {
         INIT, // Initialization
 
-        MOVE_OUT,
 
-        INCH2,
-
-        WAIT,
-
-        LOCATE_SKYSTONE,
-
-        SPIN1,
-
-        MOVE,
-
-        SPIN2,
 
         MOVE_TO_SKYSTONE,
+
 
         INCH,
 
         BACK,
 
         EAT_SKYSTONE,
-
-        BACK_UP,
-
-        STRAIGHTEN,
 
         CHOOSE_SIDE,
 
@@ -350,6 +381,26 @@ public class SkystoneAuto extends OpMode {
         CROSS_BRIDGE,
 
         YEET_SKYSTONE,
+
+        CROSS_BRIDGE_AGAIN,
+
+        LOOK_AT_STONE,
+
+        DRIVE_TO_STONE,
+
+        INCH2,
+
+        BACK2,
+
+        EAT_SKYSTONE2,
+
+        CHOOSE_SIDE2,
+
+        LOOK_AT_BRIDGE2,
+
+        CROSS_BRIDGE2,
+
+        YEET_SKYSTONE2,
 
         PARK,
 
@@ -370,7 +421,11 @@ public class SkystoneAuto extends OpMode {
     private void userSettings() {
         buttons.update();
 
-        color = Field.AllianceColor.BLUE;
+        if (buttons.get("SELECT_SIDE")) {
+            color = Field.AllianceColor.RED;
+        } else {
+            color = Field.AllianceColor.BLUE;
+        }
 
         telemetry.addData("Team Color", color.toString());
 
