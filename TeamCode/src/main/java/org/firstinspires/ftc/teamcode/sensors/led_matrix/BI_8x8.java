@@ -6,10 +6,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.sensors.led_matrix.driver.BLINKING_MODE;
 import org.firstinspires.ftc.teamcode.sensors.led_matrix.driver.HT16K33;
 
-public class StupidAbstraction implements LEDMatrix {
+public class BI_8x8 implements LEDMatrix {
     public HT16K33 matrix;
 
-    public StupidAbstraction(HardwareMap map, Telemetry telemetry, String name) {
+    public BI_8x8(HardwareMap map, Telemetry telemetry, String name) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() + ": Null/empty name");
         }
