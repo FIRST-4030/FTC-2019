@@ -254,7 +254,7 @@ public class SkystoneAuto extends OpMode {
 
             case LOOK_AT_BRIDGE:
                 float deg = 265;
-                if (color == Field.AllianceColor.RED) deg = 95;
+                if (color == Field.AllianceColor.RED) deg = 90;
                 driver.drive = common.drive.heading(deg);
                 advance();
                 break;
@@ -271,7 +271,7 @@ public class SkystoneAuto extends OpMode {
                 break;
 
             case CROSS_BRIDGE_AGAIN:
-                driver.drive = common.drive.distance(InchesToMM(-57.0f));
+                driver.drive = common.drive.distance(InchesToMM(-59.0f));
                 advance();
                 break;
 
@@ -285,7 +285,7 @@ public class SkystoneAuto extends OpMode {
 
             case DRIVE_TO_STONE:
                 if (stopByWall) {
-                    driver.drive = common.drive.distance(InchesToMM(14.0f));
+                    driver.drive = common.drive.distance(InchesToMM(18.0f));
                 } else {
                     //driver.drive = common.drive.distance(InchesToMM(18.0f));
                 }
