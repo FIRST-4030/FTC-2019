@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.sensors.switches.Switch;
 import org.firstinspires.ftc.teamcode.wheels.MOTOR_END;
 import org.firstinspires.ftc.teamcode.wheels.MOTOR_SIDE;
 
+@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Hardware Test", group = "Test")
 
 public class HardwareTest extends OpMode {
@@ -37,8 +38,10 @@ public class HardwareTest extends OpMode {
         // Buttons
         buttons = new ButtonHandler(robot);
         buttons.register("ENCODER_RESET", gamepad1, PAD_BUTTON.guide);
-        buttons.register("LEFTHOOK" + SERVO_FWD, gamepad1, PAD_BUTTON.dpad_right);
-        buttons.register("LEFTHOOK" + SERVO_BACK, gamepad1, PAD_BUTTON.dpad_left);
+        buttons.register("LOWER" + SERVO_FWD, gamepad1, PAD_BUTTON.dpad_right);
+        buttons.register("LOWER" + SERVO_BACK, gamepad1, PAD_BUTTON.dpad_left);
+        buttons.register("UPPER" + SERVO_FWD, gamepad1, PAD_BUTTON.dpad_up);
+        buttons.register("UPPER" + SERVO_BACK, gamepad1, PAD_BUTTON.dpad_down);
     }
 
     @Override
@@ -74,7 +77,8 @@ public class HardwareTest extends OpMode {
         }
 
  */
-        updateServo("LEFTHOOK", robot.hookLeft);
+        updateServo("UPPER", robot.upper);
+        updateServo("LOWER", robot.lower);
 
         telemetry.update();
     }

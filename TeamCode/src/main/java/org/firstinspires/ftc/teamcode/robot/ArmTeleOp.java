@@ -21,9 +21,10 @@ public class ArmTeleOp extends OpMode {
     private static final float ARM_MOVEMENT_SCALE = 1.0f/16;
     private static final float ARM_ROTATION_SCALE = 1.0f/512;
     private static final float WRIST_ROTATION_SCALE = 1.0f/512;
-    private static final float ARM_HOME_X = 2.6f;
-    private static final float ARM_HOME_Y = 7.2f;
+    private static final float ARM_HOME_X = 0.64f;
+    private static final float ARM_HOME_Y = 3.81f;
     private static final float ARM_HOME_R = 0.4f;
+    private static final float ARM_HOME_W = 0.8f;
 
     // Arm rate limiting
     private RateLimit rateX;
@@ -41,7 +42,7 @@ public class ArmTeleOp extends OpMode {
 
     // vars
     private float armRotation = ARM_HOME_R;
-    private float wristRotation = 0.2f;
+    private float wristRotation = ARM_HOME_W;
 
     @Override
     public void init() {
@@ -123,17 +124,19 @@ public class ArmTeleOp extends OpMode {
         // cap values
         armRotation = Math.min(1.0f, armRotation);
         armRotation = Math.max(0.0f, armRotation);
-        wristRotation = Math.min(0.55f, wristRotation);
-        wristRotation = Math.max(0.2f, wristRotation);
+        wristRotation = Math.min(1.0f, wristRotation);
+        wristRotation = Math.max(0.0f, wristRotation);
 
-        robot.rotation.setPosition(armRotation);
-        robot.wrist.setPosition(wristRotation);
         robot.common.arm.setPositionDelta(dx, dy);
 
         if (buttons.get("HOME_ARM")) {
             robot.common.arm.setPosition(ARM_HOME_X, ARM_HOME_Y);
-            robot.rotation.setPosition(ARM_HOME_R);
+            armRotation = ARM_HOME_R;
+            wristRotation = ARM_HOME_W;
         }
+
+        robot.rotation.setPosition(armRotation);
+        robot.wrist.setPosition(wristRotation);
 
         telemetry.addData("arm x", robot.common.arm.getArmX());
         telemetry.addData("arm y", robot.common.arm.getArmY());
