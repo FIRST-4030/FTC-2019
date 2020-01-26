@@ -179,41 +179,22 @@ public class FoundationAuto extends OpMode {
                 driver.drive = common.drive.distance(InchesToMM(12.0f));
                 advance();
                 break;
-/*
-            case CAP_OUT:
-                robot.flipper.setPosition(0.85f);
-                driver.drive = common.drive.sleep(1000);
-                advance();
-                break;
-
-            case CAP_RELEASE:
-                robot.claw.setPosition(0.35f);
-                driver.drive = common.drive.sleep(300);
-                advance();
-                break;
-
-            case ARM_IN:
-                robot.flipper.setPosition(0.0f);
-                driver.drive = common.drive.sleep(1000);
-                advance();
-                break;
-                */
 
             case CHOOSE_SIDE:
                 if (stopByWall) {
-                    float dist = 35.0f;
-                    if (color == Field.AllianceColor.BLUE) {
-                        dist *= -1.0f;
+                    float head = 305.0f;
+                    if (color == Field.AllianceColor.RED) {
+                        head = 55.0f;
                     }
 
-                    driver.drive = common.drive.translate(InchesToMM(dist));
+                    driver.drive = common.drive.heading(head);
                 } else {
-                    float dist = -18.0f;
-                    if (color == Field.AllianceColor.BLUE) {
-                        dist *= -1.0f;
+                    float head = 255.0f;
+                    if (color == Field.AllianceColor.RED) {
+                        head = 105.0f;
                     }
 
-                    driver.drive = common.drive.translate(InchesToMM(dist));
+                    driver.drive = common.drive.heading(head);
                 }
                 advance();
                 break;
@@ -228,7 +209,7 @@ public class FoundationAuto extends OpMode {
                 break;
 
             case BACK_UP_AWAY_FROM_CORNER:
-                driver.drive = common.drive.distance(InchesToMM(-35.0f));
+                driver.drive = common.drive.distance(InchesToMM(-40.0f));
                 advance();
                 break;
 
@@ -261,19 +242,13 @@ public class FoundationAuto extends OpMode {
 
         TURN_TOWARDS_CORNER, // Turn 90 degrees towards corner (building site)
 
-        //CAP_OUT,
-
-        //CAP_RELEASE,
-
-        //ARM_IN,
-
         MOVE_INTO_CORNER, // Push foundation into corner
 
         CHOOSE_SIDE,
 
-        FIX_ORIENTATION,
-
         BACK_UP_AWAY_FROM_CORNER, // Backs up to previous position
+
+        FIX_ORIENTATION,
 
         DONE;
 
