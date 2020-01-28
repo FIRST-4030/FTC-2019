@@ -65,8 +65,6 @@ public class TeleOpMode extends OpMode {
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
         buttons.register("CAPSTONE1", gamepad1, PAD_BUTTON.x);
         buttons.register("CAPSTONE_INIT", gamepad1, PAD_BUTTON.dpad_left, BUTTON_TYPE.SINGLE_PRESS);
-        buttons.register("PARK_OUT", gamepad1, PAD_BUTTON.dpad_up);
-        buttons.register("PARK_IN", gamepad1, PAD_BUTTON.dpad_down);
 
 
         // Gamepad two controls lift and all of its parts
@@ -77,6 +75,7 @@ public class TeleOpMode extends OpMode {
         buttons.register("GRAB", gamepad2, PAD_BUTTON.x, BUTTON_TYPE.TOGGLE);
         buttons.register("GRAB_WIDE", gamepad2, PAD_BUTTON.x);
         buttons.register("CAPSTONE2", gamepad2, PAD_BUTTON.y);
+        buttons.register("CAPSTONE_UP", gamepad2, PAD_BUTTON.dpad_up, BUTTON_TYPE.TOGGLE);
         buttons.getListener("ARM_TO_0").setLongHeldTimeout(0);
         buttons.getListener("ARM_TO_1").setLongHeldTimeout(0);
         buttons.getListener("ARM_TO_0").setAutokeyTimeout(0);
@@ -202,7 +201,13 @@ public class TeleOpMode extends OpMode {
         if (buttons.held("CAPSTONE1") && buttons.held("CAPSTONE2")) {
             robot.capstone.min();
         } else {
-            if (initCapstone) robot.capstone.max();
+            if (initCapstone) {
+                if (buttons.get("CAPSTONE_UP")) {
+                    robot.capstone.setPosition(0.5f);
+                } else {
+                    robot.capstone.max();
+                }
+            }
         }
 
 

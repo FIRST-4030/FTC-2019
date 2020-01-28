@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.robot.calibration.*;
 
 import java.util.Vector;
 
+@Disabled
 @TeleOp(name = "Calibration", group = "Test")
 public class Calibration extends OpMode {
     private static final String NEXT_SUBSYSTEM = "NEXT_SUBSYSTEM";

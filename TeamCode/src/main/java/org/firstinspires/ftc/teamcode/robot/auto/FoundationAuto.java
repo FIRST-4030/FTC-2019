@@ -139,6 +139,13 @@ public class FoundationAuto extends OpMode {
                 advance();
                 break;
 
+            case CORRECT_STRAFING:
+                if( color == Field.AllianceColor.RED) {
+                    driver.drive = common.drive.distance(InchesToMM(-3.0f));
+                }
+                advance();
+                break;
+
             case DRIVE_TO_FOUNDATION:
                 driver.drive = common.drive.distance(InchesToMM(25.0f));
                 advance();
@@ -231,6 +238,8 @@ public class FoundationAuto extends OpMode {
         STRAFE,
 
         STRAIGHTEN,
+
+        CORRECT_STRAFING,
 
         DRIVE_TO_FOUNDATION, // Drive towards foundation
 

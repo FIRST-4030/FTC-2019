@@ -16,8 +16,7 @@ import org.firstinspires.ftc.teamcode.utils.Round;
 import org.firstinspires.ftc.teamcode.vuforia.ImageFTC;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 
-
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Skystone Side (Fallback)", group = "Scissor")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Drive 2f", group = "Scissor")
 public class SkystoneAutoBasic extends OpMode {
 
     // Devices and subsystems

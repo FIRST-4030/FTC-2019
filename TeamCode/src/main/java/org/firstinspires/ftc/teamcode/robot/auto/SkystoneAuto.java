@@ -33,7 +33,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGR
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Skystone Side (WIP)", group = "Scissor")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Skystone Side", group = "Scissor")
 public class SkystoneAuto extends OpMode {
 
     // Devices and subsystems
@@ -254,7 +254,7 @@ public class SkystoneAuto extends OpMode {
 
             case LOOK_AT_BRIDGE:
                 float deg = 265;
-                if (color == Field.AllianceColor.RED) deg = 90;
+                if (color == Field.AllianceColor.RED) deg = 85;
                 driver.drive = common.drive.heading(deg);
                 advance();
                 break;
@@ -271,7 +271,7 @@ public class SkystoneAuto extends OpMode {
                 break;
 
             case CROSS_BRIDGE_AGAIN:
-                driver.drive = common.drive.distance(InchesToMM(-58.0f));
+                driver.drive = common.drive.distance(InchesToMM(-56.0f));
                 advance();
                 break;
 
