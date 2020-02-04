@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.configuration.annotations.DevicePropertie
 import com.qualcomm.robotcore.hardware.configuration.annotations.I2cDeviceType;
 
 @I2cDeviceType
-@DeviceProperties(name = "8x8 LED Matrix", description = "8x8 LED Matrix with one color", xmlTag = "HT16K33")
+@DeviceProperties(name = "8x8 LED Matrix", description = "8x8 LED Matrix with one color", xmlTag = "BI_8x8")
 public class HT16K33 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
 
     // =========

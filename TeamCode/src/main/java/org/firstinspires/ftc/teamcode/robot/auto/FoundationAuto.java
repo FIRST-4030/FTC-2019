@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.robot.auto;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.buttons.BUTTON_TYPE;
@@ -17,7 +16,6 @@ import org.firstinspires.ftc.teamcode.utils.Round;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Grab Foundation", group = "Scissor")
-@Disabled
 public class FoundationAuto extends OpMode {
 
     // Devices and subsystems
@@ -31,10 +29,11 @@ public class FoundationAuto extends OpMode {
     private AUTO_STATE state;
     private boolean gameReady = false;
     private Field.AllianceColor color = Field.AllianceColor.BLUE;
-    private boolean park_by_wall = true;
+    private boolean stopByWall = true;
+
     @Override
     public void init() {
-        telemetry.addData(">", "Init…");
+        telemetry.addLine("Init…");
         telemetry.update();
 
         // Init the common tasks elements
@@ -47,18 +46,25 @@ public class FoundationAuto extends OpMode {
             telemetry.log().add("Opmode not compatible with bot " + robot.bot);
             requestOpModeStop();
         }
-        robot.capstone.setPosition(0.4f);
 
         // Init the camera system
         //vuforia.start();
         //vuforia.enableCapture();
 
-        // TODO: figure out what to do with this
-        //initTfod();
-
         // Register buttons
         buttons = new ButtonHandler(robot);
         buttons.register("SELECT_SIDE", gamepad1, PAD_BUTTON.y, BUTTON_TYPE.TOGGLE);
+        buttons.register("AWAY_FROM_WALL", gamepad1, PAD_BUTTON.dpad_up);
+        buttons.register("TOWARDS_WALL", gamepad1, PAD_BUTTON.dpad_down);
+
+        // Move things to default positions
+        robot.claw.setPosition(0.6f);
+        robot.capstone.setPosition(0.35f);
+        robot.wheels.setSpeedScale(1.0f);
+        robot.hookRight.max();
+        robot.hookLeft.max();
+
+        telemetry.update();
     }
 
     @Override
@@ -68,11 +74,9 @@ public class FoundationAuto extends OpMode {
 
         // Overall ready status
         gameReady = (robot.gyro.isReady());
-        telemetry.addData("\t\t\t", "");
-        telemetry.addData(">", gameReady ? "Ready for game start" : "NOT READY");
+        telemetry.addLine(gameReady ? "READY" : "NOT READY");
 
         // Detailed feedback
-        telemetry.addData("\t\t\t", "");
         telemetry.addData("Gyro", robot.gyro.isReady() ? "Ready" : "Calibrating…");
 
         // Update
@@ -85,7 +89,7 @@ public class FoundationAuto extends OpMode {
 
         // Log if we didn't exit init as expected
         if (!gameReady) {
-            telemetry.log().add("Started before ready");
+            telemetry.log().add("! STARTED BEFORE READY !");
         }
 
         // Set initial state
@@ -93,8 +97,6 @@ public class FoundationAuto extends OpMode {
 
         //robot.vuforia.start();
         //robot.vuforia.enableCapture();
-
-        //tfod.activate();
     }
 
     @Override
@@ -103,7 +105,7 @@ public class FoundationAuto extends OpMode {
         driver = common.drive.loop(driver);
 
         // Debug feedback
-        telemetry.addData("State", state);
+        telemetry.addData("State", state.prev()); // Prev because it prints the wrong one otherwise
         telemetry.addData("Running", driver.isRunning(time));
         telemetry.addData("Gyro", Round.truncate(robot.gyro.getHeading()));
         telemetry.addData("Encoder", robot.wheels.getEncoder());
@@ -119,97 +121,102 @@ public class FoundationAuto extends OpMode {
         switch (state) {
             case INIT:
                 driver.done = false;
-                robot.hookRight.max();
-                robot.hookLeft.max();
-                robot.capstone.max();
+                advance();
+                break;
+
+            case STRAFE:
+                if (color == Field.AllianceColor.BLUE) {
+                    driver.drive = common.drive.translate(InchesToMM(-12.0f));
+                } else {
+                    driver.drive = common.drive.translate(InchesToMM(12.0f));
+                }
+
+                advance();
+                break;
+
+            case STRAIGHTEN:
+                driver.drive = common.drive.heading(0);
+                advance();
+                break;
+
+            case CORRECT_STRAFING:
+                if( color == Field.AllianceColor.RED) {
+                    driver.drive = common.drive.distance(InchesToMM(-3.0f));
+                }
                 advance();
                 break;
 
             case DRIVE_TO_FOUNDATION:
-                driver.drive = common.drive.distance(InchesToMM(36.0f));
-                advance();
-                break;
-
-            case TURN_TOWARDS_FOUNDATION:
-                if(color==Field.AllianceColor.BLUE){
-                    driver.drive = common.drive.heading(255.0f);
-                }else{
-                    driver.drive=common.drive.heading(90.0f);
-                }
-                advance();
-                break;
-
-            case MOVE_FORWARD_TOWARDS_FOUNDATION:
-                driver.drive = common.drive.distance(InchesToMM(7.0f));
-                advance();
-                break;
-
-            case GRAB:
-                robot.hookRight.min();
-                robot.hookLeft.min();
-                driver.drive = common.drive.sleep(1000);
-                advance();
-                break;
-
-            case MOVE_BACK_TO_TURN:
-                driver.drive = common.drive.distance(InchesToMM(-4.0f));
-                advance();
-                break;
-
-            case TURN_TOWARDS_CORNER:
-                if(color==Field.AllianceColor.BLUE){
-                    driver.drive = common.drive.heading(200.0f);
-                }else{
-                    driver.drive = common.drive.heading(135.0f);
-                }
-                advance();
-                break;
-
-            case MOVE_INTO_CORNER:
                 driver.drive = common.drive.distance(InchesToMM(25.0f));
                 advance();
                 break;
 
-            case RELEASE:
+            case INCH:
+                robot.wheels.setSpeedScale(0.2f);
+                driver.drive = common.drive.distance(InchesToMM(6.0f));
+                advance();
+                break;
+
+            case GRAB:
+                robot.wheels.setSpeedScale(1.0f);
+                robot.hookRight.min();
+                robot.hookLeft.min();
+                driver.drive = common.drive.sleep(500);
+                advance();
+                break;
+
+            case MOVE_BACK_TO_TURN:
+                driver.drive = common.drive.distance(InchesToMM(-20.0f));
+                advance();
+                break;
+
+            case TURN_TOWARDS_CORNER:
+                if (color == Field.AllianceColor.BLUE) {
+                    driver.drive = common.drive.heading(260.0f);
+                } else {
+                    driver.drive = common.drive.heading(100.0f);
+                }
+                advance();
+                break;
+
+
+            case MOVE_INTO_CORNER:
                 robot.hookRight.max();
                 robot.hookLeft.max();
-                driver.drive = common.drive.sleep(1000);
-                advance();
-                break;
-
-            case BACK_UP_AWAY_FROM_CORNER:
-                driver.drive = common.drive.distance(InchesToMM(-30.0f));
-                advance();
-                break;
-
-            case TURN_PARALLEL_TO_SKYBRIDGE:
-                if(color==Field.AllianceColor.BLUE){
-                    driver.drive = common.drive.heading(180.0f);
-                }else{
-                    driver.drive = common.drive.heading(180.0f);
-                }
-                advance();
-                break;
-
-            case MOVE_FORWARD_TO_SKYBRIDGE:
-                if(park_by_wall){
-                    driver.drive = common.drive.distance(InchesToMM(20.0f));
-                }
                 driver.drive = common.drive.distance(InchesToMM(12.0f));
                 advance();
                 break;
 
-            case TURN_PERPENDICULAR_TO_SKYBRIDGE:
-                if(color==Field.AllianceColor.BLUE){
-                    driver.drive = common.drive.heading(90.0f);
-                }else{
-                    driver.drive=common.drive.heading(270.0f);
+            case CHOOSE_SIDE:
+                if (stopByWall) {
+                    float head = 305.0f;
+                    if (color == Field.AllianceColor.RED) {
+                        head = 55.0f;
+                    }
+
+                    driver.drive = common.drive.heading(head);
+                } else {
+                    float head = 255.0f;
+                    if (color == Field.AllianceColor.RED) {
+                        head = 105.0f;
+                    }
+
+                    driver.drive = common.drive.heading(head);
                 }
                 advance();
                 break;
 
-            case PARK_UNDER_SKYBRIDGE:
-                driver.drive = common.drive.distance(InchesToMM(23.0f));
+            case FIX_ORIENTATION:
+                if (color == Field.AllianceColor.BLUE) {
+                    driver.drive = common.drive.heading(270.0f);
+                } else {
+                    driver.drive = common.drive.heading(90.0f);
+                }
+                advance();
+                break;
+
+            case BACK_UP_AWAY_FROM_CORNER:
+                driver.drive = common.drive.distance(InchesToMM(-40.0f));
                 advance();
                 break;
 
@@ -228,42 +235,45 @@ public class FoundationAuto extends OpMode {
     enum AUTO_STATE implements OrderedEnum {
         INIT, // Initialization
 
+        STRAFE,
+
+        STRAIGHTEN,
+
+        CORRECT_STRAFING,
+
         DRIVE_TO_FOUNDATION, // Drive towards foundation
 
-        TURN_TOWARDS_FOUNDATION, // Turn 90 degrees towards foundation
-
-        MOVE_FORWARD_TOWARDS_FOUNDATION, // Ensures that the robot is touching the foundation by running into it
+        INCH,
 
         GRAB, // Grab foundation
 
         MOVE_BACK_TO_TURN, // Moves back so that there's room to turn the foundation
 
-        TURN_TOWARDS_CORNER, // Turn 45 degrees towards corner (building site)
+        TURN_TOWARDS_CORNER, // Turn 90 degrees towards corner (building site)
 
         MOVE_INTO_CORNER, // Push foundation into corner
 
-        RELEASE,
+        CHOOSE_SIDE,
 
         BACK_UP_AWAY_FROM_CORNER, // Backs up to previous position
 
-        TURN_PARALLEL_TO_SKYBRIDGE, // Turns robot 45 degrees so that it is parallel to the skybridge
-
-        MOVE_FORWARD_TO_SKYBRIDGE, // Move inline with skybridge section
-
-        TURN_PERPENDICULAR_TO_SKYBRIDGE, // Turns 90 degrees so it can move underneath the skybridge
-
-        PARK_UNDER_SKYBRIDGE, // Move under skybridge
+        FIX_ORIENTATION,
 
         DONE;
 
-        public AUTO_STATE prev() { return OrderedEnumHelper.prev(this); }
-        public AUTO_STATE next() { return OrderedEnumHelper.next(this); }
+        public AUTO_STATE prev() {
+            return OrderedEnumHelper.prev(this);
+        }
+
+        public AUTO_STATE next() {
+            return OrderedEnumHelper.next(this);
+        }
     }
 
     /**
      * Sets config booleans according to user input
      */
-    private void userSettings(){
+    private void userSettings() {
         buttons.update();
 
         if (buttons.get("SELECT_SIDE")) {
@@ -272,6 +282,11 @@ public class FoundationAuto extends OpMode {
             color = Field.AllianceColor.BLUE;
         }
         telemetry.addData("Team Color", color.toString());
+
+        if (buttons.get("AWAY_FROM_WALL")) stopByWall = false;
+        if (buttons.get("TOWARDS_WALL")) stopByWall = true;
+        telemetry.addData("Stop by wall?", stopByWall);
+
     }
 
     /**

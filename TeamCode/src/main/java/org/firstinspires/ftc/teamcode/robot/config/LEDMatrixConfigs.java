@@ -9,8 +9,7 @@ import org.firstinspires.ftc.teamcode.robot.LED_MATRICIES;
 import org.firstinspires.ftc.teamcode.sensors.led_matrix.LEDMatrix;
 import org.firstinspires.ftc.teamcode.sensors.led_matrix.LED_MATRIX_TYPES;
 import org.firstinspires.ftc.teamcode.sensors.led_matrix.LEDMatrixConfig;
-import org.firstinspires.ftc.teamcode.sensors.led_matrix.StupidAbstraction;
-import org.firstinspires.ftc.teamcode.sensors.led_matrix.driver.HT16K33;
+import org.firstinspires.ftc.teamcode.sensors.led_matrix.BI_8x8;
 
 public class LEDMatrixConfigs extends Configs {
     public LEDMatrixConfigs(HardwareMap map, Telemetry telemetry, BOT bot) {
@@ -22,8 +21,8 @@ public class LEDMatrixConfigs extends Configs {
         super.checkConfig(config, name);
         LEDMatrix matrix = null;
         switch (config.type) {
-            case HT16K33:
-                matrix = new StupidAbstraction(map, telemetry, config.name);
+            case BI_8x8:
+                matrix = new BI_8x8(map, telemetry, config.name);
 
         }
 
@@ -39,7 +38,7 @@ public class LEDMatrixConfigs extends Configs {
             case TEST:
                 switch(name) {
                     case TEST:
-                        config = new LEDMatrixConfig(LED_MATRIX_TYPES.HT16K33, "matrix");
+                        config = new LEDMatrixConfig(LED_MATRIX_TYPES.BI_8x8, "matrix");
                         break;
                 }
                 break;

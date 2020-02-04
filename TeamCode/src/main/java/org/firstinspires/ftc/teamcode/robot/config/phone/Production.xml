@@ -15,8 +15,8 @@
             <Motor name="Right Collector" port="1" />
             <Motor name="Lift" port="2" />
             <Servo name="Flipper" port="0" />
-            <Servo name="Capstone" port="1" />
             <Servo name="Claw" port="2" />
+            <Servo name="Capstone" port="5" />
             <LynxEmbeddedIMU name="imu 1" port="0" bus="0" />
         </LynxModule>
     </LynxUsbDevice>

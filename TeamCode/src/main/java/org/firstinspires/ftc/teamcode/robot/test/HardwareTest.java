@@ -77,7 +77,8 @@ public class HardwareTest extends OpMode {
         }
 
  */
-        updateServo("LOWER", robot.capstone);
+        updateServo("UPPER", robot.upper);
+        updateServo("LOWER", robot.lower);
 
         telemetry.update();
     }

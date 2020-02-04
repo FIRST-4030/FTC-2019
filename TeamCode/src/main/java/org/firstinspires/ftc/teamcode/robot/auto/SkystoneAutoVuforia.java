@@ -48,7 +48,6 @@ public class SkystoneAutoVuforia extends OpMode {
     private static final float SMALL_OPEN = 0.35f;
 
 
-
     @Override
     public void init() {
         telemetry.addData(">", "Init…");
@@ -64,16 +63,10 @@ public class SkystoneAutoVuforia extends OpMode {
             telemetry.log().add("Opmode not compatible with bot " + robot.bot);
             requestOpModeStop();
         }
-        /*
+
         // Init the camera system
-        vuforia.start();
-        vuforia.enableCapture();
-        */
-
-
-        // TODO: figure out what to do with this
-        // TODO: Note: not to do Coded later in file
-        //initTfod();
+        //vuforia.start();
+        //vuforia.enableCapture();
 
         // Register buttons
         buttons = new ButtonHandler(robot);
@@ -82,8 +75,11 @@ public class SkystoneAutoVuforia extends OpMode {
         buttons.register("TOWARDS_WALL", gamepad1, PAD_BUTTON.dpad_down);
         buttons.register("CYCLE_SKYSTONE", gamepad1, PAD_BUTTON.x, BUTTON_TYPE.SINGLE_PRESS);
 
+        // Move things to default positions
         robot.claw.setPosition(SMALL_OPEN);
         robot.capstone.setPosition(0.35f);
+
+        telemetry.update();
     }
 
     @Override
@@ -93,16 +89,13 @@ public class SkystoneAutoVuforia extends OpMode {
 
         // Overall ready status
         gameReady = (robot.gyro.isReady());
-        telemetry.addData("\t\t\t", "");
-        telemetry.addData(">", gameReady ? "Ready for game start" : "NOT READY");
+        telemetry.addLine(gameReady ? "READY" : "NOT READY");
 
         // Detailed feedback
-        telemetry.addData("\t\t\t", "");
         telemetry.addData("Gyro", robot.gyro.isReady() ? "Ready" : "Calibrating…");
 
         //Skystone Placement
-        telemetry.addData("\t\t\t", "");
-        telemetry.addData("Skystone:", "" + skystonePlacement);
+        telemetry.addData("Skystone", "" + skystonePlacement);
 
         // Update
         telemetry.update();
@@ -114,7 +107,7 @@ public class SkystoneAutoVuforia extends OpMode {
 
         // Log if we didn't exit init as expected
         if (!gameReady) {
-            telemetry.log().add("Started before ready");
+            telemetry.log().add("! STARTED BEFORE READY!");
         }
 
         // Set initial state
@@ -122,8 +115,6 @@ public class SkystoneAutoVuforia extends OpMode {
 
         //robot.vuforia.start();
         //robot.vuforia.enableCapture();
-
-        //tfod.activate();
     }
 
     @Override
@@ -280,14 +271,19 @@ public class SkystoneAutoVuforia extends OpMode {
 
         DONE;
 
-        public AUTO_STATE prev() { return OrderedEnumHelper.prev(this); }
-        public AUTO_STATE next() { return OrderedEnumHelper.next(this); }
+        public AUTO_STATE prev() {
+            return OrderedEnumHelper.prev(this);
+        }
+
+        public AUTO_STATE next() {
+            return OrderedEnumHelper.next(this);
+        }
     }
 
     /**
      * Sets config booleans according to user input
      */
-    private void userSettings(){
+    private void userSettings() {
         buttons.update();
 
         if (buttons.get("SELECT_SIDE")) {
@@ -301,8 +297,8 @@ public class SkystoneAutoVuforia extends OpMode {
         if (buttons.get("TOWARDS_WALL")) stopByWall = true;
         telemetry.addData("Stop by wall?", stopByWall);
 
-        if (buttons.get("CYCLE_SKYSTONE")){
-            skystonePlacement ++;
+        if (buttons.get("CYCLE_SKYSTONE")) {
+            skystonePlacement++;
             if (skystonePlacement == 2) skystonePlacement = -1;
         }
     }
@@ -340,14 +336,14 @@ public class SkystoneAutoVuforia extends OpMode {
         state = state.next();
     }
 
-    public int setSkystonePlacement(){
+    public int setSkystonePlacement() {
         SkystoneAutoVuforia.Vu = new VuforiaFTC(hardwareMap, telemetry, BOT.SCISSOR);
         SkystoneAutoVuforia.Vu.init();
         SkystoneAutoVuforia.Vu.start();
 
         SkystoneAutoVuforia.Vu.enableCapture();
 
-        if(SkystoneAutoVuforia.Vu.capturing()) {
+        if (SkystoneAutoVuforia.Vu.capturing()) {
             SkystoneAutoVuforia.Vu.capture();
             SkystoneAutoVuforia.Img = SkystoneAutoVuforia.Vu.getImage();
 
@@ -356,20 +352,20 @@ public class SkystoneAutoVuforia extends OpMode {
                 SkystoneAutoVuforia.Img.savePNGMyVo("VulMg2");
 
                 int adj = 0;
-                if(color == Field.AllianceColor.BLUE){
+                if (color == Field.AllianceColor.BLUE) {
                     adj = 280;
                 }
 
-                int[] startOfYellow = {-1,-1,-1};
+                int[] startOfYellow = {-1, -1, -1};
                 OOF:
-                for(int i = SkystoneAutoVuforia.Img.getHeight() ; i > 32 ; i--){
-                    for(int j = 0 + adj; j < SkystoneAutoVuforia.Img.getWidth(); j++){
+                for (int i = SkystoneAutoVuforia.Img.getHeight(); i > 32; i--) {
+                    for (int j = 0 + adj; j < SkystoneAutoVuforia.Img.getWidth(); j++) {
                         //first find the yellow
-                        int [] c1 = {j, i};
-                        int [] c2 = {j + 1046, i - 32};
+                        int[] c1 = {j, i};
+                        int[] c2 = {j + 1046, i - 32};
                         int[] areaColor = SkystoneAutoVuforia.Img.hsl(c1, c2);
                         telemetry.addData("Color of area being measured h/s/l", areaColor);
-                        if( areaColor[1] > 50){
+                        if (areaColor[1] > 50) {
                             startOfYellow = areaColor;
                             break OOF;
                         }
@@ -381,7 +377,7 @@ public class SkystoneAutoVuforia extends OpMode {
 
             SkystoneAutoVuforia.Vu.stop();
             return -2;
-        }else {
+        } else {
             SkystoneAutoVuforia.Vu.clearImage();
             SkystoneAutoVuforia.Vu.stop();
             return -2;

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot.auto;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.buttons.BUTTON_TYPE;
@@ -15,8 +16,9 @@ import org.firstinspires.ftc.teamcode.utils.OrderedEnumHelper;
 import org.firstinspires.ftc.teamcode.utils.Round;
 import org.firstinspires.ftc.teamcode.vuforia.VuforiaFTC;
 
+@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Grab Foundation (Old Capstone)", group = "Scissor")
-public class FallbackFoundationAutoWithOldCap extends OpMode {
+public class FoundationAutoOldCap extends OpMode {
 
     // Devices and subsystems
     private Robot robot = null;
@@ -32,10 +34,8 @@ public class FallbackFoundationAutoWithOldCap extends OpMode {
     private boolean stopByWall = true;
     @Override
     public void init() {
-        telemetry.addData(">", "Init…");
+        telemetry.addLine("Init…");
         telemetry.update();
-
-
 
         // Init the common tasks elements
         robot = new Robot(hardwareMap, telemetry);
@@ -52,8 +52,6 @@ public class FallbackFoundationAutoWithOldCap extends OpMode {
         //vuforia.start();
         //vuforia.enableCapture();
 
-        // TODO: figure out what to do with this
-        //initTfod();
 
         // Register buttons
         buttons = new ButtonHandler(robot);
@@ -61,9 +59,12 @@ public class FallbackFoundationAutoWithOldCap extends OpMode {
         buttons.register("AWAY_FROM_WALL", gamepad1, PAD_BUTTON.dpad_up);
         buttons.register("TOWARDS_WALL", gamepad1, PAD_BUTTON.dpad_down);
 
+        // Move things to default positions
         robot.claw.setPosition(.6f);
         robot.capstone.setPosition(0.35f);
         robot.wheels.setSpeedScale(1.0f);
+        robot.hookRight.max();
+        robot.hookLeft.max();
     }
 
     @Override
@@ -73,11 +74,9 @@ public class FallbackFoundationAutoWithOldCap extends OpMode {
 
         // Overall ready status
         gameReady = (robot.gyro.isReady());
-        telemetry.addData("\t\t\t", "");
-        telemetry.addData(">", gameReady ? "Ready for game start" : "NOT READY");
+        telemetry.addLine(gameReady ? "READY" : "NOT READY");
 
         // Detailed feedback
-        telemetry.addData("\t\t\t", "");
         telemetry.addData("Gyro", robot.gyro.isReady() ? "Ready" : "Calibrating…");
 
         // Update
@@ -90,7 +89,7 @@ public class FallbackFoundationAutoWithOldCap extends OpMode {
 
         // Log if we didn't exit init as expected
         if (!gameReady) {
-            telemetry.log().add("Started before ready");
+            telemetry.log().add("! STARTED BEFORE READY !");
         }
 
         // Set initial state
@@ -98,8 +97,6 @@ public class FallbackFoundationAutoWithOldCap extends OpMode {
 
         //robot.vuforia.start();
         //robot.vuforia.enableCapture();
-
-        //tfod.activate();
     }
 
     @Override
@@ -124,9 +121,6 @@ public class FallbackFoundationAutoWithOldCap extends OpMode {
         switch (state) {
             case INIT:
                 driver.done = false;
-                robot.hookRight.max();
-                robot.hookLeft.max();
-
                 advance();
                 break;
 
