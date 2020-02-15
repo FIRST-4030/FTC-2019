@@ -6,13 +6,16 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.storage.Config;
 
-public class Motor {
+public class Motor implements Actuators {
     public static final DcMotor.RunMode MODE_DEFAULT = DcMotor.RunMode.RUN_USING_ENCODER;
     public static final DcMotor.RunMode MODE_PID = DcMotor.RunMode.RUN_TO_POSITION;
 
     public final String name;
     private DcMotor motor = null;
     private double power = 0.0d;
+
+    // TODO: Add debug output
+    public static boolean DEBUG = false;
 
     public Motor(String name, Config config) {
         this.name = name;
@@ -42,9 +45,12 @@ public class Motor {
             resetEncoder();
         } catch (Exception e) {
             motor = null;
-            Robot.R.opmode.telemetry.log().add(this.getClass().getSimpleName() +
-                    ": Unable to initialize motor: " + name);
+            Robot.R.log(this.getClass().getSimpleName() +
+                    ": Unable to initialize: " + name);
         }
+
+        // Register with the global actuators list
+        Robot.R.register(this);
     }
 
     public boolean ready() {
@@ -119,7 +125,7 @@ public class Motor {
             return;
         }
 
-        // Stop if we're changing modes
+        // Actuators if we're changing modes
         if (pid != pid()) {
             stop();
         }
@@ -168,7 +174,7 @@ public class Motor {
 
         // Limit power to the allowed range, just in case
         power = Range.clip(power, -1.0d, 1.0d);
-        // Store the last power set for future reference
+        // Store the last power setting for future reference
         this.power = power;
         motor.setPower(power);
     }
