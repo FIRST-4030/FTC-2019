@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.actuators;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.storage.Config;
 
@@ -13,9 +15,12 @@ public class Motor {
     public final String name;
     private DcMotor motor = null;
     private double power = 0.0d;
+    private Telemetry telemetry = null;
 
-    public Motor(String name, boolean reverse, boolean brake, DcMotor.RunMode mode) {
+    public Motor(HardwareMap map, Telemetry telemetry, String name, boolean reverse, boolean brake, DcMotor.RunMode mode) {
         this.name = name;
+        this.telemetry = telemetry;
+
         init(name, reverse, brake, mode);
     }
 
