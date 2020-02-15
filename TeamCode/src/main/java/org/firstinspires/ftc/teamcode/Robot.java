@@ -7,6 +7,9 @@ public class Robot {
     public static Robot R = null;
     public final OpMode opmode;
 
+    //Shared
+
+
     public Robot(OpMode opmode) {
         R = this;
         this.opmode = opmode;
