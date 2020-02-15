@@ -1,6 +1,7 @@
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 public class Robot {
+    //tim is a massive dummy -the robot
     public static Robot R = null;
     public final OpMode opmode;
 
