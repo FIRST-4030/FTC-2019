@@ -5,8 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.storage.Config;
+import org.firstinspires.ftc.teamcode.robot.Robot;
 
 public class Motor {
     public static final DcMotor.RunMode MODE_DEFAULT = DcMotor.RunMode.RUN_USING_ENCODER;
@@ -21,24 +20,20 @@ public class Motor {
         this.name = name;
         this.telemetry = telemetry;
 
-        init(name, reverse, brake, mode);
-    }
-
-    // Can't be a constructor since we need to decode the config first
-    private void init(String name, boolean reverse, boolean brake, DcMotor.RunMode mode) {
+        // Initalize DcMotor
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() +
                     ": No name provided");
         }
         try {
-            motor = Robot.R.opmode.hardwareMap.dcMotor.get(name);
+            motor = map.get(DcMotor.class, name);
             brake(brake);
             reverse(reverse);
             mode(mode);
             resetEncoder();
         } catch (Exception e) {
             motor = null;
-            Robot.R.opmode.telemetry.log().add(this.getClass().getSimpleName() +
+            this.telemetry.addLine(this.getClass().getSimpleName() +
                     ": Unable to initialize motor: " + name);
         }
     }
