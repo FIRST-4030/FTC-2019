@@ -13,3 +13,9 @@
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'
+
+task copyJSON(type: Copy) {
+    from file("${projectDir}/src/main/java/org/firstinspires/ftc/teamcode/defaults.json")
+    into file("${projectDir}/src/main/res/raw/")
+}
+preBuild.dependsOn(copyJSON)

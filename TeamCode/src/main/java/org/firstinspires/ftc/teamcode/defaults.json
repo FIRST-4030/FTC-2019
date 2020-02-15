@@ -1,0 +1,10 @@
+{
+  "Motor": [
+    {
+      "name": "FL",
+      "brake": true,
+      "reverse": false,
+      "mode": "ENCODER"
+    }
+  ]
+}
