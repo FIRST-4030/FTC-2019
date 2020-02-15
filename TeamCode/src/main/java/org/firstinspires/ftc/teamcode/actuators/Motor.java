@@ -14,9 +14,7 @@ public class Motor implements Actuators {
     private DcMotor motor = null;
     private double power = 0.0d;
 
-    // TODO: Add debug output
-    public static boolean DEBUG = false;
-
+    // Don't delete this -- it's the new thing I'm trying to demonstrate -- self-configuring devices
     public Motor(String name, Config config) {
         this.name = name;
         // TODO: Load our config from the structure
@@ -52,6 +50,9 @@ public class Motor implements Actuators {
         // Register with the global actuators list
         Robot.R.register(this);
     }
+
+    /*Lots of the functions in this class have two versions. One version of the function has no input and will return
+    the state of the motor and the version of the function allows you to set the state of motor itself */
 
     public boolean ready() {
         return (motor != null);
@@ -138,7 +139,7 @@ public class Motor implements Actuators {
         }
         mode(mode);
 
-        // Set the target to "here" if we're in PID mode
+        // Set the target to "here" if we're entering PID mode
         target(encoder());
     }
 
@@ -157,7 +158,7 @@ public class Motor implements Actuators {
     }
 
     public boolean busy() {
-        if (!ready()) {
+        if (!ready() || !pid()) {
             return false;
         }
         return motor.isBusy();
