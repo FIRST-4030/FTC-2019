@@ -38,6 +38,9 @@ public class Motor {
         }
     }
 
+    /*Lots of the functions in this class have two versions. One version of the function has no input and will return
+    the state of the motor and the version of the function allows you to set the state of motor itself */
+
     public boolean ready() {
         return (motor != null);
     }
