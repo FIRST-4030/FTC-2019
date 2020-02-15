@@ -1,0 +1,3 @@
+auto
+teleop
+test
