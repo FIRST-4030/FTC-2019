@@ -14,15 +14,6 @@ public class Motor {
     private DcMotor motor = null;
     private double power = 0.0d;
 
-    public Motor(String name, Config config) {
-        this.name = name;
-        // TODO: Load our config from the structure
-        boolean reverse = false;
-        boolean brake = true;
-        DcMotor.RunMode mode = MODE_DEFAULT;
-        init(name, reverse, brake, mode);
-    }
-
     public Motor(String name, boolean reverse, boolean brake, DcMotor.RunMode mode) {
         this.name = name;
         init(name, reverse, brake, mode);
