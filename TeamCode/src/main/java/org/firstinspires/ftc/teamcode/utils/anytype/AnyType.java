@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.utils.anytype;
 
+import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class AnyType {
     public boolean b = false;
     public int i = 0;
@@ -137,5 +142,36 @@ public class AnyType {
             d = 0.0d;
         }
         this.s = s;
+    }
+
+    public void parseJSON(JSONObject json, String name) {
+        // Check for null objects and map them to unset
+        if (json.isNull(name)) {
+            unset();
+            return;
+        }
+        // Check for boolean objects
+        try {
+            set(json.getBoolean(name));
+        } catch (JSONException ignored) {
+        }
+        // Default to strings, which should always work
+        try {
+            set(json.getString(name));
+        } catch (JSONException e) {
+            Log.w("AnyType", "Invalid item in JSON for element: " + name);
+        }
+        // Try parsing the string to an int
+        try {
+            int i = Integer.parseInt(s);
+            set(i);
+        } catch (NumberFormatException ignored) {
+        }
+        // Try parsing the string to a double
+        try {
+            double d = Double.parseDouble(s);
+            set(d);
+        } catch (NumberFormatException ignored) {
+        }
     }
 }

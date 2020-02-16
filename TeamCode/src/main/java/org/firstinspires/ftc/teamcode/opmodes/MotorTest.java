@@ -7,11 +7,11 @@ import org.firstinspires.ftc.teamcode.Robot;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Motor Test", group = "Test")
 public class MotorTest extends OpMode {
-    public final Robot R = Robot.R;
+    private Robot R;
 
     @Override
     public void init() {
-
+        R = Robot.start(this);
     }
 
     @Override
@@ -37,15 +37,17 @@ public class MotorTest extends OpMode {
         // Invert to make forward forward
         p *= -1.0d;
         // Set motor power
-        R.m.power(p);
+        R.m1.power(p);
 
         // Feedback
-        telemetry.addData(R.m.name + " Power", p);
-        telemetry.addData(R.m.name + " Encoder", R.m.encoder());
+        telemetry.addData(R.m1.name + " Power", p);
+        telemetry.addData(R.m1.name + " Encoder", R.m1.encoder());
     }
 
     @Override
     public void stop() {
-        R.stop();
+        if (R != null) {
+            R.stop();
+        }
     }
 }

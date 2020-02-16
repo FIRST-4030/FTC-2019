@@ -4,12 +4,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.storage.Config;
+import org.firstinspires.ftc.teamcode.storage.config.ConfigDevice;
 
 public class Motor implements Actuators {
-    // Default to rate-PID using the internal REV mode. Support REV distance-PID mode as well.
-    public static final DcMotor.RunMode MODE_DEFAULT = DcMotor.RunMode.RUN_USING_ENCODER;
+    public static final DcMotor.RunMode MODE_OPEN = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
+    public static final DcMotor.RunMode MODE_ENCODER = DcMotor.RunMode.RUN_USING_ENCODER;
     public static final DcMotor.RunMode MODE_PID = DcMotor.RunMode.RUN_TO_POSITION;
+    public static final DcMotor.RunMode MODE_DEFAULT = MODE_ENCODER;
 
     public final String name; // Name for the JSON config and hardware map
     private DcMotor motor = null; // The underlying FTC device
@@ -17,19 +18,34 @@ public class Motor implements Actuators {
 
     /**
      * Motors. They spin and stop and have encoders.
-     * <p>
-     * Don't delete this constructor -- it's the new thing I'm trying to demonstrate
      *
-     * @param name   Motor name from the hardware map
-     * @param config The global JSON configuration map
+     * @param name Motor name from the hardware map
      */
-    public Motor(String name, Config config) {
+    public Motor(String name) {
         this.name = name;
-        // TODO: Load our config from the structure
-        boolean reverse = false;
-        boolean brake = true;
+
+        // Load the config for this device based on the class ane device names
+        ConfigDevice d = Robot.R.config.device(this.getClass().getSimpleName(), name);
+
+        // If you want a parameter to be optional in the JSON, apply a default and
+        // check to see if it exists before using it
         DcMotor.RunMode mode = MODE_DEFAULT;
-        init(name, reverse, brake, mode);
+        if (d.exists("mode")) {
+            String m = d.s("mode");
+            if (m.equalsIgnoreCase("ENCODER")) {
+                mode = MODE_ENCODER;
+            } else if (m.equalsIgnoreCase("PID")) {
+                mode = MODE_PID;
+            } else if (m.equalsIgnoreCase("OPEN")) {
+                mode = MODE_OPEN;
+            } else {
+                Robot.R.err(this.getClass().getSimpleName() +
+                        ": Invalid mode: " + m);
+            }
+        }
+
+        // It's always safe to use config parameters directly, even if they are missing
+        init(name, d.b("reverse"), d.b("brake"), mode);
     }
 
     /**
@@ -56,8 +72,8 @@ public class Motor implements Actuators {
      */
     private void init(String name, boolean reverse, boolean brake, DcMotor.RunMode mode) {
         if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException(this.getClass().getSimpleName() +
-                    ": No name provided");
+            Robot.R.err(this.getClass().getSimpleName() + ": No name provided");
+            name = this.toString();
         }
         try {
             motor = Robot.R.opmode.hardwareMap.dcMotor.get(name);
@@ -67,7 +83,7 @@ public class Motor implements Actuators {
             resetEncoder();
         } catch (Exception e) {
             motor = null;
-            Robot.R.log(this.getClass().getSimpleName() +
+            Robot.R.err(this.getClass().getSimpleName() +
                     ": Unable to initialize: " + name);
         }
 
