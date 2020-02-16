@@ -25,7 +25,3 @@ Thumbs.db
 build/
 
 *ASUS_PC_01*
-
-
-# Config JSON in the assets folder
-TeamCode/src/main/res/raw/defaults.json
