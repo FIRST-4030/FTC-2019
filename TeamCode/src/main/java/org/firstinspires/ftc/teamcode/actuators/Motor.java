@@ -7,14 +7,22 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.storage.Config;
 
 public class Motor implements Actuators {
+    // Default to rate-PID using the internal REV mode. Support REV distance-PID mode as well.
     public static final DcMotor.RunMode MODE_DEFAULT = DcMotor.RunMode.RUN_USING_ENCODER;
     public static final DcMotor.RunMode MODE_PID = DcMotor.RunMode.RUN_TO_POSITION;
 
-    public final String name;
-    private DcMotor motor = null;
-    private double power = 0.0d;
+    public final String name; // Name for the JSON config and hardware map
+    private DcMotor motor = null; // The underlying FTC device
+    private double power = 0.0d; // Track power locally -- the FTC device doesn't
 
-    // Don't delete this -- it's the new thing I'm trying to demonstrate -- self-configuring devices
+    /**
+     * Motors. They spin and stop and have encoders.
+     *
+     * Don't delete this constructor -- it's the new thing I'm trying to demonstrate
+     *
+     * @param name   Motor name from the hardware map
+     * @param config The global JSON configuration map
+     */
     public Motor(String name, Config config) {
         this.name = name;
         // TODO: Load our config from the structure
@@ -24,12 +32,28 @@ public class Motor implements Actuators {
         init(name, reverse, brake, mode);
     }
 
+    /**
+     * Motors. They spin and stop and have encoders.
+     *
+     * @param name    Motor name from the hardware map
+     * @param reverse True if the motor direction should be reversed
+     * @param brake   True if the motor should brake instead of float when commanded to 0 power
+     * @param mode    One of the native DcMotor.RunModes for RevHub configuration, can be null
+     */
     public Motor(String name, boolean reverse, boolean brake, DcMotor.RunMode mode) {
         this.name = name;
         init(name, reverse, brake, mode);
     }
 
-    // Can't be a constructor since we need to decode the config first
+    /**
+     * Internal constructor. This needs to be a separate method so the actual constructors can do
+     * other work before running this, but as you can see it takes all the same args.
+     *
+     * @param name    Motor name from the hardware map
+     * @param reverse True if the motor direction should be reversed
+     * @param brake   True if the motor should brake instead of float when commanded to 0 power
+     * @param mode    One of the native DcMotor.RunModes for RevHub configuration, can be null
+     */
     private void init(String name, boolean reverse, boolean brake, DcMotor.RunMode mode) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() +
@@ -51,13 +75,26 @@ public class Motor implements Actuators {
         Robot.R.register(this);
     }
 
-    /*Lots of the functions in this class have two versions. One version of the function has no input and will return
-    the state of the motor and the version of the function allows you to set the state of motor itself */
+    /*
+     * Setter/getter methods in this class are overloaded to use the same name
+     *
+     * Calling a method with no arguments will return the current value
+     * Calling a method with arguments will update the value
+     */
 
+
+    /**
+     * Get the motor initialization state
+     * @return True if the motor exists and has been initialized
+     */
     public boolean ready() {
         return (motor != null);
     }
 
+    /**
+     * Get the current reverse flag
+     * @return True if the motor direction is inverted
+     */
     public boolean reverse() {
         if (!ready()) {
             return false;
@@ -65,6 +102,10 @@ public class Motor implements Actuators {
         return (motor.getDirection() == DcMotor.Direction.REVERSE);
     }
 
+    /**
+     * Set the reverse flag
+     * @param reverse True to invert the motor direction
+     */
     public void reverse(boolean reverse) {
         if (!ready()) {
             return;
@@ -79,6 +120,10 @@ public class Motor implements Actuators {
         motor.setDirection(dir);
     }
 
+    /**
+     * Get the current brake setting
+     * @return True if braking is enabled
+     */
     public boolean brake() {
         if (!ready()) {
             return false;
@@ -86,6 +131,12 @@ public class Motor implements Actuators {
         return (motor.getZeroPowerBehavior() == DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+    /**
+     * Set the braking mode for the motor, to control the motor behavior when power(0.0) is called
+     * When enabled, braking will dump kinetic energy into the battery, to stop almost immediately
+     * When disabled the motor will be allowed to glide when set to 0 power
+     * @param brake True to brake, false to glide
+     */
     public void brake(boolean brake) {
         if (!ready()) {
             return;
@@ -100,6 +151,10 @@ public class Motor implements Actuators {
         motor.setZeroPowerBehavior(zero);
     }
 
+    /**
+     * Get the current mode of the underlying FTC motor
+     * @return One of the native DcMotor.RunModes
+     */
     private DcMotor.RunMode mode() {
         if (!ready()) {
             return MODE_DEFAULT;
@@ -107,6 +162,10 @@ public class Motor implements Actuators {
         return motor.getMode();
     }
 
+    /**
+     * Set the mode of underlying FTC motor
+     * @param mode One of the native DcMotor.RunModes. Can be null
+     */
     private void mode(DcMotor.RunMode mode) {
         if (!ready()) {
             return;
@@ -117,10 +176,18 @@ public class Motor implements Actuators {
         motor.setMode(mode);
     }
 
+    /**
+     * Get the current PID setting
+     * @return True if position-PID is active
+     */
     public boolean pid() {
         return (mode() == MODE_PID);
     }
 
+    /**
+     * Enable or disable position-PID mode (REV internal)
+     * @param pid True to enable PID mode, false to use to the default mode
+     */
     public void pid(boolean pid) {
         if (!ready()) {
             return;
@@ -143,6 +210,10 @@ public class Motor implements Actuators {
         target(encoder());
     }
 
+    /**
+     * Get the current target for position PID. Returns 0 if PID is not enabled.
+     * @return The current position-PID target, in ticks
+     */
     public int target() {
         if (!ready() || !pid()) {
             return 0;
@@ -150,6 +221,10 @@ public class Motor implements Actuators {
         return motor.getTargetPosition();
     }
 
+    /**
+     * Set the target for position PID mode. Does nothing if PID is not enabled.
+     * @param target The desired position-PID target, in ticks
+     */
     public void target(int target) {
         if (!ready() || !pid()) {
             return;
@@ -157,6 +232,10 @@ public class Motor implements Actuators {
         motor.setTargetPosition(target);
     }
 
+    /**
+     * Is the motor in PID mode and seeking a target?
+     * @return True if the motor is still seeking a target
+     */
     public boolean busy() {
         if (!ready() || !pid()) {
             return false;
@@ -164,10 +243,18 @@ public class Motor implements Actuators {
         return motor.isBusy();
     }
 
+    /**
+     * Get the most recent power setting requested for this motor
+     * @return Power setting, -1.0 to 1.0
+     */
     public double power() {
         return power;
     }
 
+    /**
+     * Set the motor power (or speed, depending on default mode)
+     * @param power The desired motor speed or power, -1.0 to 1.0
+     */
     public void power(double power) {
         if (!ready()) {
             return;
@@ -180,10 +267,17 @@ public class Motor implements Actuators {
         motor.setPower(power);
     }
 
+    /**
+     * Stop spinning
+     */
     public void stop() {
         power(0.0d);
     }
 
+    /**
+     * Gets the current encoder tick count. Consider using the polled value from Globals
+     * @return Current encoder reading.
+     */
     public int encoder() {
         if (!ready()) {
             return 0;
@@ -191,10 +285,16 @@ public class Motor implements Actuators {
         return motor.getCurrentPosition();
     }
 
+    /**
+     * Set the encoder count to 0
+     * This method temporarily disrupts the mode and speed of the motor, but restores both
+     */
     public void resetEncoder() {
-        stop();
         DcMotor.RunMode mode = mode();
+        double power = power();
+        stop();
         mode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         mode(mode);
+        power(power);
     }
 }
