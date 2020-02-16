@@ -17,7 +17,7 @@ public class Motor implements Actuators {
 
     /**
      * Motors. They spin and stop and have encoders.
-     *
+     * <p>
      * Don't delete this constructor -- it's the new thing I'm trying to demonstrate
      *
      * @param name   Motor name from the hardware map
@@ -85,6 +85,7 @@ public class Motor implements Actuators {
 
     /**
      * Get the motor initialization state
+     *
      * @return True if the motor exists and has been initialized
      */
     public boolean ready() {
@@ -93,6 +94,7 @@ public class Motor implements Actuators {
 
     /**
      * Get the current reverse flag
+     *
      * @return True if the motor direction is inverted
      */
     public boolean reverse() {
@@ -104,6 +106,7 @@ public class Motor implements Actuators {
 
     /**
      * Set the reverse flag
+     *
      * @param reverse True to invert the motor direction
      */
     public void reverse(boolean reverse) {
@@ -122,6 +125,7 @@ public class Motor implements Actuators {
 
     /**
      * Get the current brake setting
+     *
      * @return True if braking is enabled
      */
     public boolean brake() {
@@ -135,6 +139,7 @@ public class Motor implements Actuators {
      * Set the braking mode for the motor, to control the motor behavior when power(0.0) is called
      * When enabled, braking will dump kinetic energy into the battery, to stop almost immediately
      * When disabled the motor will be allowed to glide when set to 0 power
+     *
      * @param brake True to brake, false to glide
      */
     public void brake(boolean brake) {
@@ -153,6 +158,7 @@ public class Motor implements Actuators {
 
     /**
      * Get the current mode of the underlying FTC motor
+     *
      * @return One of the native DcMotor.RunModes
      */
     private DcMotor.RunMode mode() {
@@ -164,6 +170,7 @@ public class Motor implements Actuators {
 
     /**
      * Set the mode of underlying FTC motor
+     *
      * @param mode One of the native DcMotor.RunModes. Can be null
      */
     private void mode(DcMotor.RunMode mode) {
@@ -178,6 +185,7 @@ public class Motor implements Actuators {
 
     /**
      * Get the current PID setting
+     *
      * @return True if position-PID is active
      */
     public boolean pid() {
@@ -186,6 +194,7 @@ public class Motor implements Actuators {
 
     /**
      * Enable or disable position-PID mode (REV internal)
+     *
      * @param pid True to enable PID mode, false to use to the default mode
      */
     public void pid(boolean pid) {
@@ -212,6 +221,7 @@ public class Motor implements Actuators {
 
     /**
      * Get the current target for position PID. Returns 0 if PID is not enabled.
+     *
      * @return The current position-PID target, in ticks
      */
     public int target() {
@@ -223,6 +233,7 @@ public class Motor implements Actuators {
 
     /**
      * Set the target for position PID mode. Does nothing if PID is not enabled.
+     *
      * @param target The desired position-PID target, in ticks
      */
     public void target(int target) {
@@ -234,6 +245,7 @@ public class Motor implements Actuators {
 
     /**
      * Is the motor in PID mode and seeking a target?
+     *
      * @return True if the motor is still seeking a target
      */
     public boolean busy() {
@@ -245,6 +257,7 @@ public class Motor implements Actuators {
 
     /**
      * Get the most recent power setting requested for this motor
+     *
      * @return Power setting, -1.0 to 1.0
      */
     public double power() {
@@ -253,6 +266,7 @@ public class Motor implements Actuators {
 
     /**
      * Set the motor power (or speed, depending on default mode)
+     *
      * @param power The desired motor speed or power, -1.0 to 1.0
      */
     public void power(double power) {
@@ -276,6 +290,7 @@ public class Motor implements Actuators {
 
     /**
      * Gets the current encoder tick count. Consider using the polled value from Globals
+     *
      * @return Current encoder reading.
      */
     public int encoder() {

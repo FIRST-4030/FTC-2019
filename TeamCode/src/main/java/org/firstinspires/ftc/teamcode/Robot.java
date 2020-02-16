@@ -10,15 +10,13 @@ public class Robot extends RobotUtils {
     public static Robot R = null;
 
     // All our hardware should have members declared here
-    public Motor m;
-
-    //Shared
-
+    public final Motor m;
 
     public Robot(OpMode opmode) {
         super(opmode);
         R = this;
 
+        // Hardware config
         m = new Motor("FL", false, true, null);
     }
 }

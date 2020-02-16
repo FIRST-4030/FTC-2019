@@ -32,7 +32,7 @@ public class MotorTest extends OpMode {
         if (Math.abs(p) < 0.10d) {
             p = 0.0d;
         }
-        // Cube to better fit the linear input to the speed reponse curve
+        // Cube to better fit the linear input to the speed response curve
         p = Math.pow(p, 3);
         // Invert to make forward forward
         p *= -1.0d;

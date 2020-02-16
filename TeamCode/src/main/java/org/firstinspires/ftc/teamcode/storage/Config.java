@@ -137,7 +137,6 @@ public class Config {
      *
      * @param json JSON object a class-level configuration
      * @return The set of classes parsed from the input object, if any
-     * @throws JSONException
      */
     public HashMap<String, HashMap> parseClass(JSONObject json, String jsonPath) {
         HashMap<String, HashMap> cls = new HashMap<>();
@@ -182,7 +181,7 @@ public class Config {
             try {
                 item.set(json.getBoolean(name));
                 continue;
-            } catch (JSONException e) {
+            } catch (JSONException ignored) {
             }
             // Default to strings, which should always work
             try {
@@ -196,14 +195,14 @@ public class Config {
                 int i = Integer.parseInt(item.s);
                 item.set(i);
                 continue;
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException ignored) {
             }
             // Try parsing the string to a double
             try {
                 double d = Double.parseDouble(item.s);
                 item.set(d);
                 continue;
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException ignored) {
             }
         }
         return data;

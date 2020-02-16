@@ -12,7 +12,7 @@ public class RobotUtils {
     private final ArrayList<Actuators> actuators;
     public final OpMode opmode;
 
-    public RobotUtils(OpMode opmode) {
+    protected RobotUtils(OpMode opmode) {
         this.opmode = opmode;
         actuators = new ArrayList<>();
     }
@@ -29,6 +29,7 @@ public class RobotUtils {
         actuators.add(s);
     }
 
+    // Log to the driver's station and logcat
     public void log(String s) {
         Log.i("Robot", s);
         opmode.telemetry.log().add(s);
