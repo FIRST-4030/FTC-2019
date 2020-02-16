@@ -21,10 +21,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class Config {
-    public static final String FTC_PATH = "FIRST";
-    public static final String DEFAULTS_NAME = "defaults.json";
-    public static final String OVERRIDE_NAME = "override.json";
-    public static final int resource = R.raw.defaults;
+    private static final String FTC_PATH = "FIRST";
+    private static final String DEFAULTS_NAME = "defaults.json";
+    private static final String OVERRIDE_NAME = "override.json";
+    private static final int resource = R.raw.defaults;
 
     private final HashMap<String, HashMap> config;
     private final File dir;
@@ -36,9 +36,14 @@ public class Config {
         installDefaults();
 
         // Load an empty config, add the defaults, add the overrides
-        config = new HashMap<>();
-        parseConfig(readFile(DEFAULTS_NAME), config);
-        parseConfig(readFile(OVERRIDE_NAME), config);
+        HashMap<String, HashMap> c = new HashMap<>();
+        parseConfig(readFile(DEFAULTS_NAME), c);
+        parseConfig(readFile(OVERRIDE_NAME), c);
+        config = c;
+    }
+
+    public boolean ready() {
+        return (config != null);
     }
 
     /**
@@ -73,7 +78,7 @@ public class Config {
      * This will overwrite any previous content in the DEFAULTS_NAME file
      * Overrides should be stored in the OVERRIDE_NAME file to avoid loss
      */
-    public void installDefaults() {
+    private void installDefaults() {
         try {
             // Find and drop the old defaults file on the phone
             File outFile = new File(dir, DEFAULTS_NAME);
@@ -94,7 +99,6 @@ public class Config {
                 }
                 out.write(buffer, 0, len);
             }
-
             in.close();
             out.close();
 
@@ -109,7 +113,6 @@ public class Config {
             log("Unable to copy defaults: " +
                     e.getClass().getSimpleName() + "::"
                     + e.getLocalizedMessage());
-            return;
         }
     }
 
@@ -119,7 +122,7 @@ public class Config {
      * @param s String containing a complete configuration object, encoded as JSON
      * @param c The config map to be updated
      */
-    public void parseConfig(String s, HashMap<String, HashMap> c) {
+    private void parseConfig(String s, HashMap<String, HashMap> c) {
         JSONObject json;
         try {
             json = new JSONObject(s);
@@ -139,7 +142,8 @@ public class Config {
                         cls + ": " + e.getLocalizedMessage());
                 continue;
             }
-            config.put(cls, parseClass(value));
+            HashMap<String, HashMap> cl = getCls(c, cls);
+            parseClass(value, cl);
         }
     }
 
@@ -147,10 +151,9 @@ public class Config {
      * Parse a set of JSON elements from a JSON class configuration
      *
      * @param json JSON object a class-level configuration
-     * @return The set of classes parsed from the input object, if any
+     * @param cls  Pointer to the class being searched
      */
-    public HashMap<String, HashMap> parseClass(JSONObject json) {
-        HashMap<String, HashMap> cls = new HashMap<>();
+    private void parseClass(JSONObject json, HashMap<String, HashMap> cls) {
         Iterator<String> keysItr = json.keys();
         while (keysItr.hasNext()) {
             String device = keysItr.next();
@@ -162,27 +165,25 @@ public class Config {
                         ": " + e.getLocalizedMessage());
                 continue;
             }
-            cls.put(device, parseDevice(value));
+            HashMap<String, AnyType> d = device(cls, device);
+            parseDevice(value, d);
         }
-        return cls;
     }
 
     /**
      * Parse a set of AnyType objects from JSON configuration elements
      *
      * @param json JSON object containing a device-level configuration
-     * @return The set of elements parsed from the input object, if any
+     * @param d    Pointer to the device being searched
      */
-    public HashMap<String, AnyType> parseDevice(JSONObject json) {
-        HashMap<String, AnyType> data = new HashMap<>();
+    private void parseDevice(JSONObject json, HashMap<String, AnyType> d) {
         Iterator<String> keysItr = json.keys();
         while (keysItr.hasNext()) {
             String name = keysItr.next();
 
             // Parse weak JSON types into AnyType
-            AnyType item = new AnyType();
+            AnyType item = item(d, name);
             item.parseJSON(json, name);
-            data.put(name, item);
 
             /*
              * Alternatively you could use Strings for all config items and do parsing elsewhere
@@ -196,7 +197,6 @@ public class Config {
              * }
              */
         }
-        return data;
     }
 
     /**
@@ -218,15 +218,19 @@ public class Config {
      * Find the requested class in the config hierarchy
      * Create it if it does not yet exist
      *
-     * @param cls Name of the config class
+     * @param c       Pointer to the config being searched
+     * @param clsName Name of the config class
      * @return HashMap of all devices in the specified class
      */
-    protected HashMap<String, HashMap> getCls(String cls) {
-        HashMap<String, HashMap> c = config.get(cls);
-        if (c == null) {
-            c = new HashMap<>();
-            config.put(cls, c);
-            log("Adding class: " + cls);
+    private HashMap<String, HashMap> getCls(HashMap<String, HashMap> c, String clsName) {
+        //noinspection unchecked
+        HashMap<String, HashMap> cls = c.get(clsName);
+        if (cls == null) {
+            cls = new HashMap<>();
+            c.put(clsName, cls);
+            if (ready()) {
+                log("Adding class: " + clsName);
+            }
         }
         return c;
     }
@@ -238,7 +242,10 @@ public class Config {
      * @return ConfigCls pointer for use in further queries
      */
     public ConfigCls cls(String cls) {
-        return new ConfigCls(this, getCls(cls));
+        if (config == null) {
+            throw new IllegalStateException("Configuration not loaded");
+        }
+        return new ConfigCls(this, getCls(config, cls));
     }
 
     /**
@@ -249,12 +256,15 @@ public class Config {
      * @param device Name of the device
      * @return HashMap of all items in the device
      */
-    protected HashMap<String, AnyType> device(HashMap<String, HashMap> c, String device) {
+    HashMap<String, AnyType> device(HashMap<String, HashMap> c, String device) {
+        //noinspection unchecked
         HashMap<String, AnyType> d = c.get(device);
         if (d == null) {
             d = new HashMap<>();
             c.put(device, d);
-            log("Adding device: " + device);
+            if (ready()) {
+                log("Adding device: " + device);
+            }
         }
         return d;
     }
@@ -267,7 +277,10 @@ public class Config {
      * @return ConfigDevice for use in further queries
      */
     public ConfigDevice device(String cls, String device) {
-        return new ConfigDevice(this, device(getCls(cls), device));
+        if (config == null) {
+            throw new IllegalStateException("Configuration not loaded");
+        }
+        return new ConfigDevice(this, device(getCls(config, cls), device));
     }
 
     /**
@@ -278,14 +291,16 @@ public class Config {
      * @param item Name of the item
      * @return AnyType containing the requested item
      */
-    protected AnyType item(HashMap<String, AnyType> d, String item) {
+    AnyType item(HashMap<String, AnyType> d, String item) {
         AnyType i;
         if (d.containsKey(item)) {
             i = d.get(item);
         } else {
             i = new AnyType();
             d.put(item, i);
-            log("Adding item: " + item);
+            if (ready()) {
+                log("Adding item: " + item);
+            }
         }
         return i;
     }
@@ -299,7 +314,10 @@ public class Config {
      * @return AnyType containing the requested item
      */
     public AnyType item(String cls, String device, String item) {
-        return item(device(getCls(cls), device), item);
+        if (config == null) {
+            return new AnyType();
+        }
+        return item(device(getCls(config, cls), device), item);
     }
 
     /**
@@ -309,7 +327,10 @@ public class Config {
      * @param item Name of the item
      * @return True if the named item exists
      */
-    protected boolean exists(HashMap<String, AnyType> d, String item) {
+    boolean exists(HashMap<String, AnyType> d, String item) {
+        if (config == null) {
+            return false;
+        }
         return d.containsKey(item);
     }
 }

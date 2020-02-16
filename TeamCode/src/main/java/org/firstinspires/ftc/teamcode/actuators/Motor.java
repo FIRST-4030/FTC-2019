@@ -7,10 +7,10 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.storage.config.ConfigDevice;
 
 public class Motor implements Actuators {
-    public static final DcMotor.RunMode MODE_OPEN = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
-    public static final DcMotor.RunMode MODE_ENCODER = DcMotor.RunMode.RUN_USING_ENCODER;
-    public static final DcMotor.RunMode MODE_PID = DcMotor.RunMode.RUN_TO_POSITION;
-    public static final DcMotor.RunMode MODE_DEFAULT = MODE_ENCODER;
+    private static final DcMotor.RunMode MODE_OPEN = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
+    private static final DcMotor.RunMode MODE_ENCODER = DcMotor.RunMode.RUN_USING_ENCODER;
+    private static final DcMotor.RunMode MODE_PID = DcMotor.RunMode.RUN_TO_POSITION;
+    private static final DcMotor.RunMode MODE_DEFAULT = MODE_ENCODER;
 
     public final String name; // Name for the JSON config and hardware map
     private DcMotor motor = null; // The underlying FTC device

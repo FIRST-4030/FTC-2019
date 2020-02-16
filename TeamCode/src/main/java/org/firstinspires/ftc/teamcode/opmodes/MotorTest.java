@@ -38,10 +38,13 @@ public class MotorTest extends OpMode {
         p *= -1.0d;
         // Set motor power
         R.m1.power(p);
+        R.m2.power(-p);
 
         // Feedback
-        telemetry.addData(R.m1.name + " Power", p);
+        telemetry.addData(R.m1.name + " Power", R.m1.power());
         telemetry.addData(R.m1.name + " Encoder", R.m1.encoder());
+        telemetry.addData(R.m2.name + " Power", R.m2.power());
+        telemetry.addData(R.m2.name + " Encoder", R.m2.encoder());
     }
 
     @Override
