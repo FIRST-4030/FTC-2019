@@ -14,12 +14,17 @@ public class Globals {
      * <p>
      * This class is intended to allow sensors, actuators, and other classes and devices to store
      * variables in a globally-accessible namespace.
+     * <p>
+     * New variables are automatically created on set/get, initialized as AnyType.unset
      */
     public Globals() {
         globals = new HashMap();
         pollers = new ArrayList();
     }
 
+    /**
+     * Poll all registered classes
+     */
     public void poll() {
         for (GlobalsPoll p : pollers) {
             p.gPoll(this);
@@ -50,7 +55,6 @@ public class Globals {
 
     /**
      * Get the requested variable
-     * Creates new, unset variables if the named variable does not exist
      *
      * @param name Variable name
      * @return AnyType containing the variable
@@ -66,7 +70,6 @@ public class Globals {
 
     /**
      * Get the requested variable
-     * Creates new, unset variables if the named variable does not exist
      *
      * @param name Variable name
      * @return boolean containing the variable
@@ -77,7 +80,6 @@ public class Globals {
 
     /**
      * Get the requested variable
-     * Creates new, unset variables if the named variable does not exist
      *
      * @param name Variable name
      * @return int containing the variable
@@ -88,7 +90,6 @@ public class Globals {
 
     /**
      * Get the requested variable
-     * Creates new, unset variables if the named variable does not exist
      *
      * @param name Variable name
      * @return double containing the variable
@@ -99,7 +100,6 @@ public class Globals {
 
     /**
      * Get the requested variable
-     * Creates new, unset variables if the named variable does not exist
      *
      * @param name Variable name
      * @return String containing the variable
