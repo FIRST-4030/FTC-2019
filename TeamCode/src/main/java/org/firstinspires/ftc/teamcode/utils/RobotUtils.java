@@ -7,23 +7,28 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.actuators.Actuators;
 import org.firstinspires.ftc.teamcode.storage.config.Config;
+import org.firstinspires.ftc.teamcode.storage.globals.Globals;
+import org.firstinspires.ftc.teamcode.storage.globals.GlobalsPoll;
 
 import java.util.ArrayList;
 
 public class RobotUtils {
+    public final OpMode O;
+    public final Config C;
+    public final Globals G;
+
     private final ArrayList<Actuators> actuators;
-    public final OpMode opmode;
-    public final Config config;
 
     protected RobotUtils(OpMode opmode) {
         Robot.R = (Robot) this;
-        this.opmode = opmode;
+        O = opmode;
+        C = new Config();
+        G = new Globals();
         actuators = new ArrayList<>();
-        config = new Config();
     }
 
     /**
-     * Static method to kickstart this operation
+     * Static method to reliably init and return a Robot
      *
      * @param opmode Current opmode (i.e. this)
      * @return The best available Robot, newly built if needed
@@ -45,7 +50,7 @@ public class RobotUtils {
     }
 
     /**
-     * Allow actuators to register themselves for global operations
+     * Allow actuators to register themselves for Robot-level operations
      *
      * @param s Typically "this" is sufficient
      */
@@ -60,7 +65,7 @@ public class RobotUtils {
      */
     public void log(String s) {
         Log.i("Robot", s);
-        opmode.telemetry.log().add(s);
+        O.telemetry.log().add(s);
     }
 
     /**
@@ -70,7 +75,7 @@ public class RobotUtils {
      */
     public void warn(String s) {
         Log.w("Robot", s);
-        opmode.telemetry.log().add(s);
+        O.telemetry.log().add(s);
     }
 
     /**
@@ -80,6 +85,15 @@ public class RobotUtils {
      */
     public void err(String s) {
         Log.e("Robot", s);
-        opmode.telemetry.log().add(s);
+        O.telemetry.log().add(s);
+    }
+
+    /**
+     * Log to Android log only. Saves as "verbose" level messages - the grey ones.
+     *
+     * @param s Log message
+     */
+    public void verbose(String s) {
+        Log.v("Robot", s);
     }
 }

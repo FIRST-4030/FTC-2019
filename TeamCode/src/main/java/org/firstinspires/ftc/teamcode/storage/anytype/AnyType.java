@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.utils.anytype;
+package org.firstinspires.ftc.teamcode.storage.anytype;
 
 import android.util.Log;
 
@@ -81,7 +81,7 @@ public class AnyType {
         type = Types.UNSET;
     }
 
-    protected void set(AnyType data) {
+    public void set(AnyType data) {
         if (data == null) {
             throw new IllegalArgumentException("Null Data");
         }

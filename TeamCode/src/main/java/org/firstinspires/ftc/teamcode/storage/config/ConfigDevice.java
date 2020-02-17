@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.storage.config;
 
-import org.firstinspires.ftc.teamcode.utils.anytype.AnyType;
+import org.firstinspires.ftc.teamcode.storage.anytype.AnyType;
 
 import java.util.HashMap;
 

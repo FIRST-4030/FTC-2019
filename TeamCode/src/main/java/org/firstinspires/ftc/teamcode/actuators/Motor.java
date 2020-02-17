@@ -5,8 +5,10 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.storage.config.ConfigDevice;
+import org.firstinspires.ftc.teamcode.storage.globals.Globals;
+import org.firstinspires.ftc.teamcode.storage.globals.GlobalsPoll;
 
-public class Motor implements Actuators {
+public class Motor implements Actuators, GlobalsPoll {
     private static final DcMotor.RunMode MODE_OPEN = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
     private static final DcMotor.RunMode MODE_ENCODER = DcMotor.RunMode.RUN_USING_ENCODER;
     private static final DcMotor.RunMode MODE_PID = DcMotor.RunMode.RUN_TO_POSITION;
@@ -25,7 +27,7 @@ public class Motor implements Actuators {
         this.name = name;
 
         // Load the config for this device based on the class ane device names
-        ConfigDevice d = Robot.R.config.device(this.getClass().getSimpleName(), name);
+        ConfigDevice d = Robot.R.C.device(this.getClass().getSimpleName(), name);
 
         // If you want a parameter to be optional in the JSON, apply a default and
         // check to see if it exists before using it
@@ -76,7 +78,7 @@ public class Motor implements Actuators {
             name = this.toString();
         }
         try {
-            motor = Robot.R.opmode.hardwareMap.dcMotor.get(name);
+            motor = Robot.R.O.hardwareMap.dcMotor.get(name);
             brake(brake);
             reverse(reverse);
             mode(mode);
@@ -87,8 +89,16 @@ public class Motor implements Actuators {
                     ": Unable to initialize: " + name);
         }
 
-        // Register with the global actuators list
+        // Register with the Actuators list and Globals
         Robot.R.register(this);
+        Robot.R.G.register(this);
+    }
+
+    /**
+     * Callback for the Globals polling mechanism
+     */
+    public void gPoll(Globals g) {
+        g.set("ENCODER_" + name, encoder());
     }
 
     /*

@@ -6,7 +6,7 @@ import android.util.Log;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.utils.anytype.AnyType;
+import org.firstinspires.ftc.teamcode.storage.anytype.AnyType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
