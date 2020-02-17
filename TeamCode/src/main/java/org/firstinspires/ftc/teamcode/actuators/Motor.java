@@ -315,7 +315,9 @@ public class Motor implements Actuators, GlobalsPoll {
     }
 
     /**
-     * Gets the current encoder tick count. Consider using the polled value from Globals
+     * Gets the current encoder tick count
+     * Consider using the polled value with:
+     * Robot.R.G.d("ENCODER_" + name);
      *
      * @return Current encoder reading.
      */

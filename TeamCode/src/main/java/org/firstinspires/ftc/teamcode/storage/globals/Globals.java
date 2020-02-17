@@ -59,6 +59,7 @@ public class Globals {
         AnyType a = globals.get(name);
         if (a == null) {
             a = new AnyType();
+            globals.put(name, a);
         }
         return a;
     }

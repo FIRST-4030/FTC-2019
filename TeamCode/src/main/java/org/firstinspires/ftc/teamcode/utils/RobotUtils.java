@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.actuators.Actuators;
 import org.firstinspires.ftc.teamcode.storage.config.Config;
 import org.firstinspires.ftc.teamcode.storage.globals.Globals;
-import org.firstinspires.ftc.teamcode.storage.globals.GlobalsPoll;
 
 import java.util.ArrayList;
 
