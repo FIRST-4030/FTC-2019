@@ -1,8 +1,14 @@
 package org.firstinspires.ftc.teamcode.actuators;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoControllerEx;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.storage.config.ConfigDevice;
 import org.firstinspires.ftc.teamcode.storage.globals.Globals;
@@ -15,7 +21,7 @@ public class Motor implements Actuators, GlobalsPoll {
     private static final DcMotor.RunMode MODE_DEFAULT = MODE_ENCODER;
 
     public final String name; // Name for the JSON config and hardware map
-    private DcMotor motor = null; // The underlying FTC device
+    private DcMotorEx motor = null; // The underlying FTC device
     private double power = 0.0d; // Track power locally -- the FTC device doesn't
 
     /**
@@ -78,7 +84,7 @@ public class Motor implements Actuators, GlobalsPoll {
             name = this.toString();
         }
         try {
-            motor = Robot.O.hardwareMap.dcMotor.get(name);
+            motor = Robot.O.hardwareMap.get(DcMotorEx.class, name);
             brake(brake);
             reverse(reverse);
             mode(mode);
@@ -99,6 +105,8 @@ public class Motor implements Actuators, GlobalsPoll {
      */
     public void gPoll(Globals g) {
         g.set("ENCODER_" + name, encoder());
+        g.set("VELOCITY_" + name, encoder());
+        g.set("CURRENT_" + name, current());
     }
 
     /*
@@ -326,6 +334,84 @@ public class Motor implements Actuators, GlobalsPoll {
             return 0;
         }
         return motor.getCurrentPosition();
+    }
+
+    /**
+     * Gets the current motor current in Amps
+     * Consider using the polled value with:
+     * Robot.R.G.d("CURRENT_" + name);
+     *
+     * @return Current motor current reading.
+     */
+    public double current() {
+        if (!ready()) {
+            return 0.0d;
+        }
+        return motor.getCurrent(CurrentUnit.AMPS);
+    }
+
+    /**
+     * Gets the current velocity in degrees/second
+     * Consider using the polled value with:
+     * Robot.R.G.d("VELOCITY_" + name);
+     *
+     * @return Current motor current reading.
+     */
+    public double velocity() {
+        if (!ready()) {
+            return 0.0d;
+        }
+        return motor.getVelocity(AngleUnit.DEGREES);
+    }
+
+    /**
+     * Get the PIDF coefficients for RevHub PID
+     *
+     * @return Proportional, Integral, Differential and Feed-Forward coefficients
+     */
+    public PIDFCoefficients pidf() {
+        if (!ready()) {
+            return new PIDFCoefficients(0.0d, 0.0d, 0.0d, 0.0d);
+        }
+        return motor.getPIDFCoefficients(MODE_ENCODER);
+    }
+
+    /**
+     * Override the PIDF coefficients for RevHub PID
+     * Position PID uses Velocity PID internally, so this affects both modes
+     *
+     * @param pidf Proportional, Integral, Differential and Feed-Forward coefficients
+     */
+    public void pidf(PIDFCoefficients pidf) {
+        if (!ready()) {
+            return;
+        }
+        if (pidf != null) {
+            return;
+        }
+        motor.setPIDFCoefficients(MODE_ENCODER, pidf);
+    }
+
+    /**
+     * Get the position tolerance in ticks
+     */
+    public int tolerance() {
+        if (!ready()) {
+            return 0;
+        }
+        return motor.getTargetPositionTolerance();
+    }
+
+    /**
+     * Override the position tolerance settings for RevHub PID
+     *
+     * @param tolerance Position tolerance in ticks
+     */
+    public void tolerance(int tolerance) {
+        if (!ready()) {
+            return;
+        }
+        motor.setTargetPositionTolerance(tolerance);
     }
 
     /**
