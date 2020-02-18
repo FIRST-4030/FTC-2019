@@ -4,6 +4,7 @@ import org.firstinspires.ftc.teamcode.storage.anytype.AnyType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 public class Globals {
     private final HashMap<String, AnyType> globals;
@@ -29,6 +30,15 @@ public class Globals {
         for (GlobalsPoll p : pollers) {
             p.gPoll(this);
         }
+    }
+
+    /**
+     * Get a list of all items in Globals
+     *
+     * @return Set<String> of all currently known Globals
+     */
+    public Set<String> list() {
+        return globals.keySet();
     }
 
     /**

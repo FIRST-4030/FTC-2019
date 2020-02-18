@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.core.OpModeEvents;
 import org.firstinspires.ftc.teamcode.core.OpModeN2S;
 
@@ -23,7 +24,10 @@ public class MotorTest extends OpModeN2S {
         }
 
         public void start() {
-
+            for (String s : R.G.list()) {
+                Robot.verbose("Global: " + s + " => " + R.G.s(s));
+            }
+            Robot.log("Logged globals to Android");
         }
 
         public void loop() {
