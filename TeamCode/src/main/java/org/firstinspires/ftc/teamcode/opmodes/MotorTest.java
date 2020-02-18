@@ -45,15 +45,14 @@ public class MotorTest extends OpModeN2S {
             p *= -1.0d;
             // Set motor power
             R.m1.power(p);
-            R.m2.power(-p);
 
             // Feedback
             telemetry.addData("Battery Voltage", R.G.d("BATTERY_VOLTAGE"));
             telemetry.addData("Battery Current", R.G.d("BATTERY_CURRENT"));
             telemetry.addData(R.m1.name + " Power", R.m1.power());
             telemetry.addData(R.m1.name + " Encoder", R.G.i("ENCODER_" + R.m1.name));
-            telemetry.addData(R.m2.name + " Power", R.m2.power());
-            telemetry.addData(R.m2.name + " Encoder", R.G.i("ENCODER_" + R.m2.name));
+            telemetry.addData(R.m1.name + " Current", R.G.d("CURRENT_" + R.m1.name));
+            telemetry.addData(R.m1.name + " Velocity", R.G.d("VELOCITY_" + R.m1.name));
         }
 
         public void stop() {
