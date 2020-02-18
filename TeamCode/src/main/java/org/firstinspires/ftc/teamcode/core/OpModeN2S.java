@@ -45,7 +45,7 @@ public class OpModeN2S extends OpMode implements OpModeEvents {
         // Ensure we have a valid Robot
         R = Robot.start(this);
         // Put us into bulk-update mode for faster RevHub comms
-        R.revhub.cacheMode(LynxModule.BulkCachingMode.AUTO);
+        R.revhub.mode(LynxModule.BulkCachingMode.AUTO);
 
         early();
         late("init");
@@ -67,6 +67,9 @@ public class OpModeN2S extends OpMode implements OpModeEvents {
     public void start() {
         early();
         late("start");
+
+        // Clear telemetry at match start
+        telemetry.clear();
     }
 
     /**
@@ -85,6 +88,7 @@ public class OpModeN2S extends OpMode implements OpModeEvents {
     public void stop() {
         early();
         late("stop");
+        R.stop();
     }
 
     /**
@@ -121,6 +125,9 @@ public class OpModeN2S extends OpMode implements OpModeEvents {
                 invoke(e, method);
             }
         }
+
+        // Push telemetry
+        telemetry.update();
     }
 
     /**
@@ -134,9 +141,11 @@ public class OpModeN2S extends OpMode implements OpModeEvents {
             Method m = cls.getClass().getMethod(method);
             m.invoke(cls);
         } catch (NoSuchMethodException e) {
-            Robot.err("Invalid method: " + method);
+            Robot.err(this.getClass().getSimpleName() +
+                    ": Invalid method: " + method);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            Robot.err("Unable to invoke: " + e.getLocalizedMessage());
+            Robot.err(this.getClass().getSimpleName() +
+                    ": Unable to invoke: " + e.getLocalizedMessage());
         }
     }
 }

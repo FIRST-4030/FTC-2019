@@ -23,7 +23,6 @@ public class Empty extends OpModeN2S {
         }
 
         public void start() {
-
         }
 
         public void loop() {
@@ -31,7 +30,6 @@ public class Empty extends OpModeN2S {
         }
 
         public void stop() {
-            R.stop();
         }
     }
 }

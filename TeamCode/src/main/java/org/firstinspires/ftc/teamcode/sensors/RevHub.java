@@ -25,9 +25,10 @@ public class RevHub implements GlobalsPoll {
             hubs = Robot.O.hardwareMap.getAll(LynxModule.class);
         } catch (Exception e) {
             hubs = new ArrayList<>();
-            Robot.err("Unable to find RevHubs");
+            Robot.err(this.getClass().getSimpleName() + ": Unable to find RevHubs");
         }
-        cacheMode(null);
+        mode(null);
+        Robot.R.G.register(this);
     }
 
     /**
@@ -36,7 +37,7 @@ public class RevHub implements GlobalsPoll {
      * @return List<LynxModule> of all connected hubs
      */
     public List<LynxModule> hubs() {
-        return hubs;
+        return new ArrayList<>(hubs);
     }
 
     /**
@@ -44,7 +45,7 @@ public class RevHub implements GlobalsPoll {
      *
      * @param mode The desired bulk caching mode, can be null
      */
-    public void cacheMode(LynxModule.BulkCachingMode mode) {
+    public void mode(LynxModule.BulkCachingMode mode) {
         if (mode == null) {
             mode = MODE_DEFAULT;
         }
@@ -90,8 +91,7 @@ public class RevHub implements GlobalsPoll {
             g.set("HUB_TEMP" + name,
                     m.getTemperature(TempUnit.CELSIUS));
         }
-        volts /= hubs.size();
-        g.set("BATTERY_VOLTAGE_", volts);
-        g.set("BATTERY_CURRENT_", amps);
+        g.set("BATTERY_VOLTAGE", volts);
+        g.set("BATTERY_CURRENT", amps);
     }
 }
