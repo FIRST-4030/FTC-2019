@@ -3,11 +3,15 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.actuators.Motor;
-import org.firstinspires.ftc.teamcode.utils.RobotUtils;
+import org.firstinspires.ftc.teamcode.core.RobotUtils;
+import org.firstinspires.ftc.teamcode.sensors.RevHub;
 
 public class Robot extends RobotUtils {
     //tim is a massive dummy -the robot
     public static Robot R = null;
+
+    // Core hardware
+    public final RevHub revhub;
 
     // All our hardware should have members declared here
     public final Motor m1;
@@ -16,6 +20,9 @@ public class Robot extends RobotUtils {
     public Robot(OpMode opmode) {
         super(opmode);
         R = this;
+
+        // Core hardware config
+        revhub = new RevHub();
 
         // Hardware config
         // If you provide config in the JSON file you can just do this
