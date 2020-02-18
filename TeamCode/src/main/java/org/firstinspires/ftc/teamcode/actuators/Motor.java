@@ -41,7 +41,7 @@ public class Motor implements Actuators, GlobalsPoll {
             } else if (m.equalsIgnoreCase("OPEN")) {
                 mode = MODE_OPEN;
             } else {
-                Robot.R.err(this.getClass().getSimpleName() +
+                Robot.err(this.getClass().getSimpleName() +
                         ": Invalid mode: " + m);
             }
         }
@@ -74,18 +74,18 @@ public class Motor implements Actuators, GlobalsPoll {
      */
     private void init(String name, boolean reverse, boolean brake, DcMotor.RunMode mode) {
         if (name == null || name.isEmpty()) {
-            Robot.R.err(this.getClass().getSimpleName() + ": No name provided");
+            Robot.err(this.getClass().getSimpleName() + ": No name provided");
             name = this.toString();
         }
         try {
-            motor = Robot.R.O.hardwareMap.dcMotor.get(name);
+            motor = Robot.O.hardwareMap.dcMotor.get(name);
             brake(brake);
             reverse(reverse);
             mode(mode);
             resetEncoder();
         } catch (Exception e) {
             motor = null;
-            Robot.R.err(this.getClass().getSimpleName() +
+            Robot.err(this.getClass().getSimpleName() +
                     ": Unable to initialize: " + name);
         }
 

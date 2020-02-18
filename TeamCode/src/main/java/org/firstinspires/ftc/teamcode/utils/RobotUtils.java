@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.storage.globals.Globals;
 import java.util.ArrayList;
 
 public class RobotUtils {
-    public final OpMode O;
+    public static OpMode O = null;
     public final Config C;
     public final Globals G;
 
@@ -62,9 +62,11 @@ public class RobotUtils {
      *
      * @param s Log message
      */
-    public void log(String s) {
+    public static void log(String s) {
         Log.i("Robot", s);
-        O.telemetry.log().add(s);
+        if (O != null) {
+            O.telemetry.log().add(s);
+        }
     }
 
     /**
@@ -72,9 +74,11 @@ public class RobotUtils {
      *
      * @param s Log message
      */
-    public void warn(String s) {
+    public static void warn(String s) {
         Log.w("Robot", s);
-        O.telemetry.log().add(s);
+        if (O != null) {
+            O.telemetry.log().add(s);
+        }
     }
 
     /**
@@ -82,9 +86,11 @@ public class RobotUtils {
      *
      * @param s Log message
      */
-    public void err(String s) {
+    public static void err(String s) {
         Log.e("Robot", s);
-        O.telemetry.log().add(s);
+        if (O != null) {
+            O.telemetry.log().add(s);
+        }
     }
 
     /**
@@ -92,7 +98,7 @@ public class RobotUtils {
      *
      * @param s Log message
      */
-    public void verbose(String s) {
+    public static void verbose(String s) {
         Log.v("Robot", s);
     }
 }
