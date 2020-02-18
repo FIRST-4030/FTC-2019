@@ -99,6 +99,8 @@ public class OpModeN2S extends OpMode implements OpModeEvents {
         R.revhub.clear();
         // Poll for Globals updates
         R.G.poll();
+        // Read buttons
+        R.B.update();
     }
 
     /**

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.actuators.Actuators;
+import org.firstinspires.ftc.teamcode.buttons.ButtonHandler;
 import org.firstinspires.ftc.teamcode.storage.config.Config;
 import org.firstinspires.ftc.teamcode.storage.globals.Globals;
 
@@ -15,6 +16,7 @@ public class RobotUtils {
     public static OpMode O = null;
     public final Config C;
     public final Globals G;
+    public final ButtonHandler B;
 
     private final ArrayList<Actuators> actuators;
 
@@ -23,6 +25,8 @@ public class RobotUtils {
         O = opmode;
         C = new Config();
         G = new Globals();
+        B = new ButtonHandler();
+
         actuators = new ArrayList<>();
     }
 
