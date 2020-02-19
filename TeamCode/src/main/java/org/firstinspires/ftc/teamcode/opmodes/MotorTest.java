@@ -19,6 +19,8 @@ public class MotorTest extends OpModeN2S {
 
         public void init() {
             R.B.register("Reverse", gamepad1, PAD_BUTTON.a);
+            R.B.register("Servo", gamepad1, PAD_BUTTON.y);
+
         }
 
         public void init_loop() {
@@ -54,6 +56,9 @@ public class MotorTest extends OpModeN2S {
             }
 
             // Servo click
+            if (R.B.get("Servo")) {
+                R.s1.delta(0.05);
+            }
 
             // Feedback
             telemetry.addData("Battery Voltage",
@@ -64,10 +69,10 @@ public class MotorTest extends OpModeN2S {
                     R.G.i("ENCODER_" + R.m1.name));
             telemetry.addData(R.m1.name + " Current",
                     Round.r(R.G.d("CURRENT_" + R.m1.name)));
-            telemetry.addData(R.m1.name + " Velocity",
-                    Round.r(R.G.d("VELOCITY_" + R.m1.name)));
             telemetry.addData("Heading",
                     Round.r(R.G.d("GYRO_HEADING")));
+            telemetry.addData(R.s1.name + " Position",
+                    Round.r(R.G.d("SERVO_" + R.s1.name)));
         }
 
         public void stop() {

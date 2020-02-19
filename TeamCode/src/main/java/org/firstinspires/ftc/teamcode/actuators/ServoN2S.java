@@ -23,7 +23,7 @@ public class ServoN2S implements Actuators, GlobalsPoll {
     private boolean teleop = false;
     private boolean limits = true;
 
-    private String name;
+    public String name;
     private Map<String, Double> presets;
     private double offset = DEFAULT_OFFSET;
     private double min = DEFAULT_MIN;
