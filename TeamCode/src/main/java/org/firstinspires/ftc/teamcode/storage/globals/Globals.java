@@ -19,8 +19,8 @@ public class Globals {
      * New variables are automatically created on set/get, initialized as AnyType.unset
      */
     public Globals() {
-        globals = new HashMap();
-        pollers = new ArrayList();
+        globals = new HashMap<>();
+        pollers = new ArrayList<>();
     }
 
     /**

@@ -36,4 +36,32 @@ public class ConfigDevice {
     public String s(String item) {
         return config.item(device, item).s;
     }
+
+    public boolean bOptional(String item, boolean fallback) {
+        if (exists(item)) {
+            fallback = b(item);
+        }
+        return fallback;
+    }
+
+    public int iOptional(String item, int fallback) {
+        if (exists(item)) {
+            fallback = i(item);
+        }
+        return fallback;
+    }
+
+    public double dOptional(String item, double fallback) {
+        if (exists(item)) {
+            fallback = d(item);
+        }
+        return fallback;
+    }
+
+    public String sOptional(String item, String fallback) {
+        if (exists(item)) {
+            fallback = s(item);
+        }
+        return fallback;
+    }
 }

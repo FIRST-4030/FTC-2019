@@ -117,7 +117,7 @@ public class RevIMU implements Gyro, GlobalsPoll {
      *
      * @param gyro The active gyro
      */
-    protected void gyro(BNO055IMU gyro) {
+    void gyro(BNO055IMU gyro) {
         this.gyro = gyro;
     }
 

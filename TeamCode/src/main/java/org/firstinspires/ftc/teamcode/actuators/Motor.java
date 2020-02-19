@@ -16,9 +16,12 @@ public class Motor implements Actuators, GlobalsPoll {
     private static final DcMotor.RunMode MODE_OPEN = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
     private static final DcMotor.RunMode MODE_ENCODER = DcMotor.RunMode.RUN_USING_ENCODER;
     private static final DcMotor.RunMode MODE_PID = DcMotor.RunMode.RUN_TO_POSITION;
-    private static final DcMotor.RunMode MODE_DEFAULT = MODE_ENCODER;
 
-    public final String name; // Name for the JSON config and hardware map
+    private static final DcMotor.RunMode DEFAULT_MODE = MODE_ENCODER;
+    private static final boolean DEFAULT_REVERSE = false;
+    private static final boolean DEFAULT_BRAKE = true;
+
+    public String name; // Name for the JSON config and hardware map
     private DcMotorEx motor = null; // The underlying FTC device
     private double power = 0.0d; // Track power locally -- the FTC device doesn't
 
@@ -28,14 +31,11 @@ public class Motor implements Actuators, GlobalsPoll {
      * @param name Motor name from the hardware map
      */
     public Motor(String name) {
-        this.name = name;
-
-        // Load the config for this device based on the class ane device names
+        // Load the config for this device based on the class and device names
         ConfigDevice d = Robot.R.C.device(this.getClass().getSimpleName(), name);
 
-        // If you want a parameter to be optional in the JSON, apply a default and
-        // check to see if it exists before using it
-        DcMotor.RunMode mode = MODE_DEFAULT;
+        // Decode the mode option
+        DcMotor.RunMode mode = DEFAULT_MODE;
         if (d.exists("mode")) {
             String m = d.s("mode");
             if (m.equalsIgnoreCase("ENCODER")) {
@@ -50,8 +50,10 @@ public class Motor implements Actuators, GlobalsPoll {
             }
         }
 
-        // It's always safe to use config parameters directly, even if they are missing
-        init(name, d.b("reverse"), d.b("brake"), mode);
+        // Optional parameters apply a default if not set
+        init(name,
+                d.bOptional("reverse", DEFAULT_REVERSE),
+                d.bOptional("brake", DEFAULT_BRAKE), mode);
     }
 
     /**
@@ -63,7 +65,6 @@ public class Motor implements Actuators, GlobalsPoll {
      * @param mode    One of the native DcMotor.RunModes for RevHub configuration, can be null
      */
     public Motor(String name, boolean reverse, boolean brake, DcMotor.RunMode mode) {
-        this.name = name;
         init(name, reverse, brake, mode);
     }
 
@@ -81,17 +82,20 @@ public class Motor implements Actuators, GlobalsPoll {
             Robot.err(this.getClass().getSimpleName() + ": No name provided");
             name = this.toString();
         }
+        this.name = name;
         try {
             motor = Robot.O.hardwareMap.get(DcMotorEx.class, name);
-            brake(brake);
-            reverse(reverse);
-            mode(mode);
-            resetEncoder();
         } catch (Exception e) {
             motor = null;
             Robot.err(this.getClass().getSimpleName() +
                     ": Unable to initialize: " + name);
         }
+
+        // Apply config
+        brake(brake);
+        reverse(reverse);
+        mode(mode);
+        resetEncoder();
 
         // Register with the Actuators list and Globals
         Robot.R.register(this);
@@ -195,7 +199,7 @@ public class Motor implements Actuators, GlobalsPoll {
      */
     private DcMotor.RunMode mode() {
         if (!ready()) {
-            return MODE_DEFAULT;
+            return DEFAULT_MODE;
         }
         return motor.getMode();
     }
@@ -210,7 +214,7 @@ public class Motor implements Actuators, GlobalsPoll {
             return;
         }
         if (mode == null) {
-            mode = MODE_DEFAULT;
+            mode = DEFAULT_MODE;
         }
         motor.setMode(mode);
     }
@@ -243,7 +247,7 @@ public class Motor implements Actuators, GlobalsPoll {
         if (pid) {
             mode = MODE_PID;
         } else {
-            mode = MODE_DEFAULT;
+            mode = DEFAULT_MODE;
         }
         mode(mode);
 

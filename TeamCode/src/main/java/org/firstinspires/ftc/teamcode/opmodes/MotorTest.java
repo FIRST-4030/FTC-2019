@@ -53,6 +53,8 @@ public class MotorTest extends OpModeN2S {
                 R.m1.reverse(!R.m1.reverse());
             }
 
+            // Servo click
+
             // Feedback
             telemetry.addData("Battery Voltage",
                     R.G.d("BATTERY_VOLTAGE"));

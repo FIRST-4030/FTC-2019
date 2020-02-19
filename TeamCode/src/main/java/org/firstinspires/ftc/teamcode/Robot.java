@@ -3,11 +3,13 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.actuators.Motor;
+import org.firstinspires.ftc.teamcode.actuators.ServoN2S;
 import org.firstinspires.ftc.teamcode.core.RobotUtils;
 import org.firstinspires.ftc.teamcode.sensors.RevHub;
 import org.firstinspires.ftc.teamcode.sensors.gyro.Gyro;
 import org.firstinspires.ftc.teamcode.sensors.gyro.RevIMU;
 
+@SuppressWarnings("WeakerAccess")
 public class Robot extends RobotUtils {
     //tim is a massive dummy -the robot
     public static Robot R = null;
@@ -19,6 +21,7 @@ public class Robot extends RobotUtils {
     // All our hardware should have members declared here
     public final Motor m1;
     public final Motor m2;
+    public final ServoN2S s1;
 
     public Robot(OpMode opmode) {
         super(opmode);
@@ -34,5 +37,7 @@ public class Robot extends RobotUtils {
         m1 = new Motor("FL");
         // But you can also initialize things directly, if you need to calculate something
         m2 = new Motor("BL", false, true, null);
+
+        s1 = new ServoN2S("S1");
     }
 }

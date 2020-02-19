@@ -10,12 +10,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class OpModeN2S extends OpMode implements OpModeEvents {
-    public Robot R;
+    protected Robot R;
 
     private OpModeDebug debug = null;
     private final ArrayList<OpModeEvents> children;
 
-    public OpModeN2S() {
+    protected OpModeN2S() {
         children = new ArrayList<>();
     }
 

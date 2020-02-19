@@ -5,6 +5,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@SuppressWarnings("WeakerAccess")
 public class AnyType {
     public boolean b = false;
     public int i = 0;
