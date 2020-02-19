@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.actuators;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoControllerEx;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -386,7 +384,7 @@ public class Motor implements Actuators, GlobalsPoll {
         if (!ready()) {
             return;
         }
-        if (pidf != null) {
+        if (pidf == null) {
             return;
         }
         motor.setPIDFCoefficients(MODE_ENCODER, pidf);

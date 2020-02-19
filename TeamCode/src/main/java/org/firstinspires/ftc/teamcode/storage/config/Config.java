@@ -82,6 +82,7 @@ public class Config {
             // Find and drop the old defaults file on the phone
             File outFile = new File(dir, DEFAULTS_NAME);
             if (outFile.exists()) {
+                //noinspection ResultOfMethodCallIgnored
                 outFile.delete();
             }
 

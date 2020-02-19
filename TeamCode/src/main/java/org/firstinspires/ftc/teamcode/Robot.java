@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.actuators.Motor;
 import org.firstinspires.ftc.teamcode.core.RobotUtils;
 import org.firstinspires.ftc.teamcode.sensors.RevHub;
+import org.firstinspires.ftc.teamcode.sensors.gyro.Gyro;
+import org.firstinspires.ftc.teamcode.sensors.gyro.RevIMU;
 
 public class Robot extends RobotUtils {
     //tim is a massive dummy -the robot
@@ -12,6 +14,7 @@ public class Robot extends RobotUtils {
 
     // Core hardware
     public final RevHub revhub;
+    public final Gyro gyro;
 
     // All our hardware should have members declared here
     public final Motor m1;
@@ -23,6 +26,7 @@ public class Robot extends RobotUtils {
 
         // Core hardware config
         revhub = new RevHub();
+        gyro = new RevIMU("imu");
 
         // Hardware config
         // If you provide config in the JSON file you can just do this

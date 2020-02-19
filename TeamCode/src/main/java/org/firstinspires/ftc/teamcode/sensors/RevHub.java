@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.storage.globals.GlobalsPoll;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RevHub implements GlobalsPoll {
+public class RevHub implements Sensors, GlobalsPoll {
     private List<LynxModule> hubs;
     private static final LynxModule.BulkCachingMode MODE_DEFAULT = LynxModule.BulkCachingMode.AUTO;
 
@@ -93,5 +93,14 @@ public class RevHub implements GlobalsPoll {
         }
         g.set("BATTERY_VOLTAGE", volts);
         g.set("BATTERY_CURRENT", amps);
+    }
+
+    /**
+     * Is this sensor ready to provide data
+     *
+     * @return True if ready
+     */
+    public boolean ready() {
+        return (hubs != null);
     }
 }

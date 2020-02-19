@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.utils.Round;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class SpinnerHandler {
     private final ButtonHandler parent;
@@ -47,12 +48,10 @@ public class SpinnerHandler {
                 spinner.dataClass().getSimpleName().substring(0, 1) + ":" + spinner.name;
 
         // General case for most types
-        String value = spinner.dataClass().cast(spinner.value).toString();
+        String value = Objects.requireNonNull(spinner.dataClass().cast(spinner.value)).toString();
         // Special handling for doubles, to avoid runaway approximations
-        switch (spinner.type) {
-            case DOUBLE:
-                value = ((Double) (Round.truncate((Double) spinner.value, NUM_DECIMALS))).toString();
-                break;
+        if (spinner.type == SPINNER_TYPE.DOUBLE) {
+            value = ((Double) (Round.truncate((Double) spinner.value, NUM_DECIMALS))).toString();
         }
         Robot.O.telemetry.addData(label, value);
     }
@@ -254,7 +253,7 @@ public class SpinnerHandler {
             this.min = null;
             this.max = null;
 
-            incrementIsName = String.class.isInstance(increment);
+            incrementIsName = increment instanceof String;
             if (!incrementIsName) {
                 checkNullOrDataClass(increment, "increment");
             }
