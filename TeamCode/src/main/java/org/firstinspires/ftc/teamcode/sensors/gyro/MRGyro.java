@@ -11,24 +11,26 @@ import org.firstinspires.ftc.teamcode.utils.Heading;
 public class MRGyro implements Gyro, Sensors, GlobalsPoll {
     private ModernRoboticsI2cGyro gyro;
     private float offset = 0.0f;
+    public final String name;
 
     public MRGyro(String name) {
         if (name == null || name.isEmpty()) {
-            Robot.err(this.getClass().getSimpleName() + ": No name provided");
+            Robot.err(this, "No name provided");
             name = this.toString();
         }
+        this.name = name;
         try {
             gyro = (ModernRoboticsI2cGyro) Robot.O.hardwareMap.gyroSensor.get(name);
         } catch (Exception e) {
             gyro = null;
-            Robot.err(this.getClass().getSimpleName() +
-                    ": No such device: " + name);
-            return;
+            Robot.err(this, "Unable to initalize: " + name);
         }
 
         // Start and calibrate
-        gyro.resetDeviceConfigurationForOpMode();
-        gyro.calibrate();
+        if (gyro != null) {
+            gyro.resetDeviceConfigurationForOpMode();
+            gyro.calibrate();
+        }
 
         // Register to publish data
         Robot.R.G.register(this);
@@ -91,7 +93,7 @@ public class MRGyro implements Gyro, Sensors, GlobalsPoll {
     }
 
     /**
-     * Current normalized heading, adjusted by the offset.
+     * Normalized heading, adjusted by the offset.
      * Provided for internal use to allow raw and offset
      * headings to be calculated in a single poll
      *
@@ -99,7 +101,7 @@ public class MRGyro implements Gyro, Sensors, GlobalsPoll {
      * @return Normalized heading
      */
     private float heading(float raw) {
-        return Heading.normalize(raw() + offset);
+        return Heading.normalize(raw + offset);
     }
 
     /**

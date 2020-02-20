@@ -25,7 +25,7 @@ public class RevHub implements Sensors, GlobalsPoll {
             hubs = Robot.O.hardwareMap.getAll(LynxModule.class);
         } catch (Exception e) {
             hubs = new ArrayList<>();
-            Robot.err(this.getClass().getSimpleName() + ": Unable to find RevHubs");
+            Robot.err(this, "Unable to find RevHubs");
         }
         mode(null);
         Robot.R.G.register(this);

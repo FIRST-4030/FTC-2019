@@ -60,7 +60,7 @@ public class ServoN2S implements Actuators, GlobalsPoll {
     private void init(String name, boolean reverse, double offset,
                       double min, double max, Map<String, Double> presets) {
         if (name == null || name.isEmpty()) {
-            Robot.err(this.getClass().getSimpleName() + ": No name provided");
+            Robot.err(this, "No name provided");
             name = this.toString();
         }
         this.name = name;
@@ -70,8 +70,7 @@ public class ServoN2S implements Actuators, GlobalsPoll {
             servo = Robot.O.hardwareMap.servo.get(name);
         } catch (Exception e) {
             servo = null;
-            Robot.err(this.getClass().getSimpleName() +
-                    ": Servo not available: " + name);
+            Robot.err(this, "Unable to initalize: " + name);
         }
 
         // Apply config
@@ -166,8 +165,8 @@ public class ServoN2S implements Actuators, GlobalsPoll {
      */
     public void limits(double min, double max) {
         if (min < 0.0d || min >= max || max > 1.0d) {
-            Robot.warn(this.getClass().getSimpleName() +
-                    ": Ignoring invalid min/max: " + Round.r(min) + "/" + Round.r(max));
+            Robot.warn(this, "Ignoring invalid min/max: "
+                    + Round.r(min) + "/" + Round.r(max));
             return;
         }
         this.min = min;
@@ -175,7 +174,7 @@ public class ServoN2S implements Actuators, GlobalsPoll {
     }
 
     /**
-     * Get the current offset used in position() calcuations
+     * Get the current offset used in position() calculations
      *
      * @return Current offset
      */
@@ -190,8 +189,7 @@ public class ServoN2S implements Actuators, GlobalsPoll {
      */
     public void offset(double offset) {
         if (offset <= -1.0d || offset >= 1.0d) {
-            Robot.warn(this.getClass().getSimpleName() +
-                    ": Ignoring invalid offset: " + Round.r(offset));
+            Robot.warn(this, "Ignoring invalid offset: " + Round.r(offset));
             offset = this.offset;
         }
         this.offset = offset;
@@ -213,7 +211,7 @@ public class ServoN2S implements Actuators, GlobalsPoll {
      */
     public void presets(Map<String, Double> presets) {
         if (presets == null) {
-            Robot.warn(this.getClass().getSimpleName() + ": Ignoring invalid presets");
+            Robot.warn(this, "Ignoring invalid presets");
             return;
         }
         this.presets = new HashMap<>(presets);
@@ -258,8 +256,7 @@ public class ServoN2S implements Actuators, GlobalsPoll {
         p = Math.min(p, DEFAULT_MAX);
         p = Math.max(p, DEFAULT_MIN);
         if (p != pos) {
-            Robot.warn(this.getClass().getSimpleName() + ": " +
-                    name + ": Cannot reach position "
+            Robot.warn(this, name + ": Cannot reach position "
                     + Round.r(pos) + "/" + Round.r(p));
         }
         pos = p;
@@ -363,8 +360,7 @@ public class ServoN2S implements Actuators, GlobalsPoll {
     public void preset(String name) {
         Double d = presets.get(name);
         if (d == null) {
-            Robot.warn(this.getClass().getSimpleName() +
-                    ": Invalid preset: " + name);
+            Robot.warn(this, "Invalid preset: " + name);
             return;
         }
         scale(d);
@@ -384,7 +380,7 @@ public class ServoN2S implements Actuators, GlobalsPoll {
     }
 
     /**
-     * Is the servo initalized and ready to move?
+     * Is the servo initialized and ready to move?
      *
      * @return True if ready, otherwise false
      */

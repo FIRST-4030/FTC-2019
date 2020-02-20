@@ -143,11 +143,9 @@ public class OpModeN2S extends OpMode implements OpModeEvents {
             Method m = cls.getClass().getMethod(method);
             m.invoke(cls);
         } catch (NoSuchMethodException e) {
-            Robot.err(this.getClass().getSimpleName() +
-                    ": Invalid method: " + method);
+            Robot.err(this, "Invalid method: " + method);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            Robot.err(this.getClass().getSimpleName() +
-                    ": Unable to invoke: " + e.getLocalizedMessage());
+            Robot.err(this, "Unable to invoke: " + e.getLocalizedMessage());
         }
     }
 }

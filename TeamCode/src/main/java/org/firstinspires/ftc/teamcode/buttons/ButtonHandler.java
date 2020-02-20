@@ -52,8 +52,7 @@ public class ButtonHandler {
 
         // Register it in the map
         if (buttons.containsKey(name)) {
-            Robot.log(this.getClass().getSimpleName() +
-                    ": De-registering existing button: " + name);
+            Robot.log(this, "De-registering existing button: " + name);
         }
         buttons.put(name, b);
     }
@@ -62,8 +61,7 @@ public class ButtonHandler {
     public Button getListener(String name) {
         PadButton button = buttons.get(name);
         if (button == null) {
-            Robot.log(this.getClass().getSimpleName() +
-                    ": Unregistered listener: " + name);
+            Robot.log(this, "Unregistered listener: " + name);
             return null;
         }
         return button.listener;
@@ -98,8 +96,7 @@ public class ButtonHandler {
             }
         } catch (Exception e) {
             // We checked this when registering so this shouldn't happen, but log if it does
-            Robot.log(this.getClass().getSimpleName() +
-                    ": Unable to read button: " + b.button);
+            Robot.log(this, "Unable to read button: " + b.button);
         }
         return pressed;
     }
@@ -108,8 +105,7 @@ public class ButtonHandler {
     public boolean raw(String name) {
         PadButton padButton = buttons.get(name);
         if (padButton == null) {
-            Robot.log(this.getClass().getSimpleName() +
-                    ": Unregistered padButton name: " + name);
+            Robot.log(this, "Unregistered padButton name: " + name);
             return false;
         }
         return read(padButton);
@@ -139,8 +135,7 @@ public class ButtonHandler {
     private boolean get(String name, String type) {
         PadButton button = buttons.get(name);
         if (button == null) {
-            Robot.log(this.getClass().getSimpleName() +
-                    ": Unregistered button name: " + name);
+            Robot.log(this, "Unregistered button name: " + name);
             return false;
         }
 
@@ -148,8 +143,7 @@ public class ButtonHandler {
         try {
             method = button.listener.getClass().getMethod(type);
         } catch (NoSuchMethodException e) {
-            Robot.log(this.getClass().getSimpleName() +
-                    ": Invalid button request type: " + type);
+            Robot.log(this, "Invalid button request type: " + type);
             return false;
         }
 
@@ -157,8 +151,7 @@ public class ButtonHandler {
         try {
             value = (boolean) method.invoke(button.listener);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            Robot.log(this.getClass().getSimpleName() +
-                    ": Unable to invoke button listener for type: " + type);
+            Robot.log(this, "Unable to invoke button listener for type: " + type);
             return false;
         }
         return value;

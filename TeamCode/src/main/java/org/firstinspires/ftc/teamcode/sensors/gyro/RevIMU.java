@@ -22,7 +22,7 @@ class IMUWaiter implements Runnable {
     private static final int INTEGRATION_INTERVAL = 1000;
     private static final BNO055IMU.AccelerationIntegrator INTEGRATOR = new JustLoggingAccelerationIntegrator();
 
-    private final BNO055IMU imu;
+    private BNO055IMU imu;
     private final RevIMU parent;
 
     public IMUWaiter(RevIMU parent, BNO055IMU imu) {
@@ -69,44 +69,49 @@ class IMUWaiter implements Runnable {
             return;
         }
 
-        // Start from 0, 0, 0, 0 if things look good
-        imu.startAccelerationIntegration(new Position(), new Velocity(),
-                INTEGRATION_INTERVAL);
+        // If things look good
+        if (imu != null) {
+            // Start integrations from 0, 0, 0, 0
+            imu.startAccelerationIntegration(new Position(), new Velocity(),
+                    INTEGRATION_INTERVAL);
+        }
 
-        // Make the gyro available
+        // Make the gyro available (or unavailable, if we failed)
         parent.gyro(imu);
     }
 
     private void fail() {
-        Robot.warn(this.getClass().getSimpleName() +
-                ": Failed to initialize");
-        parent.gyro(null);
+        imu = null;
+        Robot.warn(this, "Failed to initialize: " + parent.name);
     }
 }
 
 public class RevIMU implements Gyro, GlobalsPoll {
     private BNO055IMU gyro = null;
     private float offset = 0.0f;
+    public final String name;
 
     public RevIMU(String name) {
         if (name == null || name.isEmpty()) {
-            Robot.err(this.getClass().getSimpleName() + ": No name provided");
+            Robot.err(this, "No name provided");
             name = this.toString();
         }
+        this.name = name;
 
         // Attempt to init
         BNO055IMU imu;
         try {
             imu = Robot.O.hardwareMap.get(BNO055IMU.class, name);
         } catch (Exception e) {
-            Robot.err(this.getClass().getSimpleName() +
-                    ": No such device: " + name);
-            return;
+            imu = null;
+            Robot.err(this, "No such device: " + name);
         }
 
         // Start the IMU in a background thread -- it behaves poorly when not available
-        Thread thread = new Thread(new IMUWaiter(this, imu));
-        thread.start();
+        if (imu != null) {
+            Thread thread = new Thread(new IMUWaiter(this, imu));
+            thread.start();
+        }
 
         // Register to publish data
         Robot.R.G.register(this);

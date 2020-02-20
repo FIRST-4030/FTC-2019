@@ -64,45 +64,57 @@ public class RobotUtils {
     /**
      * Log to the DS and Android log. Saves as "info" level messages - the black ones.
      *
-     * @param s Log message
+     * @param sender The class sending this message. Typically "this". Can be null.
+     * @param msg    Log message
      */
-    public static void log(String s) {
-        Log.i("Robot", s);
-        if (O != null) {
-            O.telemetry.log().add(s);
-        }
+    public static void log(Object sender, String msg) {
+        log(sender, msg, Log.INFO);
     }
 
     /**
      * Log to the DS and Android log. Saves as "warn" level messages - the blue ones.
      *
-     * @param s Log message
+     * @param sender The class sending this message. Typically "this". Can be null.
+     * @param msg    Log message
      */
-    public static void warn(String s) {
-        Log.w("Robot", s);
-        if (O != null) {
-            O.telemetry.log().add(s);
-        }
+    public static void warn(Object sender, String msg) {
+        log(sender, msg, Log.WARN);
     }
 
     /**
      * Log to the DS and Android log. Saves as "err" level messages - the red ones.
      *
-     * @param s Log message
+     * @param sender The class sending this message. Typically "this". Can be null.
+     * @param msg    Log message
      */
-    public static void err(String s) {
-        Log.e("Robot", s);
-        if (O != null) {
-            O.telemetry.log().add(s);
-        }
+    public static void err(Object sender, String msg) {
+        log(sender, msg, Log.ERROR);
     }
 
     /**
      * Log to Android log only. Saves as "verbose" level messages - the grey ones.
      *
-     * @param s Log message
+     * @param sender The class sending this message. Typically "this". Can be null.
+     * @param msg    Log message
      */
-    public static void verbose(String s) {
-        Log.v("Robot", s);
+    public static void verbose(Object sender, String msg) {
+        log(sender, msg, Log.VERBOSE);
+    }
+
+    /**
+     * Internal log handler
+     *
+     * @param sender   The class sending this message
+     * @param msg      Log message
+     * @param priority Android log priority
+     */
+    private static void log(Object sender, String msg, int priority) {
+        if (sender != null) {
+            msg = sender.getClass().getSimpleName() + ": " + msg;
+        }
+        Log.println(priority, "Robot", msg);
+        if (O != null && (priority != Log.VERBOSE && priority != Log.DEBUG)) {
+            O.telemetry.log().add(msg);
+        }
     }
 }

@@ -199,8 +199,7 @@ public class SpinnerHandler {
 
         // Main object
         if (spinners.containsKey(name)) {
-            Robot.log(this.getClass().getSimpleName() +
-                    ": De-registering existing spinner: " + name);
+            Robot.log(this, "De-registering existing spinner: " + name);
         }
         Spinner spinner = new Spinner(this, name, type, increment, value);
         spinners.put(name, spinner);

@@ -29,9 +29,9 @@ public class MotorTest extends OpModeN2S {
 
         public void start() {
             for (String s : R.G.list()) {
-                Robot.verbose("Global: " + s + " => " + R.G.s(s));
+                Robot.verbose(this, "Global: " + s + " => " + R.G.s(s));
             }
-            Robot.log("Logged globals to Android");
+            Robot.log(this, "Logged globals to Android");
         }
 
         public void loop() {
@@ -39,7 +39,7 @@ public class MotorTest extends OpModeN2S {
             double p = gamepad1.right_stick_y;
             // Clip, because it's good practice (gamepads are range-safe but other inputs aren't)
             p = Range.clip(p, -1.0d, 1.0d);
-            // Deadband to let us hold still
+            // Dead-band to let us hold still
             if (Math.abs(p) < 0.10d) {
                 p = 0.0d;
             }

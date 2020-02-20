@@ -65,8 +65,7 @@ public class Config {
                 sb.append(line).append("\n");
             }
         } catch (Exception e) {
-            Robot.err(this.getClass().getSimpleName() +
-                    ": Unable to read file: " + name);
+            Robot.err(this, "Unable to read file: " + name);
             return sb.toString();
         }
         return sb.toString();
@@ -110,8 +109,7 @@ public class Config {
                 out.close();
             }
         } catch (Exception e) {
-            Robot.err(this.getClass().getSimpleName() +
-                    ": Unable to copy defaults: " +
+            Robot.err(this, "Unable to copy defaults: " +
                     e.getClass().getSimpleName() + "::"
                     + e.getLocalizedMessage());
         }
@@ -128,8 +126,7 @@ public class Config {
         try {
             json = new JSONObject(s);
         } catch (JSONException e) {
-            Robot.err(this.getClass().getSimpleName() +
-                    ": Invalid JSON: " + e.getLocalizedMessage());
+            Robot.err(this, "Invalid JSON: " + e.getLocalizedMessage());
             return;
         }
 
@@ -140,8 +137,7 @@ public class Config {
             try {
                 value = json.getJSONObject(cls);
             } catch (JSONException e) {
-                Robot.err(this.getClass().getSimpleName() +
-                        ": Invalid class in JSON: " +
+                Robot.err(this, "Invalid class in JSON: " +
                         cls + ": " + e.getLocalizedMessage());
                 continue;
             }
@@ -164,8 +160,7 @@ public class Config {
             try {
                 value = json.getJSONObject(device);
             } catch (JSONException e) {
-                Robot.err(this.getClass().getSimpleName() +
-                        ": Invalid device in JSON: " + device +
+                Robot.err(this, "Invalid device in JSON: " + device +
                         ": " + e.getLocalizedMessage());
                 continue;
             }
@@ -196,8 +191,7 @@ public class Config {
              *     String str = json.getString(name);
              *     data.put(name, str);
              * } catch (JSONException e) {
-             *     Robot.err(this.getClass().getSimpleName() +
-             *          ": JSON parsing error: " + e.getLocalizedMessage());
+             *     Robot.err(this, "JSON parsing error: " + e.getLocalizedMessage());
              *     continue;
              * }
              */
@@ -219,7 +213,7 @@ public class Config {
             cls = new HashMap<>();
             c.put(clsName, cls);
             if (ready()) {
-                Robot.warn(this.getClass().getSimpleName() + ": Adding class: " + clsName);
+                Robot.warn(this, "Adding class: " + clsName);
             }
         }
         return c;
@@ -253,8 +247,7 @@ public class Config {
             d = new HashMap<>();
             c.put(device, d);
             if (ready()) {
-                Robot.warn(this.getClass().getSimpleName() +
-                        ": Adding device: " + device);
+                Robot.warn(this, "Adding device: " + device);
             }
         }
         return d;
@@ -290,8 +283,7 @@ public class Config {
             i = new AnyType();
             d.put(item, i);
             if (ready()) {
-                Robot.warn(this.getClass().getSimpleName() +
-                        ": Adding item: " + item);
+                Robot.warn(this, "Adding item: " + item);
             }
         }
         return i;
