@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ServoN2S implements Actuators, GlobalsPoll {
-    public static final String PRESET_INIT = "_INIT";
+    private static final String PRESET_INIT = "_INIT";
     private static final double DEFAULT_MIN = 0.0d;
     private static final double DEFAULT_MAX = 1.0d;
     private static final double DEFAULT_OFFSET = 0.0d;
@@ -77,10 +77,11 @@ public class ServoN2S implements Actuators, GlobalsPoll {
         reverse(reverse);
         offset(offset);
         limits(min, max);
+        this.presets = new HashMap<>(presets);
 
         // Move to the init position, if set
-        if (presets.containsKey(PRESET_INIT)) {
-            preset(PRESET_INIT);
+        if (this.presets.containsKey(PRESET_INIT)) {
+            this.preset(PRESET_INIT);
         }
 
         // Register with the Actuators list and Globals
@@ -171,6 +172,15 @@ public class ServoN2S implements Actuators, GlobalsPoll {
         }
         this.min = min;
         this.max = max;
+    }
+
+    /**
+     * Get the current min/max limits for the servo
+     *
+     * @return double[0] = min, double[1] = max
+     */
+    public double[] getLimits() {
+        return new double[]{min, max};
     }
 
     /**
@@ -277,7 +287,7 @@ public class ServoN2S implements Actuators, GlobalsPoll {
      * @param raw Raw position
      * @return Offset position
      */
-    private double rawToOffset(double raw) {
+    public double rawToOffset(double raw) {
         return raw - offset;
     }
 
@@ -310,7 +320,7 @@ public class ServoN2S implements Actuators, GlobalsPoll {
      * @param raw Raw position
      * @return Scale position
      */
-    private double rawToScale(double raw) {
+    public double rawToScale(double raw) {
         return (raw - min) / (max - min);
     }
 

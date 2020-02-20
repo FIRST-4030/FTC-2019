@@ -6,11 +6,12 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
 import org.firstinspires.ftc.teamcode.core.OpModeEvents;
 import org.firstinspires.ftc.teamcode.core.OpModeN2S;
+import org.firstinspires.ftc.teamcode.opmodes.debug.ServoN2S_Debug;
 import org.firstinspires.ftc.teamcode.utils.Round;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Motor Test", group = "Test")
-public class MotorTest extends OpModeN2S {
-    public MotorTest() {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Zach Test", group = "Test")
+public class ZTest extends OpModeN2S {
+    public ZTest() {
         super();
         add(new Mode());
     }
@@ -21,6 +22,9 @@ public class MotorTest extends OpModeN2S {
             R.B.register("Reverse", gamepad1, PAD_BUTTON.a);
             R.B.register("Servo", gamepad1, PAD_BUTTON.y);
 
+            // Force this debug mode to be active for testing
+            // We don't yet have a debug mode handler to do this properly
+            add(new ServoN2S_Debug(R.s1));
         }
 
         public void init_loop() {

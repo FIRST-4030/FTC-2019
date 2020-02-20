@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Robot;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class OpModeN2S extends OpMode implements OpModeEvents {
@@ -14,6 +12,7 @@ public class OpModeN2S extends OpMode implements OpModeEvents {
 
     private OpModeDebug debug = null;
     private final ArrayList<OpModeEvents> children;
+    private boolean initDone = false;
 
     protected OpModeN2S() {
         children = new ArrayList<>();
@@ -26,6 +25,12 @@ public class OpModeN2S extends OpMode implements OpModeEvents {
      */
     public void add(OpModeEvents child) {
         children.add(child);
+
+        // Init is only called once by upstream
+        // If this child missed that event, fake it to let the child initialize
+        if (initDone) {
+            invoke(child, "init");
+        }
     }
 
     /**
@@ -42,6 +47,8 @@ public class OpModeN2S extends OpMode implements OpModeEvents {
      */
     @Override
     public void init() {
+        initDone = true;
+
         // Ensure we have a valid Robot
         R = Robot.start(this);
         // Put us into bulk-update mode for faster RevHub comms
@@ -139,13 +146,43 @@ public class OpModeN2S extends OpMode implements OpModeEvents {
      * @param method Name of the method
      */
     private void invoke(OpModeEvents cls, String method) {
+        switch (method) {
+            case "init":
+                cls.init();
+                break;
+            case "init_loop":
+                cls.init_loop();
+                break;
+            case "start":
+                cls.start();
+                break;
+            case "loop":
+                cls.loop();
+                break;
+            case "stop":
+                cls.stop();
+                break;
+            default:
+                Robot.err(this, "Invalid method " +
+                        cls.getClass().getSimpleName() + "::" + method);
+        }
+
+        /*
+        This is the Java.reflection way to call a method by name.
+        It works, but it folds all exceptions into InvocationTargetException,
+        which makes debugging more complicated. So we use a case statement.
+
         try {
             Method m = cls.getClass().getMethod(method);
             m.invoke(cls);
-        } catch (NoSuchMethodException e) {
-            Robot.err(this, "Invalid method: " + method);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            Robot.err(this, "Unable to invoke: " + e.getLocalizedMessage());
+        } catch (IllegalAccessException | NoSuchMethodException e) {
+            Robot.err(this, "Invalid method " +
+                    cls.getClass().getSimpleName() + "::" + method);
+        } catch (InvocationTargetException e) {
+            Robot.err(this, "Runtime exception in: " +
+                    cls.getClass().getSimpleName() + "::" + method +
+                    ": " + e.getLocalizedMessage());
         }
+         */
     }
 }
