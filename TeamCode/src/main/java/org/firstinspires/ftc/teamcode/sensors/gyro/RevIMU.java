@@ -104,7 +104,7 @@ public class RevIMU implements Gyro, GlobalsPoll {
             imu = Robot.O.hardwareMap.get(BNO055IMU.class, name);
         } catch (Exception e) {
             imu = null;
-            Robot.err(this, "No such device: " + name);
+            Robot.err(this, "Unable to initialize: " + name);
         }
 
         // Start the IMU in a background thread -- it behaves poorly when not available
