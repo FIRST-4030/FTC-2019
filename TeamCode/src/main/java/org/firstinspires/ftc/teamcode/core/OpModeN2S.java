@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 public class OpModeN2S extends OpMode implements OpModeEvents {
     protected Robot R;
-    protected Telemetry T;
 
     private OpModeDebug debug = null;
     private final ArrayList<OpModeEvents> children;
@@ -53,8 +52,6 @@ public class OpModeN2S extends OpMode implements OpModeEvents {
 
         // Ensure we have a valid Robot
         R = Robot.start(this);
-        // Syntax shortcut for telemetry
-        T = this.telemetry;
 
         // Put us into bulk-update mode for faster RevHub comms
         R.revhub.mode(LynxModule.BulkCachingMode.AUTO);
