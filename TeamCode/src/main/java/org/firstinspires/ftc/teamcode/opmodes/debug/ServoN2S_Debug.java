@@ -17,7 +17,6 @@ public class ServoN2S_Debug extends OpMode_Debug {
 
     private final ServoN2S servo;
     private boolean limits;
-    private boolean teleop;
     private Gamepad pad;
 
     Map<String, Double> presets;
@@ -33,10 +32,8 @@ public class ServoN2S_Debug extends OpMode_Debug {
     public void init() {
         // Save the incoming state so we can restore it
         limits = servo.limits();
-        teleop = servo.teleop();
 
         // Freedom
-        servo.teleop(true);
         servo.limits(false);
 
         // Buttons
@@ -89,7 +86,6 @@ public class ServoN2S_Debug extends OpMode_Debug {
                 (servo.ready() ? "Enabled" : "Disabled");
         T.addData("Servo", s);
         s = (servo.reverse() ? "Reverse" : "Forward") + "\t" +
-                (servo.teleop() ? "Teleop" : "Auto") + "\t" +
                 (servo.limits() ? "Limited" : "Unlimited");
         T.addData("Mode", s);
 
@@ -101,8 +97,8 @@ public class ServoN2S_Debug extends OpMode_Debug {
         T.addData("Raw Offset Scale", s);
 
         // Min[0]/Max[1]/Offset
-        s = Round.r(servo.getLimits()[0]) + "\t" +
-                Round.r(servo.getLimits()[1]) + "\t" +
+        s = Round.r(servo.minmax()[0]) + "\t" +
+                Round.r(servo.minmax()[1]) + "\t" +
                 Round.r(servo.offset());
         T.addData("Min Max Offset", s);
 
@@ -123,7 +119,6 @@ public class ServoN2S_Debug extends OpMode_Debug {
 
     public void stop() {
         // Restore the original state when leaving
-        servo.teleop(teleop);
         servo.limits(limits);
 
         // No need to tear down buttons -- we have our own ButtonHandler

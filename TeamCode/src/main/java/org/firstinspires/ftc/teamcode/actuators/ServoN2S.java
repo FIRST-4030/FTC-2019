@@ -20,7 +20,6 @@ public class ServoN2S implements Actuators, GlobalsPoll {
 
     private Servo servo;
     private boolean stopped = false;
-    private boolean teleop = false;
     private boolean limits = true;
 
     public String name;
@@ -76,8 +75,8 @@ public class ServoN2S implements Actuators, GlobalsPoll {
         // Apply config
         reverse(reverse);
         offset(offset);
-        limits(min, max);
-        this.presets = new HashMap<>(presets);
+        minmax(min, max);
+        presets(presets);
 
         // Move to the init position, if set
         if (this.presets.containsKey(PRESET_INIT)) {
@@ -87,24 +86,6 @@ public class ServoN2S implements Actuators, GlobalsPoll {
         // Register with the Actuators list and Globals
         Robot.R.register(this);
         Robot.R.G.register(this);
-    }
-
-    /**
-     * Get the current teleop mode
-     *
-     * @return True if teleop is enabled
-     */
-    public boolean teleop() {
-        return teleop;
-    }
-
-    /**
-     * Set the teleop mode
-     *
-     * @param enable True to enable teleop, false to disable
-     */
-    public void teleop(boolean enable) {
-        teleop = enable;
     }
 
     /**
@@ -159,12 +140,21 @@ public class ServoN2S implements Actuators, GlobalsPoll {
     }
 
     /**
+     * Get the current min/max limits for the servo
+     *
+     * @return double[0] = min, double[1] = max
+     */
+    public double[] minmax() {
+        return new double[]{min, max};
+    }
+
+    /**
      * Set the min/max limits for the servo
      *
      * @param min Minimum allowed raw servo position (if limits are enforced)
      * @param max Maximum allowed raw servo position (if limits are enforced)
      */
-    public void limits(double min, double max) {
+    public void minmax(double min, double max) {
         if (min < 0.0d || min >= max || max > 1.0d) {
             Robot.warn(this, "Ignoring invalid min/max: "
                     + Round.r(min) + "/" + Round.r(max));
@@ -172,15 +162,6 @@ public class ServoN2S implements Actuators, GlobalsPoll {
         }
         this.min = min;
         this.max = max;
-    }
-
-    /**
-     * Get the current min/max limits for the servo
-     *
-     * @return double[0] = min, double[1] = max
-     */
-    public double[] getLimits() {
-        return new double[]{min, max};
     }
 
     /**
@@ -244,16 +225,10 @@ public class ServoN2S implements Actuators, GlobalsPoll {
     /**
      * Actually move the servo
      *
-     * @param pos      The commanded position
-     * @param isTeleop True when this call comes from the teleop method
+     * @param pos The commanded position
      */
-    private void raw(double pos, boolean isTeleop) {
+    private void raw(double pos) {
         if (!ready()) {
-            return;
-        }
-
-        // Don't allow auto commands in teleop or visa versa
-        if (teleop != isTeleop) {
             return;
         }
 
@@ -311,7 +286,7 @@ public class ServoN2S implements Actuators, GlobalsPoll {
      * @param pos The commanded position
      */
     public void position(double pos) {
-        raw(pos + offset, false);
+        raw(pos + offset);
     }
 
     /**
@@ -383,10 +358,7 @@ public class ServoN2S implements Actuators, GlobalsPoll {
      * @param delta Relative change of servo position
      */
     public void teleop(double delta) {
-        if (!teleop) {
-            return;
-        }
-        raw(raw() + delta, true);
+        raw(raw() + delta);
     }
 
     /**
