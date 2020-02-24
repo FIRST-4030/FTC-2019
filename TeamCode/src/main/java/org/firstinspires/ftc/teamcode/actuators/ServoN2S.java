@@ -170,6 +170,8 @@ public class ServoN2S implements Actuators, GlobalsPoll {
         }
         this.min = min;
         this.max = max;
+        // Force an update to ensure the new limits are enforced (if active)
+        delta(0.0d);
     }
 
     /**
@@ -213,6 +215,8 @@ public class ServoN2S implements Actuators, GlobalsPoll {
             offset = this.offset;
         }
         this.offset = offset;
+        // Force an update to recalculate with the new offset
+        delta(0.0d);
     }
 
     /**
@@ -382,16 +386,13 @@ public class ServoN2S implements Actuators, GlobalsPoll {
 
     /**
      * Teleop control of the servo
-     * This applies the rate limit, if enabled, and should be called every loop
-     * when in use to ensure accurate limits
+     * This applies the rate limit and should be called every loop
+     * (when teleop is in use) to ensure accurate limits
      *
      * @param delta Relative change of servo position
      */
     public void teleop(double delta) {
-        if (limits()) {
-            delta = rate.limit(delta);
-        }
-        raw(raw() + delta);
+        raw(raw() + rate.limit(delta));
     }
 
     /**
