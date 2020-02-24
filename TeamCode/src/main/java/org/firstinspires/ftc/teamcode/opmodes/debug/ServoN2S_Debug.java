@@ -12,15 +12,12 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ServoN2S_Debug extends OpMode_Debug {
-    private final static double TELEOP_SCALE = 0.01;
-    private final static double SERVO_INCREMENT = 0.01;
-
     private final ServoN2S servo;
     private boolean limits;
     private Gamepad pad;
 
-    Map<String, Double> presets;
-    Iterator<String> it;
+    private Map<String, Double> presets;
+    private Iterator<String> it;
 
     public ServoN2S_Debug(ServoN2S servo) {
         if (servo == null) {
@@ -61,7 +58,7 @@ public class ServoN2S_Debug extends OpMode_Debug {
     public void loop() {
         B.update();
 
-        servo.teleop(pad.right_stick_x * TELEOP_SCALE * (B.get("SLOW") ? 0.5d : 1.0d));
+        servo.teleop(pad.right_stick_x * (B.get("SLOW") ? 0.5d : 1.0d));
         if (B.get("PRESET")) {
             if (it == null || !it.hasNext()) {
                 it = presets.keySet().iterator();
@@ -86,7 +83,8 @@ public class ServoN2S_Debug extends OpMode_Debug {
                 (servo.ready() ? "Enabled" : "Disabled");
         T.addData("Servo", s);
         s = (servo.reverse() ? "Reverse" : "Forward") + "\t" +
-                (servo.limits() ? "Limited" : "Unlimited");
+                (servo.limits() ? "Limited" : "Unlimited") + "\t"
+                + Round.r(servo.rate()) + " s^-1";
         T.addData("Mode", s);
 
         // Position

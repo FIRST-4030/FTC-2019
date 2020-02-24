@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.storage.config.ConfigDevice;
 import org.firstinspires.ftc.teamcode.storage.globals.Globals;
 import org.firstinspires.ftc.teamcode.storage.globals.GlobalsPoll;
+import org.firstinspires.ftc.teamcode.utils.RateLimit;
 import org.firstinspires.ftc.teamcode.utils.Round;
 
 import java.util.HashMap;
@@ -17,6 +18,7 @@ public class ServoN2S implements Actuators, GlobalsPoll {
     private static final double DEFAULT_MAX = 1.0d;
     private static final double DEFAULT_OFFSET = 0.0d;
     private static final boolean DEFAULT_REVERSE = false;
+    private static final double DEFAULT_RATE = 0.25d;
 
     private Servo servo;
     private boolean stopped = false;
@@ -27,6 +29,7 @@ public class ServoN2S implements Actuators, GlobalsPoll {
     private double offset = DEFAULT_OFFSET;
     private double min = DEFAULT_MIN;
     private double max = DEFAULT_MAX;
+    private RateLimit rate;
 
     public ServoN2S(String name) {
         // Load the config for this device based on the class and device names
@@ -38,12 +41,14 @@ public class ServoN2S implements Actuators, GlobalsPoll {
                 d.dOptional("offset", DEFAULT_OFFSET),
                 d.dOptional("min", DEFAULT_MIN),
                 d.dOptional("max", DEFAULT_MAX),
+                d.dOptional("rate", DEFAULT_RATE),
                 new HashMap<String, Double>());
     }
 
     public ServoN2S(String name, boolean reverse, double offset,
-                    double min, double max, Map<String, Double> presets) {
-        init(name, reverse, offset, min, max, presets);
+                    double min, double max, double rate,
+                    Map<String, Double> presets) {
+        init(name, reverse, offset, min, max, rate, presets);
     }
 
     /**
@@ -54,10 +59,12 @@ public class ServoN2S implements Actuators, GlobalsPoll {
      * @param offset  Offset for the raw servo position
      * @param min     Minimum allowed raw servo position (if limits are enforced)
      * @param max     Maximum allowed raw servo position (if limits are enforced)
+     * @param rate    Maximum rate of change for the teleop mode
      * @param presets Map of preset names and position
      */
     private void init(String name, boolean reverse, double offset,
-                      double min, double max, Map<String, Double> presets) {
+                      double min, double max, double rate,
+                      Map<String, Double> presets) {
         if (name == null || name.isEmpty()) {
             Robot.err(this, "No name provided");
             name = this.toString();
@@ -76,6 +83,7 @@ public class ServoN2S implements Actuators, GlobalsPoll {
         reverse(reverse);
         offset(offset);
         minmax(min, max);
+        rate(rate);
         presets(presets);
 
         // Move to the init position, if set
@@ -162,6 +170,27 @@ public class ServoN2S implements Actuators, GlobalsPoll {
         }
         this.min = min;
         this.max = max;
+    }
+
+    /**
+     * Get the current teleop rate limit (in raw servo output units per second)
+     *
+     * @return Current teleop rate limit
+     */
+    public double rate() {
+        return rate.rate();
+    }
+
+    /**
+     * Set the teleop rate limit
+     *
+     * @param newRate New rate limit, in raw servo output units per second)
+     */
+    public void rate(double newRate) {
+        if (rate == null) {
+            rate = new RateLimit();
+        }
+        rate.rate(newRate);
     }
 
     /**
@@ -353,11 +382,15 @@ public class ServoN2S implements Actuators, GlobalsPoll {
 
     /**
      * Teleop control of the servo
-     * The full range of outputs is 0.0-1.0, so per-loop deltas should be much smaller
+     * This applies the rate limit, if enabled, and should be called every loop
+     * when in use to ensure accurate limits
      *
      * @param delta Relative change of servo position
      */
     public void teleop(double delta) {
+        if (limits()) {
+            delta = rate.limit(delta);
+        }
         raw(raw() + delta);
     }
 
