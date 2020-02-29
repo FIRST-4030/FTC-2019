@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.storage.config;
 
+import android.content.res.AssetManager;
 import android.os.Environment;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
@@ -14,10 +15,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import static org.firstinspires.ftc.robotcore.internal.system.AppUtil.getDefContext;
 
 public class Config {
     private static final String FTC_PATH = "FIRST";
@@ -27,6 +31,8 @@ public class Config {
 
     private final HashMap<String, HashMap> config;
     private final File dir;
+    private static final AssetManager assetList = AppUtil.getDefContext().getResources().getAssets();
+    private static String[] resourceList;
 
     public Config() {
         // Make sure our paths are sensible
@@ -41,6 +47,14 @@ public class Config {
         parseConfig(readFile(DEFAULTS_NAME), c);
         parseConfig(readFile(OVERRIDE_NAME), c);
         config = c;
+
+        // see https://developer.android.com/reference/android/content/res/Resources#getResourceTypeName(int)
+        // for details on the resources class
+        try {
+            resourceList = assetList.list("res/raw");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // TODO: What to do instead (with multiple configs)
         /*
@@ -58,6 +72,7 @@ public class Config {
         config files are name.xml and name.json
 
          */
+
     }
 
     public boolean ready() {
@@ -105,7 +120,7 @@ public class Config {
             }
 
             // Copy the baked-in defaults to the FTC directory
-            InputStream in = AppUtil.getDefContext().getResources().openRawResource(resource);
+            InputStream in = getDefContext().getResources().openRawResource(resource);
             OutputStream out = new FileOutputStream(outFile);
             int len;
             byte[] buffer = new byte[4 * 1024];
