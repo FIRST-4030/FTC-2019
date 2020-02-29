@@ -29,9 +29,11 @@ public class Config {
     private final File dir;
 
     public Config() {
-        // Make sure our paths are sensible and the default files exist
+        // Make sure our paths are sensible
         dir = Environment.getExternalStoragePublicDirectory(FTC_PATH);
         AppUtil.getInstance().ensureDirectoryExists(dir);
+
+        // Make sure the default files exist
         installDefaults();
 
         // Load an empty config, add the defaults, add the overrides
@@ -39,6 +41,23 @@ public class Config {
         parseConfig(readFile(DEFAULTS_NAME), c);
         parseConfig(readFile(OVERRIDE_NAME), c);
         config = c;
+
+        // TODO: What to do instead (with multiple configs)
+        /*
+        Copy over default configs for all robots and make sure overrides for each robot exist
+        - dynamically get all of the configs stored in res/raw/
+        - iterate through them to put them on the robot
+
+        Load config based on robot we're running
+        - know what config is active (access through OpMode reference)
+        - find the corresponding config and override file
+        - read and parse them
+
+        we need a naming convention for config files
+        one override.json
+        config files are name.xml and name.json
+
+         */
     }
 
     public boolean ready() {
