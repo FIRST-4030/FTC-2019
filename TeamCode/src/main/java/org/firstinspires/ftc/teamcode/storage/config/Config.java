@@ -4,7 +4,6 @@ import android.content.res.AssetManager;
 import android.os.Environment;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
-import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.storage.anytype.AnyType;
 import org.json.JSONException;
@@ -15,9 +14,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -27,12 +26,10 @@ public class Config {
     private static final String FTC_PATH = "FIRST";
     private static final String DEFAULTS_NAME = "defaults.json";
     private static final String OVERRIDE_NAME = "override.json";
-    private static final int resource = R.raw.defaults;
 
     private final HashMap<String, HashMap> config;
     private final File dir;
-    private static final AssetManager assetList = AppUtil.getDefContext().getResources().getAssets();
-    private static String[] resourceList;
+    private final ArrayList<String> jsonFiles = new ArrayList<>();
 
     public Config() {
         // Make sure our paths are sensible
@@ -47,14 +44,6 @@ public class Config {
         parseConfig(readFile(DEFAULTS_NAME), c);
         parseConfig(readFile(OVERRIDE_NAME), c);
         config = c;
-
-        // see https://developer.android.com/reference/android/content/res/Resources#getResourceTypeName(int)
-        // for details on the resources class
-        try {
-            resourceList = assetList.list("res/raw");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         // TODO: What to do instead (with multiple configs)
         /*
@@ -119,8 +108,16 @@ public class Config {
                 outFile.delete();
             }
 
+            // TODO: Make decisions about which file to load
+            for (String s : AppUtil.getDefContext().getAssets().list("")) {
+                if (s.endsWith(".json")) {
+                    jsonFiles.add(s);
+                    Robot.verbose(this, "JSON asset: " + s);
+                }
+            }
+
             // Copy the baked-in defaults to the FTC directory
-            InputStream in = getDefContext().getResources().openRawResource(resource);
+            InputStream in = getDefContext().getAssets().open(DEFAULTS_NAME);
             OutputStream out = new FileOutputStream(outFile);
             int len;
             byte[] buffer = new byte[4 * 1024];
