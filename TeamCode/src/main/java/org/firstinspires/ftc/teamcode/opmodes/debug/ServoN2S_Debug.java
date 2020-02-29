@@ -81,24 +81,24 @@ public class ServoN2S_Debug extends OpMode_Debug {
         // Name/Mode
         String s = servo.name + "\t" +
                 (servo.ready() ? "Enabled" : "Disabled");
-        R.O.telemetry.addData("Servo", s);
+        RobotUtils.O.telemetry.addData("Servo", s);
         s = (servo.reverse() ? "Reverse" : "Forward") + "\t" +
                 (servo.limits() ? "Limited" : "Unlimited") + "\t"
                 + Round.r(servo.rate()) + " s^-1";
-        R.O.telemetry.addData("Mode", s);
+        RobotUtils.O.telemetry.addData("Mode", s);
 
         // Position
         double pos = servo.raw();
         s = Round.r(pos) + "\t" +
                 Round.r(servo.rawToOffset(pos)) + "\t" +
                 Round.r(servo.rawToScale(pos) * 100.0d) + "%";
-        R.O.telemetry.addData("Raw Offset Scale", s);
+        RobotUtils.O.telemetry.addData("Raw Offset Scale", s);
 
         // Min[0]/Max[1]/Offset
         s = Round.r(servo.minmax()[0]) + "\t" +
                 Round.r(servo.minmax()[1]) + "\t" +
                 Round.r(servo.offset());
-        R.O.telemetry.addData("Min Max Offset", s);
+        RobotUtils.O.telemetry.addData("Min Max Offset", s);
 
         // Presets
         StringBuilder sb = new StringBuilder();
@@ -109,10 +109,10 @@ public class ServoN2S_Debug extends OpMode_Debug {
             sb.append(e.getKey()).append(":");
             sb.append(Round.r(e.getValue()));
         }
-        R.O.telemetry.addData("Presets", sb);
+        RobotUtils.O.telemetry.addData("Presets", sb);
 
         // Display
-        R.O.telemetry.update();
+        RobotUtils.O.telemetry.update();
     }
 
     public void stop() {
