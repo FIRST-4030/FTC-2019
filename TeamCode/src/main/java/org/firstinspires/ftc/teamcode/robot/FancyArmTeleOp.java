@@ -9,8 +9,8 @@ import org.firstinspires.ftc.teamcode.buttons.PAD_BUTTON;
 import org.firstinspires.ftc.teamcode.config.BOT;
 import org.firstinspires.ftc.teamcode.utils.RateLimit;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp - Arm", group = "Arm")
-public class ArmTeleOp extends OpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp - Fancy Arm", group = "Arm")
+public class FancyArmTeleOp extends OpMode {
 
     // Devices and subsystems
     private Robot robot = null;
@@ -63,21 +63,7 @@ public class ArmTeleOp extends OpMode {
         // Register buttons
         buttons = new ButtonHandler(robot);
         buttons.register("CLAW", gamepad2, PAD_BUTTON.x, BUTTON_TYPE.TOGGLE);
-        buttons.register("HOME_ARM", gamepad2, PAD_BUTTON.b, BUTTON_TYPE.SINGLE_PRESS);
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
-        buttons.register("SWIVEL_FORWARD", gamepad2, PAD_BUTTON.left_bumper, BUTTON_TYPE.SINGLE_PRESS);
-        buttons.register("SWIVEL_SIDEWAYS", gamepad2, PAD_BUTTON.left_bumper, BUTTON_TYPE.SINGLE_PRESS);
-
-        // Init rate limits for the arm
-        rateX = new RateLimit(this, MAX_ARM_RATE_X);
-        rateY = new RateLimit(this, MAX_ARM_RATE_Y);
-        rateR = new RateLimit(this, MAX_ARM_RATE_R);
-        rateW = new RateLimit(this, MAX_ARM_RATE_W);
-
-        // Move arm to home
-        robot.common.arm.setPosition(ARM_HOME_X, ARM_HOME_Y);
-        robot.rotation.setPosition(ARM_HOME_R);
-        robot.wrist.setPosition(wristRotation);
 
         // Wait for the game to begin
         telemetry.addData(">", "Ready for game start");
@@ -114,41 +100,27 @@ public class ArmTeleOp extends OpMode {
     }
 
     private void auxiliary() {
-        // arm movement
-        float dx = (float) rateX.update(-gamepad2.left_stick_y * ARM_MOVEMENT_SCALE);
-        float dy = (float) rateY.update(-gamepad2.right_stick_y * ARM_MOVEMENT_SCALE);
-        armRotation -= (float) rateR.update(Math.pow(gamepad2.left_stick_x, 3) * ARM_ROTATION_SCALE);
-        wristRotation -= (float) rateW.update(Math.pow(gamepad2.right_stick_x, 3) * WRIST_ROTATION_SCALE);
+        // Wrist
+        robot.wrist.setPosition(1-((gamepad2.left_stick_y + 1)/2));
 
-        // cap values
-        armRotation = Math.min(1.0f, armRotation);
-        armRotation = Math.max(0.0f, armRotation);
-        wristRotation = Math.min(1.0f, wristRotation);
-        wristRotation = Math.max(0.0f, wristRotation);
+        // Rotation
+        robot.rotation.setPosition((gamepad2.right_stick_x + 1)/2);
 
-        robot.common.arm.setPositionDelta(dx, dy);
+        // Upper
+        robot.upper.setPosition((gamepad2.right_trigger) * 0.76f);
 
-        if (buttons.get("HOME_ARM")) {
-            robot.common.arm.setPosition(ARM_HOME_X, ARM_HOME_Y);
-            armRotation = ARM_HOME_R;
-            wristRotation = ARM_HOME_W;
-        }
+        // Lower
+        robot.lower.setPosition(((gamepad2.left_trigger) * 0.9f)+0.05f);
 
-        robot.rotation.setPosition(armRotation);
-        robot.wrist.setPosition(wristRotation);
-
-        telemetry.addData("arm x", robot.common.arm.getArmX());
-        telemetry.addData("arm y", robot.common.arm.getArmY());
-        telemetry.addData("arm rotation", armRotation);
-        telemetry.addData("wrist angle", wristRotation);
-        telemetry.addData("lower", robot.lower.getPosition());
         telemetry.addData("upper", robot.upper.getPosition());
+        telemetry.addData("lower", robot.lower.getPosition());
+        telemetry.addData("rotation", robot.rotation.getPosition());
+        telemetry.addData("wrist", robot.wrist.getPosition());
 
-        // claw
         if (buttons.get("CLAW")) {
-            robot.common.claw.close();
+            robot.claw.min();
         } else {
-            robot.common.claw.open();
+            robot.claw.max();
         }
     }
 
