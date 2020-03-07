@@ -16,32 +16,9 @@ public class FancyArmTeleOp extends OpMode {
     private Robot robot = null;
     private ButtonHandler buttons;
 
-    // arm consts
-    private static final float ARM_MOVEMENT_SCALE = 1.0f/16;
-    private static final float ARM_ROTATION_SCALE = 1.0f/512;
-    private static final float WRIST_ROTATION_SCALE = 1.0f/512;
-    private static final float ARM_HOME_X = 0.64f;
-    private static final float ARM_HOME_Y = 3.81f;
-    private static final float ARM_HOME_R = 0.4f;
-    private static final float ARM_HOME_W = 0.8f;
-
-    // Arm rate limiting
-    private RateLimit rateX;
-    private RateLimit rateY;
-    private RateLimit rateR;
-    private RateLimit rateW;
-    private static final double MAX_ARM_RATE_X = 1.5d; // In inches per second
-    private static final double MAX_ARM_RATE_Y = 1.5d; // In inches per second
-    private static final double MAX_ARM_RATE_R = 0.125d; // In servo position per second
-    private static final double MAX_ARM_RATE_W = 0.1d; // In servo position per second
-
     // other consts
     private static final float NORMAL_SPEED = 0.75f;
     private static final float SLOW_MODE = 0.25f;
-
-    // vars
-    private float armRotation = ARM_HOME_R;
-    private float wristRotation = ARM_HOME_W;
 
     @Override
     public void init() {
@@ -64,6 +41,7 @@ public class FancyArmTeleOp extends OpMode {
         buttons = new ButtonHandler(robot);
         buttons.register("CLAW", gamepad2, PAD_BUTTON.x, BUTTON_TYPE.TOGGLE);
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
+        buttons.register("HOME", gamepad2, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
 
         // Wait for the game to begin
         telemetry.addData(">", "Ready for game start");
@@ -91,6 +69,8 @@ public class FancyArmTeleOp extends OpMode {
     }
 
     private void driveBase() {
+        // Skip drivebase if the arm isn't homed
+        if (!buttons.get("HOME")) return;
         if (buttons.get("SLOW_MODE")) {
             robot.wheels.setSpeedScale(SLOW_MODE);
         } else {
@@ -100,28 +80,40 @@ public class FancyArmTeleOp extends OpMode {
     }
 
     private void auxiliary() {
-        // Wrist
-        robot.wrist.setPosition(1-((gamepad2.left_stick_y + 1)/2));
+        // Calculate arm positions
+        float wrist = 1-((gamepad2.left_stick_y + 1)/2);
+        float rotation = (gamepad2.right_stick_x + 1)/2;
+        float upper = (gamepad2.right_trigger) * 0.76f;
+        float lower = ((gamepad2.left_trigger) * 0.9f)+0.05f;
 
-        // Rotation
-        robot.rotation.setPosition((gamepad2.right_stick_x + 1)/2);
+        // Check if we're homed
+        if (buttons.get("HOME")) {
+            // Magic numbers!!
+            wrist = 0.44f;
+            rotation = 0.422f;
+            lower = 0.95f;
+            upper = 0.34f;
+        }
 
-        // Upper
-        robot.upper.setPosition((gamepad2.right_trigger) * 0.76f);
+        // Move servos
+        robot.wrist.setPosition(wrist);
+        robot.rotation.setPosition(rotation);
+        robot.upper.setPosition(upper);
+        robot.lower.setPosition(lower);
 
-        // Lower
-        robot.lower.setPosition(((gamepad2.left_trigger) * 0.9f)+0.05f);
-
-        telemetry.addData("upper", robot.upper.getPosition());
-        telemetry.addData("lower", robot.lower.getPosition());
-        telemetry.addData("rotation", robot.rotation.getPosition());
-        telemetry.addData("wrist", robot.wrist.getPosition());
-
+        // the claaaww
         if (buttons.get("CLAW")) {
             robot.claw.min();
         } else {
             robot.claw.max();
         }
+
+        telemetry.addData("upper", robot.upper.getPosition());
+        telemetry.addData("lower", robot.lower.getPosition());
+        telemetry.addData("rotation", robot.rotation.getPosition());
+        telemetry.addData("wrist", robot.wrist.getPosition());
+        telemetry.addData("claw", gamepad2.left_stick_x);
+
     }
 
     public void stop() {
