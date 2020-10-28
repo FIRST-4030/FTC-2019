@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import android.widget.Button;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.buttons.BUTTON_TYPE;
@@ -42,7 +44,7 @@ public class BlankTeleOp extends OpMode {
         // Register buttons
         buttons = new ButtonHandler(robot);
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
-
+        buttons.register("SEND_MESSAGE", gamepad2, PAD_BUTTON.start);
 
 
         // Wait for the game to begin
@@ -80,7 +82,7 @@ public class BlankTeleOp extends OpMode {
     }
 
     private void auxiliary() {
-
+        telemetry.addData("name:", "reeeee" + buttons.get("SLOW_MODE"));
     }
 
     public void stop() {
