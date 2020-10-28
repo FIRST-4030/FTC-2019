@@ -80,6 +80,7 @@ public class BlankTeleOp extends OpMode {
     }
 
     private void auxiliary() {
+        robot.motoryBoi.setPower(gamepad2.left_stick_y);
         telemetry.addData("name:", "reeeee" + buttons.get("SLOW_MODE"));
     }
 
