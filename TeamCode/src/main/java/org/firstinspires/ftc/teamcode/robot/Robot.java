@@ -54,6 +54,9 @@ public class Robot {
     // Test
     public LEDMatrix matrix;
 
+    // Blank
+    public Motor motoryBoi;
+
 
     public Robot(HardwareMap map, Telemetry telemetry) {
         this(map, telemetry, null);
@@ -109,6 +112,9 @@ public class Robot {
             case TEST:
                 matrix = ledMatrices.init(LED_MATRICIES.TEST);
                 break;
+
+            case BLANK:
+                motoryBoi = motors.init(MOTORS.MOTORY_BOI);
         }
 
 

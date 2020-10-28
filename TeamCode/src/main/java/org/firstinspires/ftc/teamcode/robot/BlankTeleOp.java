@@ -41,9 +41,7 @@ public class BlankTeleOp extends OpMode {
 
         // Register buttons
         buttons = new ButtonHandler(robot);
-        buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
-
-
+        buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.start, BUTTON_TYPE.TOGGLE);
 
         // Wait for the game to begin
         telemetry.addData(">", "Ready for game start");
@@ -80,7 +78,7 @@ public class BlankTeleOp extends OpMode {
     }
 
     private void auxiliary() {
-
+        
     }
 
     public void stop() {
