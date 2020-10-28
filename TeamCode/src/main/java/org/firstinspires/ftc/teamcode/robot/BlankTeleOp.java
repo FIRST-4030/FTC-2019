@@ -15,32 +15,12 @@ public class BlankTeleOp extends OpMode {
     private Robot robot = null;
     private ButtonHandler buttons;
 
-    // arm consts
-    private static final float ARM_MOVEMENT_SCALE = 1.0f/16;
-    private static final float ARM_ROTATION_SCALE = 1.0f/512;
-    private static final float WRIST_ROTATION_SCALE = 1.0f/512;
-    private static final float ARM_HOME_X = 0.64f;
-    private static final float ARM_HOME_Y = 3.81f;
-    private static final float ARM_HOME_R = 0.4f;
-    private static final float ARM_HOME_W = 0.8f;
-
-    // Arm rate limiting
-    private RateLimit rateX;
-    private RateLimit rateY;
-    private RateLimit rateR;
-    private RateLimit rateW;
-    private static final double MAX_ARM_RATE_X = 1.5d; // In inches per second
-    private static final double MAX_ARM_RATE_Y = 1.5d; // In inches per second
-    private static final double MAX_ARM_RATE_R = 0.125d; // In servo position per second
-    private static final double MAX_ARM_RATE_W = 0.1d; // In servo position per second
 
     // other consts
     private static final float NORMAL_SPEED = 0.75f;
     private static final float SLOW_MODE = 0.25f;
 
-    // vars
-    private float armRotation = ARM_HOME_R;
-    private float wristRotation = ARM_HOME_W;
+
 
     @Override
     public void init() {
