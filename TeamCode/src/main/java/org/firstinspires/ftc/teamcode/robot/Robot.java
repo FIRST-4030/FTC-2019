@@ -56,6 +56,7 @@ public class Robot {
 
     // Blank
     public Motor motoryBoi;
+    public ServoFTC servoBoi;
 
 
     public Robot(HardwareMap map, Telemetry telemetry) {
@@ -115,6 +116,7 @@ public class Robot {
 
             case BLANK:
                 motoryBoi = motors.init(MOTORS.MOTORY_BOI);
+                servoBoi = servos.init(SERVOS.SERVO_BOI);
         }
 
 

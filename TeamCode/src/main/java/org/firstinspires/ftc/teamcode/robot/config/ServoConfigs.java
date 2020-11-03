@@ -64,6 +64,12 @@ public class ServoConfigs extends Configs {
                     case WRIST:
                         config = new ServoConfig("Swivel", false, 0.0f, 1.0f);
                 }
+            case BLANK:
+                switch (servo) {
+                    case SERVO_BOI:
+                        config = new ServoConfig("Servo Boi", true, 0.0f, 1.0f);
+                        break;
+                }
         }
 
         return config;
