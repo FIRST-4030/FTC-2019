@@ -43,6 +43,7 @@ public class BlankTeleOp extends OpMode {
         buttons = new ButtonHandler(robot);
         buttons.register("SLOW_MODE", gamepad1, PAD_BUTTON.b, BUTTON_TYPE.TOGGLE);
         buttons.register("SEND_MESSAGE", gamepad2, PAD_BUTTON.start);
+        buttons.register("POSITION_TOGGLE", gamepad2, PAD_BUTTON.start);
 
 
         // Wait for the game to begin
@@ -82,6 +83,14 @@ public class BlankTeleOp extends OpMode {
     private void auxiliary() {
         robot.motoryBoi.setPower(gamepad2.left_stick_y);
         telemetry.addData("name:", "reeeee" + buttons.get("SEND_MESSAGE"));
+    }
+
+    private void Position1() {
+        if (buttons.get("POSITION_TOGGLE")) {
+            robot.servoBoi.setPosition(1);
+        } else {
+            robot.servoBoi.setPosition(0);
+        }
     }
 
     public void stop() {
