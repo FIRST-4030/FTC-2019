@@ -25,25 +25,24 @@ public class ServoConfigs extends Configs {
     public ServoConfig config(SERVOS servo) {
         super.checkBOT();
         checkNull(servo, SERVOS.class.getName());
-
         ServoConfig config = null;
         switch (bot) {
-            case SCISSOR:
+            case PRODUCTION:
                 switch(servo) {
-                    case CLAW:
-                        config = new ServoConfig("Claw");
+                    case WOBBLE_GOAL_GRIP:
+                        config = new ServoConfig("Wobble Goal Grip", false, 0.0f, 1.0f);
                         break;
-                    case FLIPPER:
-                        config = new ServoConfig("Flipper", false, 0.0f, 1.0f);
+                    case BACK_RAISE_LOWER:
+                        config = new ServoConfig("Back Raise/Lower", false, 0.0f, 1.0f);
                         break;
-                    case CAPSTONE:
-                        config = new ServoConfig("Capstone",  false, 0.0f, 1.0f);
+                    case FRONT_RAISE_LOWER:
+                        config = new ServoConfig("Front Raise/Lower",  false, 0.0f, 1.0f);
                         break;
-                    case LEFT_HOOK:
-                        config = new ServoConfig("Left Hook", true, 0.2f, 0.9f);
+                    case SHOOTER_AIM:
+                        config = new ServoConfig("Shooter Aim", false, 0.0f, 1.0f);
                         break;
-                    case RIGHT_HOOK:
-                        config = new ServoConfig("Right Hook", false, 0.5f, 1.0f);
+                    case QUEUE_FLIPPER:
+                        config = new ServoConfig("Queue Flipper", false, 0.0f, 1.0f);
                 }
                 break;
 

@@ -31,16 +31,21 @@ public class MotorConfigs extends Configs {
         switch (bot) {
 
             // IMPORTANT: If you need to change the *names* of the motors here, change them in PIDMotorConfigs too
-            case SCISSOR:
+            case PRODUCTION:
+                //DELETE THIS ANNIE YOU FORGETFUL FUCK:
+                //SHOOTER, COLLECTOR_BACK, COLLECTOR_FRONT, WOBBLE_GOAL_ARM
                 switch(motor) {
-                    case LIFT:
-                        config = new MotorConfig("Lift", true, true);
+                    case SHOOTER:
+                        config = new MotorConfig("Shooter", true, true);
                         break;
-                    case COLLECTOR_LEFT:
-                        config = new MotorConfig("Left Collector", false, true);
+                    case COLLECTOR_BACK:
+                        config = new MotorConfig("Back Collector", true, true);
                         break;
-                    case COLLECTOR_RIGHT:
-                        config = new MotorConfig("Right Collector", true, true);
+                    case COLLECTOR_FRONT:
+                        config = new MotorConfig("Front Collector", true, true);
+                        break;
+                    case WOBBLE_GOAL_ARM:
+                        config = new MotorConfig("Wobble Goal Arm", true, true);
                 }
                 break;
             case BLANK:

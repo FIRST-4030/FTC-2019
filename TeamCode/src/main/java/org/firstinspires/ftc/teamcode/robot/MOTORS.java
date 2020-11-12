@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 public enum MOTORS {
-    LIFT, COLLECTOR_LEFT, COLLECTOR_RIGHT, MOTORY_BOI
+    //Production
+    SHOOTER, COLLECTOR_BACK, COLLECTOR_FRONT, WOBBLE_GOAL_ARM,
+
+    //Teaching
+    MOTORY_BOI
 }

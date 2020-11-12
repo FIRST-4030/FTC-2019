@@ -35,15 +35,16 @@ public class Robot {
     public final VuforiaFTC vuforia;
     public ServoFTC claw;
 
-    // Scissor
-    public Motor collectorLeft;
-    public Motor collectorRight;
-    public Motor lift;
-    public ServoFTC flipper;
-    public ServoFTC hookLeft;
-    public ServoFTC hookRight;
-    public ServoFTC capstone;
-    public ServoFTC curtain;
+    // Production
+    public Motor collectorBack;
+    public Motor collectorFront;
+    public Motor wobbleGoalArm;
+    public Motor shooter;
+    public ServoFTC backRaiseLower;
+    public ServoFTC frontRaiseLower;
+    public ServoFTC shooterAim;
+    public ServoFTC wobbleGoalGrip;
+    public ServoFTC queueFlipper;
 
     // Arm
     public ServoFTC lower;
@@ -90,15 +91,16 @@ public class Robot {
 
         // Bot specific
         switch (bot) {
-            case SCISSOR:
-                lift = motors.init(MOTORS.LIFT);
-                claw = servos.init(SERVOS.CLAW);
-                flipper = servos.init(SERVOS.FLIPPER);
-                collectorLeft = motors.init(MOTORS.COLLECTOR_LEFT);
-                collectorRight = motors.init(MOTORS.COLLECTOR_RIGHT);
-                hookLeft = servos.init(SERVOS.LEFT_HOOK);
-                hookRight = servos.init(SERVOS.RIGHT_HOOK);
-                capstone = servos.init(SERVOS.CAPSTONE);
+            case PRODUCTION:
+                wobbleGoalArm = motors.init(MOTORS.WOBBLE_GOAL_ARM);
+                wobbleGoalGrip = servos.init(SERVOS.WOBBLE_GOAL_GRIP);
+                queueFlipper = servos.init(SERVOS.QUEUE_FLIPPER);
+                collectorBack = motors.init(MOTORS.COLLECTOR_BACK);
+                collectorFront = motors.init(MOTORS.COLLECTOR_FRONT);
+                backRaiseLower = servos.init(SERVOS.BACK_RAISE_LOWER);
+                frontRaiseLower = servos.init(SERVOS.FRONT_RAISE_LOWER);
+                shooter = motors.init(MOTORS.SHOOTER);
+                shooterAim = servos.init(SERVOS.SHOOTER_AIM);
 
                 break;
 
